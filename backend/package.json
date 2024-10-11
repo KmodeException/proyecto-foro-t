@@ -1,0 +1,20 @@
+{
+  "name": "proyecto-foro-t",
+  "version": "1.0.0",
+  "description": "foro de traducciones de videojuegos",
+  "keywords": [],
+  "author": "Luis Mansilla",
+  "license": "MIT",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "mongoose": "^6.13.3",
+    "open": "^8.4.2"
+  }
+}

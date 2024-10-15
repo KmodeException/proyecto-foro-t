@@ -36,8 +36,8 @@ const port = process.env.PORT || 5000;
 // middleware para autenticación
 app.use(express.json());
 
-//registrar rutas
-app.use('/api/posts', postrouter);
+//regustrar rutas de publicación
+app.use('/posts', postrouter);
 
 //registro de usuario
 app.post('/registro', async (req, res) => {

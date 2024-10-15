@@ -37,7 +37,7 @@ const port = process.env.PORT || 5000;
 app.use(express.json());
 
 //regustrar rutas de publicación
-app.use('/posts', postrouter);
+app.use('api/posts', postrouter);
 
 //registro de usuario
 app.post('/registro', async (req, res) => {

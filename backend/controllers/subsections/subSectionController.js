@@ -44,16 +44,40 @@ export const subSectionController = {
      */
     getAllSubSections: async (req, res, next) => {
         try {
-            const { category, status } = req.query;
-            const filter = {};
+            const { 
+                category,    // filtrar por categoría
+                search,      // buscar por nombre
+                status,      // filtrar por estado
+                sort = 'recent'  // ordenar por (recent, name, activity)
+            } = req.query;
 
-            if (category) filter.category = category;
-            if (status) filter.status = status;
+            // Construir query
+            const query = {};
+            
+            // Filtros
+            if (category) query.category = category;
+            if (status) query.status = status;
+            if (search) {
+                query.name = { $regex: search, $options: 'i' };
+            }
 
-            const subSections = await SubSection.find(filter)
+            // Ordenamiento
+            let sortOption = {};
+            switch (sort) {
+                case 'name':
+                    sortOption = { name: 1 };
+                    break;
+                case 'activity':
+                    sortOption = { 'metrics.lastActivity': -1 };
+                    break;
+                default: // recent
+                    sortOption = { createdAt: -1 };
+            }
+
+            const subSections = await SubSection.find(query)
                 .populate('creator', 'nickname')
                 .populate('moderators', 'nickname')
-                .sort({ 'metrics.lastActivity': -1 });
+                .sort(sortOption);
 
             res.json(subSections);
         } catch (error) {

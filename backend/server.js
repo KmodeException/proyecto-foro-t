@@ -9,6 +9,7 @@ import connectDB from './config/db.js';
 // Rutas
 import postRoutes from './routes/posts.js';
 import authRoutes from './routes/auth.js';
+import subsectionRoutes from './routes/subsections.js';
 
 // Configuración
 dotenv.config();
@@ -25,6 +26,7 @@ connectDB();
 // Rutas
 app.use('/api/posts', postRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/subsections', subsectionRoutes);
 
 // Manejo de errores global
 app.use((err, req, res, next) => {

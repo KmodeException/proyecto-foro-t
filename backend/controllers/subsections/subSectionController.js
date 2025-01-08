@@ -68,13 +68,17 @@ export const subSectionController = {
      */
     getSubSectionByPath: async (req, res, next) => {
         try {
-            const subSection = await SubSection.findOne({ path: req.params.path })
+            // Obtener el path completo de la URL
+            const fullPath = '/' + req.params[0];  // Captura todo después de /path/
+            
+            const subSection = await SubSection.findOne({ path: fullPath })
                 .populate('creator', 'nickname')
                 .populate('moderators', 'nickname');
 
             if (!subSection) {
                 return res.status(404).json({
-                    error: 'Subapartado no encontrado'
+                    error: 'Subapartado no encontrado',
+                    requestedPath: fullPath
                 });
             }
 

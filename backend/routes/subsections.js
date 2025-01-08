@@ -11,7 +11,7 @@ const router = express.Router();
 
 // Rutas públicas
 router.get('/', subSectionController.getAllSubSections);
-router.get('/:path', subSectionController.getSubSectionByPath);
+router.get('/path/*', subSectionController.getSubSectionByPath);
 
 // Rutas protegidas
 router.post('/', authenticate, subSectionController.createSubSection);

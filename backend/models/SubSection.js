@@ -55,8 +55,7 @@ const subSectionSchema = new mongoose.Schema({
     timestamps: true
 });
 
-// Índices para optimizar consultas frecuentes
-subSectionSchema.index({ path: 1 }, { unique: true });
+// Solo mantener estos índices necesarios
 subSectionSchema.index({ category: 1 });
 subSectionSchema.index({ status: 1 });
 

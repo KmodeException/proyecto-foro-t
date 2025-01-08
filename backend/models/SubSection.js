@@ -14,7 +14,6 @@ const subSectionSchema = new mongoose.Schema({
     },
     path: {
         type: String,
-        required: true,
         unique: true,
         lowercase: true
     },
@@ -60,8 +59,8 @@ subSectionSchema.index({ category: 1 });
 subSectionSchema.index({ status: 1 });
 
 // Middleware para generar path automáticamente
-subSectionSchema.pre('save', function(next) {
-    if (this.isModified('name')) {
+subSectionSchema.pre('validate', function(next) {
+    if (this.name && this.category) {
         this.path = `/${this.category}/${this.name.toLowerCase().replace(/\s+/g, '-')}`;
     }
     next();

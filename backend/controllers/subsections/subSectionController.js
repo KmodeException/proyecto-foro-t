@@ -7,9 +7,6 @@ import SubSection from '../../models/SubSection.js';
 export const subSectionController = {
     /**
      * Crear nuevo subapartado
-     * @async
-     * @param {Object} req.body - Datos del subapartado
-     * @param {Object} req.user - Usuario autenticado
      */
     createSubSection: async (req, res, next) => {
         try {
@@ -28,33 +25,36 @@ export const subSectionController = {
             });
 
             await subSection.save();
-            await subSection.populate('creator', 'nickname');
-            await subSection.populate('moderators', 'nickname');
+            
+            // Mejorar población de datos
+            await subSection
+                .populate('creator', 'nickname avatar')
+                .populate('moderators', 'nickname avatar');
 
-            res.status(201).json(subSection);
+            res.status(201).json({
+                data: subSection,
+                message: 'Subapartado creado exitosamente'
+            });
         } catch (error) {
             next(error);
         }
     },
 
     /**
-     * Obtener todos los subapartados
-     * @async
-     * @param {Object} req.query - Filtros de búsqueda
+     * Obtener todos los subapartados con filtros
      */
     getAllSubSections: async (req, res, next) => {
         try {
             const { 
-                category,    // filtrar por categoría
-                search,      // buscar por nombre
-                status,      // filtrar por estado
-                sort = 'recent'  // ordenar por (recent, name, activity)
+                category,
+                search,
+                status,
+                sort = 'recent'
             } = req.query;
 
             // Construir query
             const query = {};
             
-            // Filtros
             if (category) query.category = category;
             if (status) query.status = status;
             if (search) {
@@ -74,12 +74,26 @@ export const subSectionController = {
                     sortOption = { createdAt: -1 };
             }
 
+            // Obtener total antes de aplicar límites
+            const total = await SubSection.countDocuments(query);
+
+            // Obtener datos con población mejorada
             const subSections = await SubSection.find(query)
-                .populate('creator', 'nickname')
-                .populate('moderators', 'nickname')
+                .populate('creator', 'nickname avatar')
+                .populate('moderators', 'nickname avatar')
+                .select('-__v')
+                .lean()
                 .sort(sortOption);
 
-            res.json(subSections);
+            res.json({
+                data: subSections,
+                metadata: {
+                    total,
+                    count: subSections.length,
+                    category,
+                    sort
+                }
+            });
         } catch (error) {
             next(error);
         }
@@ -87,17 +101,16 @@ export const subSectionController = {
 
     /**
      * Obtener un subapartado por su path
-     * @async
-     * @param {string} req.params.path - Path del subapartado
      */
     getSubSectionByPath: async (req, res, next) => {
         try {
-            // Obtener el path completo de la URL
-            const fullPath = '/' + req.params[0];  // Captura todo después de /path/
+            const fullPath = '/' + req.params[0];
             
             const subSection = await SubSection.findOne({ path: fullPath })
-                .populate('creator', 'nickname')
-                .populate('moderators', 'nickname');
+                .populate('creator', 'nickname avatar')
+                .populate('moderators', 'nickname avatar')
+                .select('-__v')
+                .lean();
 
             if (!subSection) {
                 return res.status(404).json({
@@ -106,7 +119,9 @@ export const subSectionController = {
                 });
             }
 
-            res.json(subSection);
+            res.json({
+                data: subSection
+            });
         } catch (error) {
             next(error);
         }

@@ -5,6 +5,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import passport from './config/passport.js';
 import connectDB from './config/db.js';
+import rateLimit from 'express-rate-limit';
 
 // Rutas
 import postRoutes from './routes/posts.js';
@@ -19,6 +20,15 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(passport.initialize());
+
+// Configuración de rate limiting
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutos
+    max: 100, // Limite de 100 solicitudes por IP
+    message: 'Demasiadas solicitudes desde esta IP, por favor intente de nuevo después de 15 minutos'
+});
+
+app.use(limiter);
 
 // Conectar a MongoDB
 connectDB();

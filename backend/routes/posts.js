@@ -1,7 +1,7 @@
+// backend/routes/posts.js
 import express from 'express';
 import { postController } from '../controllers/posts/postController.js';
 import { authenticate } from '../middleware/authMiddleware.js';
-import { validatePost, handleValidationErrors } from '../middleware/validationMiddleware.js';
 
 const router = express.Router();
 
@@ -9,8 +9,8 @@ const router = express.Router();
 router.get('/', postController.getAllPosts);
 
 // Rutas protegidas
-router.post('/', authenticate, validatePost.create, handleValidationErrors, postController.createPost);
-router.put('/:id', authenticate, validatePost.update, handleValidationErrors, postController.updatePost);
+router.post('/', authenticate, postController.createPost);
+router.put('/:id', authenticate, postController.updatePost);
 router.delete('/:id', authenticate, postController.deletePost);
 
 export default router;

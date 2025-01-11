@@ -45,7 +45,7 @@ export const authController = {
             const token = jwt.sign(
                 { id: user._id },
                 process.env.JWT_SECRET,
-                { expiresIn: '24h' } // Asegurar que el token expire en 24 horas
+                { expiresIn: '24h' }
             );
 
             res.status(201).json({
@@ -96,7 +96,7 @@ export const authController = {
             const token = jwt.sign(
                 { id: user._id },
                 process.env.JWT_SECRET,
-                { expiresIn: '24h' } // Asegurar que el token expire en 24 horas
+                { expiresIn: '24h' }
             );
 
             res.json({

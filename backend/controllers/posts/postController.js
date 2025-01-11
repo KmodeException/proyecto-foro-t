@@ -14,12 +14,9 @@ export const postController = {
      */
     getAllPosts: async (req, res, next) => {
         try {
-            const { page = 1, limit = 10 } = req.query;
             const posts = await Post.find()
                 .populate('author', 'username email')
-                .sort({ createdAt: -1 })
-                .skip((page - 1) * limit)
-                .limit(parseInt(limit));
+                .sort({ createdAt: -1 });
             res.status(200).json(posts);
         } catch (error) {
             next(error);

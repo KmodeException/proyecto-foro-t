@@ -75,4 +75,9 @@ export const handleValidationErrors = (req, res, next) => {
         });
     }
     next();
-}; 
+};
+
+export const validatePost = (req, res, next) => {
+    // lógica de validación
+    next();
+};

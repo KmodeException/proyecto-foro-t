@@ -93,7 +93,7 @@ body.dark-mode .endpoint {
     border: 1px solid #444;
 }
 .toggle-button {
-    position: absolute;
+    position: fixed; /* Cambiar a fixed para que permanezca visible */
     top: 20px;
     right: 20px;
     padding: 10px;
@@ -109,9 +109,9 @@ body.dark-mode .endpoint {
     color: #ffffff; /* Texto blanco al pasar el mouse */
 }
 .expand-button {
-    position: absolute; /* Cambiar a absolute para que se mueva con el índice */
-    top: 20px; /* Ajustar la posición */
-    right: -40px; /* Ajustar la posición para que esté fuera del índice */
+    position: fixed; /* Cambiar a fixed para que permanezca visible */
+    top: 80px; /* Ajustar la posición para que esté pegado al índice */
+    left: 250px; /* Ajustar la posición para que esté pegado a la barra lateral */
     padding: 10px;
     background: #ffffff; /* Fondo blanco */
     color: #000000; /* Texto negro */

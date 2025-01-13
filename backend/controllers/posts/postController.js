@@ -1,113 +1,120 @@
 import Post from '../../models/Post.js';
 
 /**
- * Controlador para manejar operaciones relacionadas con posts
+ * Controlador para gestionar los posts dentro de los subapartados
  * @module controllers/posts/postController
  */
 export const postController = {
     /**
-     * Obtiene todas las publicaciones
-     * @async
-     * @param {Object} req - Express request object
-     * @param {Object} res - Express response object
-     * @param {Function} next - Express next middleware function
-     */
-    getAllPosts: async (req, res, next) => {
-        try {
-            const posts = await Post.find()
-                .populate('author', 'username email')
-                .sort({ createdAt: -1 });
-            res.status(200).json(posts);
-        } catch (error) {
-            next(error);
-        }
-    },
-
-    /**
-     * Crea una nueva publicación
-     * @async
-     * @param {Object} req - Express request object
-     * @param {Object} req.body - Datos de la publicación
+     * Crear un nuevo post
      */
     createPost: async (req, res, next) => {
         try {
-            const { title, content, tags } = req.body;
-            const newPost = new Post({
+            const { title, content, subSection } = req.body;
+
+            const post = new Post({
                 title,
                 content,
-                author: req.user._id,
-                tags
+                creator: req.user._id,
+                subSection
             });
-            await newPost.save();
-            await newPost.populate('author', 'username email');
-            res.status(201).json(newPost);
+
+            await post.save();
+
+            res.status(201).json({
+                data: post,
+                message: 'Post creado exitosamente'
+            });
         } catch (error) {
             next(error);
         }
     },
 
     /**
-     * Actualiza una publicación existente
-     * @async
-     * @param {Object} req - Express request object
-     * @param {string} req.params.id - ID de la publicación
+     * Obtener todos los posts de un subapartado
+     */
+    getPostsBySubSection: async (req, res, next) => {
+        try {
+            const { subSectionId } = req.params;
+
+            const posts = await Post.find({ subSection: subSectionId })
+                .populate('creator', 'nickname avatar')
+                .sort({ createdAt: -1 });
+
+            res.json({
+                data: posts
+            });
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    /**
+     * Obtener un post por su ID
+     */
+    getPostById: async (req, res, next) => {
+        try {
+            const { postId } = req.params;
+
+            const post = await Post.findById(postId)
+                .populate('creator', 'nickname avatar');
+
+            if (!post) {
+                return res.status(404).json({
+                    error: 'Post no encontrado'
+                });
+            }
+
+            res.json({
+                data: post
+            });
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    /**
+     * Actualizar un post
      */
     updatePost: async (req, res, next) => {
         try {
-            const { title, content, tags } = req.body;
-            const post = await Post.findById(req.params.id);
-            
+            const { postId } = req.params;
+            const { title, content } = req.body;
+
+            const post = await Post.findByIdAndUpdate(postId, { title, content }, { new: true });
+
             if (!post) {
-                return res.status(404).json({ 
-                    error: 'Publicación no encontrada',
-                    details: 'La publicación solicitada no existe'
-                });
-            }
-            
-            if (post.author.toString() !== req.user._id.toString()) {
-                return res.status(403).json({ 
-                    error: 'No autorizado',
-                    details: 'Solo el autor puede modificar esta publicación'
+                return res.status(404).json({
+                    error: 'Post no encontrado'
                 });
             }
 
-            Object.assign(post, { title, content, tags });
-            await post.save();
-            await post.populate('author', 'username email');
-            res.json(post);
+            res.json({
+                data: post,
+                message: 'Post actualizado exitosamente'
+            });
         } catch (error) {
             next(error);
         }
     },
 
     /**
-     * Elimina una publicación
-     * @async
-     * @param {Object} req - Express request object
-     * @param {string} req.params.id - ID de la publicación
+     * Eliminar un post
      */
     deletePost: async (req, res, next) => {
         try {
-            const post = await Post.findById(req.params.id);
-            
+            const { postId } = req.params;
+
+            const post = await Post.findByIdAndDelete(postId);
+
             if (!post) {
-                return res.status(404).json({ 
-                    error: 'Publicación no encontrada',
-                    details: 'La publicación no existe'
-                });
-            }
-            
-            if (post.author.toString() !== req.user._id.toString()) {
-                return res.status(403).json({ 
-                    error: 'No autorizado',
-                    details: 'Solo el autor puede eliminar esta publicación'
+                return res.status(404).json({
+                    error: 'Post no encontrado'
                 });
             }
 
-            await post.deleteOne();
-            res.json({ 
-                message: 'Publicación eliminada exitosamente',
-                postId: req.params.id
+            res.json({
+                message: 'Post eliminado exitosamente'
             });
         } catch (error) {
             next(error);

@@ -1,42 +1,73 @@
 openapi: 3.0.0
 info:
   title: Documentación de la API
-  description: API para gestionar subapartados y posts.
+  description: API para gestionar subapartados, posts y autenticación de usuarios.
   version: 1.0.0
 servers:
   - url: http://localhost:3000/api-docs
 paths:
+  /auth/register:
+    post:
+      summary: Registrar un nuevo usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+                email:
+                  type: string
+      responses:
+        '201':
+          description: Usuario registrado exitosamente
+        '400':
+          description: Solicitud inválida
+
+  /auth/login:
+    post:
+      summary: Iniciar sesión
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Inicio de sesión exitoso
+        '401':
+          description: Credenciales inválidas
+
+  /auth/profile:
+    get:
+      summary: Obtener información del perfil del usuario autenticado
+      security:
+        - bearerAuth: []  # Indica que este endpoint requiere autenticación
+      responses:
+        '200':
+          description: Información del perfil
+        '401':
+          description: No autorizado
+
   /subsections:
     get:
       summary: Obtener todos los subapartados
       responses:
         '200':
           description: Lista de subapartados
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: string
-                        name:
-                          type: string
-                        category:
-                          type: string
-                        description:
-                          type: string
-                  metadata:
-                    type: object
-                    properties:
-                      total:
-                        type: integer
-                      count:
-                        type: integer
+        '404':
+          description: No se encontraron subapartados
+
     post:
       summary: Crear un nuevo subapartado
       requestBody:
@@ -64,24 +95,8 @@ paths:
       responses:
         '201':
           description: Subapartado creado exitosamente
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    type: object
-                    properties:
-                      id:
-                        type: string
-                      name:
-                        type: string
-                      category:
-                        type: string
-                      description:
-                        type: string
-                  message:
-                    type: string
+        '400':
+          description: Solicitud inválida
 
   /posts:
     post:
@@ -102,24 +117,8 @@ paths:
       responses:
         '201':
           description: Post creado exitosamente
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    type: object
-                    properties:
-                      id:
-                        type: string
-                      title:
-                        type: string
-                      content:
-                        type: string
-                      subSection:
-                        type: string
-                  message:
-                    type: string
+        '400':
+          description: Solicitud inválida
 
     get:
       summary: Obtener posts por subapartado
@@ -133,111 +132,5 @@ paths:
       responses:
         '200':
           description: Lista de posts
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: string
-                        title:
-                          type: string
-                        content:
-                          type: string
-                        subSection:
-                          type: string
-
-  /login:
-    post:
-      summary: Iniciar sesión
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                username:
-                  type: string
-                password:
-                  type: string
-      responses:
-        '200':
-          description: Inicio de sesión exitoso
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  token:
-                    type: string
-        '401':
-          description: Credenciales inválidas
-
-  /register:
-    post:
-      summary: Registrar un nuevo usuario
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                username:
-                  type: string
-                password:
-                  type: string
-                email:
-                  type: string
-      responses:
-        '201':
-          description: Usuario registrado exitosamente
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-        '400':
-          description: Solicitud inválida
-
-  /logout:
-    get:
-      summary: Cerrar sesión
-      responses:
-        '200':
-          description: Cierre de sesión exitoso
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-
-  /profile:
-    get:
-      summary: Obtener información del perfil del usuario autenticado
-      security:
-        - bearerAuth: []  # Indica que este endpoint requiere autenticación
-      responses:
-        '200':
-          description: Información del perfil
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  username:
-                    type: string
-                  email:
-                    type: string
-        '401':
-          description: No autorizado
+        '404':
+          description: No se encontraron posts

@@ -1,15 +1,8 @@
 // backend/routes/posts.js
 import express from 'express';
-import { postController } from '../controllers/posts/postController.js';
-import { authenticate } from '../middleware/authMiddleware.js';
-import { validatePost, handleValidationErrors } from '../middleware/validationMiddleware.js';
+import { postsController } from '../controllers/postsController.js';
 
 const router = express.Router();
-
-/**
- * Rutas para gestión de posts
- * @module routes/posts
- */
 
 /**
  * @swagger
@@ -30,10 +23,12 @@ const router = express.Router();
  *               subSection:
  *                 type: string
  *     responses:
- *       201:
+ *       '201':
  *         description: Post creado exitosamente
+ *       '400':
+ *         description: Solicitud inválida
  */
-router.post('/', authenticate, validatePost.create, handleValidationErrors, postController.createPost);
+router.post('/', postsController.create);
 
 /**
  * @swagger
@@ -48,13 +43,11 @@ router.post('/', authenticate, validatePost.create, handleValidationErrors, post
  *         schema:
  *           type: string
  *     responses:
- *       200:
+ *       '200':
  *         description: Lista de posts
+ *       '404':
+ *         description: No se encontraron posts
  */
-router.get('/:subSectionId', postController.getPostsBySubSection);
-
-router.get('/post/:postId', postController.getPostById);
-router.put('/post/:postId', authenticate, validatePost.update, handleValidationErrors, postController.updatePost);
-router.delete('/post/:postId', authenticate, postController.deletePost);
+router.get('/:subSectionId', postsController.getBySubSection);
 
 export default router;

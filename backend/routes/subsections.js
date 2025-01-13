@@ -1,13 +1,7 @@
 import express from 'express';
-import { subSectionController } from '../controllers/subsections/subSectionController.js';
-import { authenticate } from '../middleware/authMiddleware.js';
+import { subsectionsController } from '../controllers/subsectionsController.js';
 
 const router = express.Router();
-
-/**
- * Rutas para gestión de subapartados
- * @module routes/subsections
- */
 
 /**
  * @swagger
@@ -15,11 +9,12 @@ const router = express.Router();
  *   get:
  *     summary: Obtener todos los subapartados
  *     responses:
- *       200:
+ *       '200':
  *         description: Lista de subapartados
+ *       '404':
+ *         description: No se encontraron subapartados
  */
-router.get('/', subSectionController.getAllSubSections);
-router.get('/path/*', subSectionController.getSubSectionByPath);
+router.get('/', subsectionsController.getAll);
 
 /**
  * @swagger
@@ -49,9 +44,11 @@ router.get('/path/*', subSectionController.getSubSectionByPath);
  *                     description:
  *                       type: string
  *     responses:
- *       201:
+ *       '201':
  *         description: Subapartado creado exitosamente
+ *       '400':
+ *         description: Solicitud inválida
  */
-router.post('/', authenticate, subSectionController.createSubSection);
+router.post('/', subsectionsController.create);
 
-export { router as default };
+export default router;

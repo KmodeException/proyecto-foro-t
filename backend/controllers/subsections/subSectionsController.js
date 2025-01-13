@@ -4,11 +4,11 @@ import SubSection from '../../models/SubSection.js';
  * Controlador para gestionar los subapartados del foro
  * @module controllers/subsections/subSectionController
  */
-export const subSectionController = {
+export const subsectionsController = {
     /**
      * Crear nuevo subapartado
      */
-    createSubSection: async (req, res, next) => {
+    create: async (req, res, next) => {
         try {
             const { name, category, description, rules } = req.body;
 
@@ -43,7 +43,7 @@ export const subSectionController = {
     /**
      * Obtener todos los subapartados con filtros
      */
-    getAllSubSections: async (req, res, next) => {
+    getAll: async (req, res, next) => {
         try {
             const { 
                 category,

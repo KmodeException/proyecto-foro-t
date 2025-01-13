@@ -110,7 +110,7 @@ body.dark-mode .endpoint {
 }
 .expand-button {
     position: fixed; /* Cambiar a fixed para que permanezca visible */
-    top: 80px; /* Ajustar la posición para que esté pegado al índice */
+    top: 20px; /* Ajustar la posición para que esté a la misma altura que el botón de modo oscuro */
     left: 250px; /* Ajustar la posición para que esté pegado a la barra lateral */
     padding: 10px;
     background: #ffffff; /* Fondo blanco */

@@ -13,12 +13,18 @@
         <div class="sidebar" id="sidebar">
             <h2>Índice</h2>
             <ul>
-                <li><a href="#subapartados" onclick="showSection('subapartados')">Subapartados</a></li>
-                <li><a href="#crear-subapartado" onclick="showSection('crear-subapartado')">Crear un Subapartado</a></li>
-                <li><a href="#obtener-subapartados" onclick="showSection('obtener-subapartados')">Obtener Todos los Subapartados</a></li>
-                <li><a href="#posts" onclick="showSection('posts')">Posts</a></li>
-                <li><a href="#crear-post" onclick="showSection('crear-post')">Crear un Post</a></li>
-                <li><a href="#obtener-posts" onclick="showSection('obtener-posts')">Obtener Posts por Subapartado</a></li>
+                <li><a href="#subapartados" onclick="showSection('subapartados')">Subapartados</a>
+                    <ul>
+                        <li><a href="#crear-subapartado" onclick="showSection('crear-subapartado')">Crear un Subapartado</a></li>
+                        <li><a href="#obtener-subapartados" onclick="showSection('obtener-subapartados')">Obtener Todos los Subapartados</a></li>
+                    </ul>
+                </li>
+                <li><a href="#posts" onclick="showSection('posts')">Posts</a>
+                    <ul>
+                        <li><a href="#crear-post" onclick="showSection('crear-post')">Crear un Post</a></li>
+                        <li><a href="#obtener-posts" onclick="showSection('obtener-posts')">Obtener Posts por Subapartado</a></li>
+                    </ul>
+                </li>
             </ul>
         </div>
         <button class="expand-button" onclick="toggleSidebar()">☰</button>

@@ -63,6 +63,23 @@ code {
     border: 1px solid #ddd;
     border-radius: 5px;
 }
+.expand-button {
+    position: absolute; /* Cambiar a absolute para que se mueva con la barra lateral */
+    top: 20px; /* Ajustar la posición para que esté siempre visible */
+    left: 10px; /* Ajustar la posición para que esté pegado a la barra lateral */
+    padding: 10px;
+    background: #ffffff; /* Fondo blanco */
+    color: #000000; /* Texto negro */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    z-index: 10; /* Asegurarse de que esté por encima de otros elementos */
+}
+.expand-button:hover {
+    background: #000000; /* Fondo negro al pasar el mouse */
+    color: #ffffff; /* Texto blanco al pasar el mouse */
+}
 /* Estilos para el modo oscuro */
 body.dark-mode {
     background-color: #121212;
@@ -105,23 +122,6 @@ body.dark-mode .endpoint {
     transition: background-color 0.3s, color 0.3s;
 }
 .toggle-button:hover {
-    background: #000000; /* Fondo negro al pasar el mouse */
-    color: #ffffff; /* Texto blanco al pasar el mouse */
-}
-.expand-button {
-    position: fixed; /* Cambiar a fixed para que permanezca visible */
-    top: 20px; /* Ajustar la posición para que esté a la misma altura que el botón de modo oscuro */
-    left: 250px; /* Ajustar la posición para que esté pegado a la barra lateral */
-    padding: 10px;
-    background: #ffffff; /* Fondo blanco */
-    color: #000000; /* Texto negro */
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s, color 0.3s;
-    z-index: 10; /* Asegurarse de que esté por encima de otros elementos */
-}
-.expand-button:hover {
     background: #000000; /* Fondo negro al pasar el mouse */
     color: #ffffff; /* Texto blanco al pasar el mouse */
 }

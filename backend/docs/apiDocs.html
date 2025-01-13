@@ -44,8 +44,8 @@
 }</code></pre>
             <p><strong>Respuesta esperada:</strong></p>
             <pre><code>{
-    "data": { 
-        "id": "12345",
+    "data": {
+        "id": "ID_DEL_SUBAPARTADO",
         "name": "Nombre del Subapartado",
         "category": "recursos",
         "description": "Descripción del subapartado"
@@ -59,14 +59,13 @@
             <p><strong>Descripción:</strong> Este endpoint devuelve una lista de todos los subapartados disponibles en la base de datos.</p>
             <p><strong>Respuesta esperada:</strong></p>
             <pre><code>{
-    "data": [ 
+    "data": [
         {
-            "id": "12345",
+            "id": "ID_DEL_SUBAPARTADO",
             "name": "Nombre del Subapartado",
             "category": "recursos",
             "description": "Descripción del subapartado"
-        },
-        // ... más subapartados
+        }
     ],
     "metadata": {
         "total": 10,
@@ -91,8 +90,8 @@
 }</code></pre>
             <p><strong>Respuesta esperada:</strong></p>
             <pre><code>{
-    "data": { 
-        "id": "67890",
+    "data": {
+        "id": "ID_DEL_POST",
         "title": "Título del Post",
         "content": "Contenido del post",
         "subSection": "ID_DEL_SUBAPARTADO"
@@ -106,14 +105,13 @@
             <p><strong>Descripción:</strong> Este endpoint devuelve todos los posts asociados a un subapartado específico.</p>
             <p><strong>Respuesta esperada:</strong></p>
             <pre><code>{
-    "data": [ 
+    "data": [
         {
-            "id": "67890",
+            "id": "ID_DEL_POST",
             "title": "Título del Post",
             "content": "Contenido del post",
             "subSection": "ID_DEL_SUBAPARTADO"
-        },
-        // ... más posts
+        }
     ]
 }</code></pre>
         </div>

@@ -1,5 +1,5 @@
 import express from 'express';
-import { subsectionsController } from '../controllers/subsectionsController.js';
+import { subsectionsController } from '../controllers/subsections/subsectionsController.js';
 
 const router = express.Router();
 

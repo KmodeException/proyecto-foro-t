@@ -66,7 +66,7 @@ code {
 .expand-button {
     position: absolute; /* Cambiar a absolute para que se mueva con la barra lateral */
     top: 20px; /* Ajustar la posición para que esté siempre visible */
-    left: 10px; /* Ajustar la posición para que esté pegado a la barra lateral */
+    left: 260px; /* Ajustar la posición para que esté pegado a la barra lateral */
     padding: 10px;
     background: #ffffff; /* Fondo blanco */
     color: #000000; /* Texto negro */

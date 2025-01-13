@@ -11,13 +11,13 @@
     <button class="toggle-button" onclick="toggleDarkMode()">🌙</button>
     <div class="sidebar-container">
         <div class="sidebar" id="sidebar">
-            <button class="expand-button" onclick="toggleSidebar()">☰</button>
             <h2>Índice</h2>
             <ul>
                 <li><a href="#subapartados" onclick="showSection('subapartados')">Subapartados</a></li>
                 <li><a href="#posts" onclick="showSection('posts')">Posts</a></li>
             </ul>
         </div>
+        <button class="expand-button" id="expandButton" onclick="toggleSidebar()">☰</button>
     </div>
     <div class="content">
         <h1>Documentación de la API</h1>
@@ -134,12 +134,15 @@
 
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
+            const expandButton = document.getElementById('expandButton');
             if (sidebar.style.display === 'none' || sidebar.style.display === '') {
                 sidebar.style.display = 'block';
                 document.querySelector('.content').style.marginLeft = '270px'; // Ajustar el contenido
+                expandButton.style.left = '260px'; // Mover el botón a la derecha
             } else {
                 sidebar.style.display = 'none';
                 document.querySelector('.content').style.marginLeft = '0'; // Ajustar el contenido
+                expandButton.style.left = '10px'; // Mover el botón a la izquierda
             }
         }
 

@@ -22,6 +22,7 @@
             height: 100%;
             overflow-y: auto;
             transition: background-color 0.3s;
+            display: block; /* Mostrar por defecto */
         }
         .sidebar h2 {
             margin-top: 0;
@@ -41,6 +42,7 @@
             margin-left: 270px; /* Espacio para la barra lateral */
             padding: 20px;
             flex-grow: 1;
+            transition: margin-left 0.3s; /* Transición suave */
         }
         h1, h2, h3 {
             color: #333;
@@ -108,6 +110,21 @@
         .toggle-button:hover {
             background: #0056b3;
         }
+        .expand-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .expand-button:hover {
+            background: #0056b3;
+        }
         /* Estilos responsivos */
         @media (max-width: 600px) {
             body {
@@ -125,7 +142,9 @@
     </style>
 </head>
 <body>
-    <div class="sidebar">
+    <button class="toggle-button" onclick="toggleDarkMode()">🌙</button>
+    <button class="expand-button" onclick="toggleSidebar()">☰</button>
+    <div class="sidebar" id="sidebar">
         <h2>Índice</h2>
         <ul>
             <li><a href="#subapartados" onclick="showSection('subapartados')">Subapartados</a></li>
@@ -135,7 +154,6 @@
             <li><a href="#crear-post" onclick="showSection('crear-post')">Crear un Post</a></li>
             <li><a href="#obtener-posts" onclick="showSection('obtener-posts')">Obtener Posts por Subapartado</a></li>
         </ul>
-        <button class="toggle-button" onclick="toggleDarkMode()">🌙</button>
     </div>
     <div class="content">
         <h1>Documentación de la API</h1>
@@ -220,8 +238,19 @@
             document.getElementById(sectionId).style.display = 'block'; // Mostrar la sección seleccionada
         }
 
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar.style.display === 'none' || sidebar.style.display === '') {
+                sidebar.style.display = 'block';
+                document.querySelector('.content').style.marginLeft = '270px'; // Ajustar el contenido
+            } else {
+                sidebar.style.display = 'none';
+                document.querySelector('.content').style.marginLeft = '0'; // Ajustar el contenido
+            }
+        }
+
         // Mostrar la primera sección por defecto
-        showSection('crear-subapartado');
+        showSection('subapartados');
     </script>
 </body>
 </html> 

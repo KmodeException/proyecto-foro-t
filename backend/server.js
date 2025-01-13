@@ -63,6 +63,11 @@ app.get('/api-docs', (req, res) => {
     res.sendFile(path.join(__dirname, 'docs', 'apiDocs.html'));
 });
 
+// Redirigir la ruta raíz a la documentación
+app.get('/', (req, res) => {
+    res.redirect('/api-docs');
+});
+
 // Manejo de errores global
 app.use((err, req, res, next) => {
     console.error(err.stack);

@@ -7,7 +7,7 @@ servers:
   - url: http://localhost:3000
     description: Servidor de desarrollo
 paths:
-  /auth/register:
+  api/auth/register:
     post:
       summary: Registrar un nuevo usuario
       requestBody:
@@ -29,7 +29,7 @@ paths:
         '400':
           description: Solicitud inválida
 
-  /auth/login:
+  api/auth/login:
     post:
       summary: Iniciar sesión
       requestBody:
@@ -49,7 +49,7 @@ paths:
         '401':
           description: Credenciales inválidas
 
-  /auth/profile:
+  api/auth/profile:
     get:
       summary: Obtener información del perfil del usuario autenticado
       security:

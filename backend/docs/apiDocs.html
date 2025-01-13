@@ -11,6 +11,7 @@
             margin: 0;
             padding: 20px;
             background-color: #f4f4f4;
+            transition: background-color 0.3s, color 0.3s;
         }
         h1, h2, h3 {
             color: #333;
@@ -33,9 +34,32 @@
             border: 1px solid #ddd;
             border-radius: 5px;
         }
+        /* Estilos para el modo oscuro */
+        body.dark-mode {
+            background-color: #333;
+            color: #f4f4f4;
+        }
+        body.dark-mode pre {
+            background: #444;
+            color: #f4f4f4;
+        }
+        body.dark-mode code {
+            background: #555;
+            color: #f4f4f4;
+        }
+        .toggle-button {
+            margin-bottom: 20px;
+            padding: 10px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
+    <button class="toggle-button" onclick="toggleDarkMode()">Toggle Dark Mode</button>
     <h1>Documentación de la API</h1>
 
     <div class="endpoint">
@@ -101,5 +125,11 @@
     "data": [ ... ]
 }</code></pre>
     </div>
+
+    <script>
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+    </script>
 </body>
 </html> 

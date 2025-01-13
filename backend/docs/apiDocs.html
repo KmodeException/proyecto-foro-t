@@ -9,9 +9,26 @@
             font-family: Arial, sans-serif;
             line-height: 1.6;
             margin: 0;
-            padding: 20px;
+            display: flex;
             background-color: #f4f4f4;
             transition: background-color 0.3s, color 0.3s;
+        }
+        .sidebar {
+            width: 250px;
+            background: #fff;
+            padding: 20px;
+            border-right: 1px solid #ddd;
+            position: fixed;
+            height: 100%;
+            overflow-y: auto;
+        }
+        .sidebar h2 {
+            margin-top: 0;
+        }
+        .content {
+            margin-left: 270px; /* Espacio para la barra lateral */
+            padding: 20px;
+            flex-grow: 1;
         }
         h1, h2, h3 {
             color: #333;
@@ -21,7 +38,7 @@
             padding: 10px;
             border-radius: 5px;
             overflow-x: auto;
-            white-space: pre-wrap;
+            white-space: pre-wrap; /* Permitir que el texto se ajuste */
         }
         code {
             background: #f9f9f9;
@@ -63,33 +80,47 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            float: right;
         }
         /* Estilos responsivos */
         @media (max-width: 600px) {
             body {
-                padding: 10px;
+                flex-direction: column;
             }
-            .toggle-button {
+            .sidebar {
                 width: 100%;
-                padding: 15px;
+                position: relative;
+                height: auto;
             }
-            .endpoint {
-                padding: 10px;
+            .content {
+                margin-left: 0;
             }
         }
     </style>
 </head>
 <body>
-    <button class="toggle-button" onclick="toggleDarkMode()">Toggle Dark Mode</button>
-    <h1>Documentación de la API</h1>
+    <div class="sidebar">
+        <h2>Índice</h2>
+        <ul>
+            <li><a href="#subapartados">Subapartados</a></li>
+            <li><a href="#crear-subapartado">Crear un Subapartado</a></li>
+            <li><a href="#obtener-subapartados">Obtener Todos los Subapartados</a></li>
+            <li><a href="#posts">Posts</a></li>
+            <li><a href="#crear-post">Crear un Post</a></li>
+            <li><a href="#obtener-posts">Obtener Posts por Subapartado</a></li>
+        </ul>
+        <button class="toggle-button" onclick="toggleDarkMode()">🌙 / ☀️</button>
+    </div>
+    <div class="content">
+        <h1>Documentación de la API</h1>
 
-    <div class="endpoint">
-        <h2>Subapartados</h2>
-        <h3>Crear un Subapartado</h3>
-        <p><strong>Método:</strong> POST</p>
-        <p><strong>URL:</strong> /api/subsections</p>
-        <p><strong>Headers:</strong> Authorization: Bearer {{token}}</p>
-        <pre><code>{
+        <div class="endpoint" id="subapartados">
+            <h2>Subapartados</h2>
+            <h3 id="crear-subapartado">Crear un Subapartado</h3>
+            <p><strong>Método:</strong> POST</p>
+            <p><strong>URL:</strong> /api/subsections</p>
+            <p><strong>Headers:</strong> Authorization: Bearer {{token}}</p>
+            <pre><code>{
     "name": "Nombre del Subapartado",
     "category": "recursos",
     "description": "Descripción del subapartado",
@@ -100,51 +131,52 @@
         }
     ]
 }</code></pre>
-        <p><strong>Respuesta:</strong></p>
-        <pre><code>{
+            <p><strong>Respuesta:</strong></p>
+            <pre><code>{
     "data": { ... },
     "message": "Subapartado creado exitosamente"
 }</code></pre>
-    </div>
+        </div>
 
-    <div class="endpoint">
-        <h3>Obtener Todos los Subapartados</h3>
-        <p><strong>Método:</strong> GET</p>
-        <p><strong>URL:</strong> /api/subsections</p>
-        <pre><code>{
+        <div class="endpoint" id="obtener-subapartados">
+            <h3>Obtener Todos los Subapartados</h3>
+            <p><strong>Método:</strong> GET</p>
+            <p><strong>URL:</strong> /api/subsections</p>
+            <pre><code>{
     "data": [ ... ],
     "metadata": {
         "total": 10,
         "count": 10
     }
 }</code></pre>
-    </div>
+        </div>
 
-    <div class="endpoint">
-        <h2>Posts</h2>
-        <h3>Crear un Post</h3>
-        <p><strong>Método:</strong> POST</p>
-        <p><strong>URL:</strong> /api/posts</p>
-        <p><strong>Headers:</strong> Authorization: Bearer {{token}}</p>
-        <pre><code>{
+        <div class="endpoint" id="posts">
+            <h2>Posts</h2>
+            <h3 id="crear-post">Crear un Post</h3>
+            <p><strong>Método:</strong> POST</p>
+            <p><strong>URL:</strong> /api/posts</p>
+            <p><strong>Headers:</strong> Authorization: Bearer {{token}}</p>
+            <pre><code>{
     "title": "Título del Post",
     "content": "Contenido del post",
     "subSection": "ID_DEL_SUBAPARTADO"
 }</code></pre>
-        <p><strong>Respuesta:</strong></p>
-        <pre><code>{
+            <p><strong>Respuesta:</strong></p>
+            <pre><code>{
     "data": { ... },
     "message": "Post creado exitosamente"
 }</code></pre>
-    </div>
+        </div>
 
-    <div class="endpoint">
-        <h3>Obtener Posts por Subapartado</h3>
-        <p><strong>Método:</strong> GET</p>
-        <p><strong>URL:</strong> /api/posts/SUBSECTION_ID</p>
-        <pre><code>{
+        <div class="endpoint" id="obtener-posts">
+            <h3>Obtener Posts por Subapartado</h3>
+            <p><strong>Método:</strong> GET</p>
+            <p><strong>URL:</strong> /api/posts/SUBSECTION_ID</p>
+            <pre><code>{
     "data": [ ... ]
 }</code></pre>
+        </div>
     </div>
 
     <script>

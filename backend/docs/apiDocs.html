@@ -12,24 +12,24 @@
     <div class="sidebar-container">
         <div class="sidebar" id="sidebar">
             <h2>Índice</h2>
+            <button class="expand-button" onclick="toggleSidebar()">☰</button>
             <ul>
                 <li><a href="#subapartados" onclick="showSection('subapartados')">Subapartados</a></li>
-                <li><a href="#obtener-subapartados" onclick="showSection('obtener-subapartados')">Obtener Todos los Subapartados</a></li>
                 <li><a href="#posts" onclick="showSection('posts')">Posts</a></li>
-                <li><a href="#obtener-posts" onclick="showSection('obtener-posts')">Obtener Posts por Subapartado</a></li>
             </ul>
         </div>
-        <button class="expand-button" onclick="toggleSidebar()">☰</button>
     </div>
     <div class="content">
         <h1>Documentación de la API</h1>
 
         <div class="endpoint" id="subapartados" style="display: none;">
             <h2>Subapartados</h2>
+            <p>Los subapartados son categorías que permiten organizar el contenido de manera jerárquica. Cada subapartado puede contener reglas y descripciones específicas.</p>
             <h3>Crear un Subapartado</h3>
             <p><strong>Método:</strong> POST</p>
             <p><strong>URL:</strong> /api/subsections</p>
             <p><strong>Headers:</strong> Authorization: Bearer {{token}}</p>
+            <p><strong>Descripción:</strong> Este endpoint permite crear un nuevo subapartado en la base de datos. Se requiere un token de autorización válido.</p>
             <pre><code>{
     "name": "Nombre del Subapartado",
     "category": "recursos",
@@ -46,12 +46,11 @@
     "data": { ... },
     "message": "Subapartado creado exitosamente"
 }</code></pre>
-        </div>
 
-        <div class="endpoint" id="obtener-subapartados" style="display: none;">
             <h3>Obtener Todos los Subapartados</h3>
             <p><strong>Método:</strong> GET</p>
             <p><strong>URL:</strong> /api/subsections</p>
+            <p><strong>Descripción:</strong> Este endpoint devuelve una lista de todos los subapartados disponibles en la base de datos.</p>
             <pre><code>{
     "data": [ ... ],
     "metadata": {
@@ -63,10 +62,12 @@
 
         <div class="endpoint" id="posts" style="display: none;">
             <h2>Posts</h2>
+            <p>Los posts son entradas de contenido que pueden ser asociadas a subapartados. Cada post contiene un título y un contenido específico.</p>
             <h3>Crear un Post</h3>
             <p><strong>Método:</strong> POST</p>
             <p><strong>URL:</strong> /api/posts</p>
             <p><strong>Headers:</strong> Authorization: Bearer {{token}}</p>
+            <p><strong>Descripción:</strong> Este endpoint permite crear un nuevo post asociado a un subapartado específico. Se requiere un token de autorización válido.</p>
             <pre><code>{
     "title": "Título del Post",
     "content": "Contenido del post",
@@ -77,12 +78,11 @@
     "data": { ... },
     "message": "Post creado exitosamente"
 }</code></pre>
-        </div>
 
-        <div class="endpoint" id="obtener-posts" style="display: none;">
             <h3>Obtener Posts por Subapartado</h3>
             <p><strong>Método:</strong> GET</p>
             <p><strong>URL:</strong> /api/posts/SUBSECTION_ID</p>
+            <p><strong>Descripción:</strong> Este endpoint devuelve todos los posts asociados a un subapartado específico.</p>
             <pre><code>{
     "data": [ ... ]
 }</code></pre>

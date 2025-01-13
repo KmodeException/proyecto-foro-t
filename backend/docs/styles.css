@@ -94,30 +94,33 @@ body.dark-mode .endpoint {
     top: 20px;
     right: 20px;
     padding: 10px;
-    background: #007bff;
-    color: white;
+    background: #ffffff; /* Fondo blanco */
+    color: #000000; /* Texto negro */
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, color 0.3s;
 }
 .toggle-button:hover {
-    background: #0056b3;
+    background: #000000; /* Fondo negro al pasar el mouse */
+    color: #ffffff; /* Texto blanco al pasar el mouse */
 }
 .expand-button {
     position: absolute;
     top: 20px;
-    left: 20px;
+    left: 10px;
     padding: 10px;
-    background: #007bff;
-    color: white;
+    background: #ffffff;
+    color: #000000;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, color 0.3s;
+    z-index: 10;
 }
 .expand-button:hover {
-    background: #0056b3;
+    background: #000000;
+    color: #ffffff;
 }
 /* Estilos responsivos */
 @media (max-width: 600px) {

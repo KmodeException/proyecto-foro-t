@@ -4,7 +4,8 @@ info:
   description: API para gestionar subapartados, posts y autenticación de usuarios.
   version: 1.0.0
 servers:
-  - url: http://localhost:3000/api-docs
+  - url: http://localhost:3000
+    description: Servidor de desarrollo
 paths:
   /auth/register:
     post:
@@ -134,3 +135,10 @@ paths:
           description: Lista de posts
         '404':
           description: No se encontraron posts
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

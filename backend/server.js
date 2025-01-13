@@ -27,6 +27,9 @@ app.use(passport.initialize());
 // Conectar a MongoDB
 connectDB();
 
+// Servir archivos estáticos desde la carpeta 'docs'
+app.use(express.static(path.join(__dirname, 'docs')));
+
 // Rutas
 app.use('/api/posts', postRoutes);
 app.use('/api/auth', authRoutes);
@@ -49,7 +52,7 @@ app.use((err, req, res, next) => {
 // Puerto
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-    console.log(`�� Servidor corriendo en puerto ${PORT}`);
+    console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
 
 export default app;

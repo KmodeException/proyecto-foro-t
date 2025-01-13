@@ -3,6 +3,33 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     User:
+ *       type: object
+ *       required:
+ *         - username
+ *         - email
+ *         - password
+ *         - age
+ *       properties:
+ *         username:
+ *           type: string
+ *         email:
+ *           type: string
+ *           format: email
+ *         password:
+ *           type: string
+ *           format: password
+ *         age:
+ *           type: number
+ *         role:
+ *           type: string
+ *           enum: [user, admin]
+ */
+
 const userSchema = new mongoose.Schema({
   username: {
     type: String,

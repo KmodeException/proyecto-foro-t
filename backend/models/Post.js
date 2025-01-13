@@ -1,5 +1,28 @@
-// backend/models/Post.js
 import mongoose from 'mongoose';
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Post:
+ *       type: object
+ *       required:
+ *         - title
+ *         - content
+ *         - creator
+ *         - subSection
+ *       properties:
+ *         title:
+ *           type: string
+ *         content:
+ *           type: string
+ *         creator:
+ *           type: string
+ *           format: uuid
+ *         subSection:
+ *           type: string
+ *           format: uuid
+ */
 
 /**
  * Esquema para los posts dentro de los subapartados

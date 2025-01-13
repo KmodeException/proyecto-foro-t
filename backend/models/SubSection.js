@@ -1,6 +1,32 @@
 import mongoose from 'mongoose';
 
 /**
+ * @swagger
+ * components:
+ *   schemas:
+ *     SubSection:
+ *       type: object
+ *       required:
+ *         - name
+ *         - category
+ *         - creator
+ *         - description
+ *       properties:
+ *         name:
+ *           type: string
+ *         path:
+ *           type: string
+ *         category:
+ *           type: string
+ *           enum: [recursos, tutoriales, comunidad]
+ *         creator:
+ *           type: string
+ *           format: uuid
+ *         description:
+ *           type: string
+ */
+
+/**
  * Esquema para los subapartados del foro
  * Gestiona las secciones creadas por usuarios para recursos y tutoriales
  */
@@ -67,4 +93,4 @@ subSectionSchema.pre('validate', function(next) {
 });
 
 const SubSection = mongoose.model('SubSection', subSectionSchema);
-export default SubSection; 
+export default SubSection;

@@ -1,62 +1,40 @@
 import express from 'express';
 import { subsectionsController } from '../controllers/subsections/subsectionsController.js';
 
-const router = express.Router();
-
 /**
  * @swagger
- * tags:
- *   name: Subsections
- *   description: API de subapartados
- */
-
-/**
- * @swagger
- * /api/subsections:  // Actualizar path
+ * /api/subsections:
+ *   post:
+ *     tags:
+ *       - Subsections
+ *     summary: Crear nuevo subapartado
+ *     responses:
+ *       201:
+ *         description: Subapartado creado exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/SubSection'
+ *       400:
+ *         description: Solicitud inválida
  *   get:
- *     tags: [Subsections]  // Añadir tag
+ *     tags:
+ *       - Subsections
  *     summary: Obtener todos los subapartados
  *     responses:
- *       '200':
+ *       200:
  *         description: Lista de subapartados
- *       '404':
- *         description: No se encontraron subapartados
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/SubSection'
  */
-router.get('/', subsectionsController.getAll);
 
-/**
- * @swagger
- * /subsections:
- *   post:
- *     summary: Crear un nuevo subapartado
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *               category:
- *                 type: string
- *               description:
- *                 type: string
- *               rules:
- *                 type: array
- *                 items:
- *                   type: object
- *                   properties:
- *                     title:
- *                       type: string
- *                     description:
- *                       type: string
- *     responses:
- *       '201':
- *         description: Subapartado creado exitosamente
- *       '400':
- *         description: Solicitud inválida
- */
+const router = express.Router();
+
 router.post('/', subsectionsController.create);
+router.get('/', subsectionsController.getAll);
 
 export default router;

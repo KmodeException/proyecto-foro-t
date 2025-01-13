@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentación de la API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        pre {
+            background: #eee;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        code {
+            background: #f9f9f9;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        .endpoint {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Documentación de la API</h1>
+
+    <div class="endpoint">
+        <h2>Subapartados</h2>
+        <h3>Crear un Subapartado</h3>
+        <p><strong>Método:</strong> POST</p>
+        <p><strong>URL:</strong> /api/subsections</p>
+        <p><strong>Headers:</strong> Authorization: Bearer {{token}}</p>
+        <pre><code>{
+    "name": "Nombre del Subapartado",
+    "category": "recursos",
+    "description": "Descripción del subapartado",
+    "rules": [
+        {
+            "title": "Título de la regla",
+            "description": "Descripción de la regla"
+        }
+    ]
+}</code></pre>
+        <p><strong>Respuesta:</strong></p>
+        <pre><code>{
+    "data": { ... },
+    "message": "Subapartado creado exitosamente"
+}</code></pre>
+    </div>
+
+    <div class="endpoint">
+        <h3>Obtener Todos los Subapartados</h3>
+        <p><strong>Método:</strong> GET</p>
+        <p><strong>URL:</strong> /api/subsections</p>
+        <pre><code>{
+    "data": [ ... ],
+    "metadata": {
+        "total": 10,
+        "count": 10
+    }
+}</code></pre>
+    </div>
+
+    <div class="endpoint">
+        <h2>Posts</h2>
+        <h3>Crear un Post</h3>
+        <p><strong>Método:</strong> POST</p>
+        <p><strong>URL:</strong> /api/posts</p>
+        <p><strong>Headers:</strong> Authorization: Bearer {{token}}</p>
+        <pre><code>{
+    "title": "Título del Post",
+    "content": "Contenido del post",
+    "subSection": "ID_DEL_SUBAPARTADO"
+}</code></pre>
+        <p><strong>Respuesta:</strong></p>
+        <pre><code>{
+    "data": { ... },
+    "message": "Post creado exitosamente"
+}</code></pre>
+    </div>
+
+    <div class="endpoint">
+        <h3>Obtener Posts por Subapartado</h3>
+        <p><strong>Método:</strong> GET</p>
+        <p><strong>URL:</strong> /api/posts/SUBSECTION_ID</p>
+        <pre><code>{
+    "data": [ ... ]
+}</code></pre>
+    </div>
+</body>
+</html> 

@@ -5,6 +5,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import passport from './config/passport.js';
 import connectDB from './config/db.js';
+import path from 'path';
 
 // Rutas
 import postRoutes from './routes/posts.js';
@@ -27,6 +28,11 @@ connectDB();
 app.use('/api/posts', postRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/subsections', subsectionRoutes);
+
+// Ruta para la documentación
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'docs', 'apiDocs.html'));
+});
 
 // Manejo de errores global
 app.use((err, req, res, next) => {

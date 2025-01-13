@@ -7,6 +7,9 @@ body {
     background-color: #f4f4f4;
     transition: background-color 0.3s, color 0.3s;
 }
+.sidebar-container {
+    position: relative; /* Para posicionar el botón de expansión */
+}
 .sidebar {
     width: 250px;
     background: #fff;
@@ -106,9 +109,9 @@ body.dark-mode .endpoint {
     color: #ffffff; /* Texto blanco al pasar el mouse */
 }
 .expand-button {
-    position: fixed; /* Cambiar a fixed para que no tape el contenido */
+    position: absolute; /* Cambiar a absolute para que se mueva con el índice */
     top: 20px; /* Ajustar la posición */
-    left: 10px; /* Ajustar la posición */
+    right: -40px; /* Ajustar la posición para que esté fuera del índice */
     padding: 10px;
     background: #ffffff; /* Fondo blanco */
     color: #000000; /* Texto negro */

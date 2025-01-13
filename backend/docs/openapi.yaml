@@ -4,7 +4,7 @@ info:
   description: API para gestionar subapartados y posts.
   version: 1.0.0
 servers:
-  - url: http://api.tuservidor.com/v1
+  - url: http://localhost:3000/api-docs
 paths:
   /subsections:
     get:
@@ -125,7 +125,7 @@ paths:
       summary: Obtener posts por subapartado
       parameters:
         - in: path
-          name: SUBSECTION_ID
+          name: subSectionId
           required: true
           description: ID del subapartado
           schema:

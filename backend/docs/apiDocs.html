@@ -21,6 +21,7 @@
             padding: 10px;
             border-radius: 5px;
             overflow-x: auto;
+            white-space: pre-wrap;
         }
         code {
             background: #f9f9f9;
@@ -62,6 +63,19 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+        }
+        /* Estilos responsivos */
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .toggle-button {
+                width: 100%;
+                padding: 15px;
+            }
+            .endpoint {
+                padding: 10px;
+            }
         }
     </style>
 </head>

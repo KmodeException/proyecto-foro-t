@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import passport from './config/passport.js';
 import connectDB from './config/db.js';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
 // Rutas
 import postRoutes from './routes/posts.js';
@@ -15,6 +16,8 @@ import subsectionRoutes from './routes/subsections.js';
 // Configuración
 dotenv.config();
 const app = express();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Middleware
 app.use(cors());

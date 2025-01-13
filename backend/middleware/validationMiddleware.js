@@ -40,6 +40,13 @@ export const validatePost = {
 };
 
 /**
+ * Middleware de validación para subapartados
+ */
+export const validateSubSection = {
+    // ... validaciones ...
+};
+
+/**
  * Middleware para manejar errores de validación
  */
 export const handleValidationErrors = (req, res, next) => {

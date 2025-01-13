@@ -1,7 +1,7 @@
 // backend/middleware/auth.js
 import jwt from 'jsonwebtoken';
 
-export const auth = async (req, res, next) => {
+export const authenticate = async (req, res, next) => {
     try {
         const token = req.header('Authorization')?.replace('Bearer ', '');
         if (!token) {

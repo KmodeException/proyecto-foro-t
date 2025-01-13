@@ -9,6 +9,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import swaggerJsDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
+import commentRoutes from './routes/comments.js';
 
 // Rutas
 import postRoutes from './routes/posts.js';
@@ -47,7 +48,26 @@ const swaggerOptions = {
   apis: ['./routes/*.js'], // Ruta a tus archivos de rutas
 };
 
-const swaggerDocs = swaggerJsDoc(swaggerOptions);
+const swaggerDocs = {
+  ...swaggerOptions,
+  paths: {
+    ...swaggerOptions.paths,
+    '/api/comments': {
+      post: {
+        tags: ['Comments'],
+        summary: 'Crear nuevo comentario',
+        security: [{ bearerAuth: [] }]
+      }
+    },
+    '/api/comments/post/{postId}': {
+      get: {
+        tags: ['Comments'],
+        summary: 'Obtener comentarios por post'
+      }
+    }
+  }
+};
+
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // Servir archivos estáticos desde la carpeta 'docs'
@@ -57,6 +77,7 @@ app.use(express.static(path.join(__dirname, 'docs')));
 app.use('/api/posts', postRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/subsections', subsectionRoutes);
+app.use('/api/comments', commentRoutes);
 
 // Ruta para la documentación
 app.get('/api-docs', (req, res) => {

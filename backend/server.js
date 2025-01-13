@@ -7,6 +7,8 @@ import passport from './config/passport.js';
 import connectDB from './config/db.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import swaggerJsDoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
 
 // Rutas
 import postRoutes from './routes/posts.js';
@@ -27,6 +29,27 @@ app.use(passport.initialize());
 // Conectar a MongoDB
 connectDB();
 
+// Swagger definition
+const swaggerOptions = {
+  swaggerDefinition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Documentación de la API',
+      version: '1.0.0',
+      description: 'API para gestionar subapartados y posts.',
+    },
+    servers: [
+      {
+        url: 'http://localhost:3000/api-docs',
+      },
+    ],
+  },
+  apis: ['./routes/*.js'], // Ruta a tus archivos de rutas
+};
+
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
 // Servir archivos estáticos desde la carpeta 'docs'
 app.use(express.static(path.join(__dirname, 'docs')));
 
@@ -36,7 +59,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/subsections', subsectionRoutes);
 
 // Ruta para la documentación
-app.get('/', (req, res) => {
+app.get('/api-docs', (req, res) => {
     res.sendFile(path.join(__dirname, 'docs', 'apiDocs.html'));
 });
 

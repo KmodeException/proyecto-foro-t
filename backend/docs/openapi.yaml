@@ -1,0 +1,153 @@
+openapi: 3.0.0
+info:
+  title: Documentación de la API
+  description: API para gestionar subapartados y posts.
+  version: 1.0.0
+servers:
+  - url: http://api.tuservidor.com/v1
+paths:
+  /subsections:
+    get:
+      summary: Obtener todos los subapartados
+      responses:
+        '200':
+          description: Lista de subapartados
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        name:
+                          type: string
+                        category:
+                          type: string
+                        description:
+                          type: string
+                  metadata:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                      count:
+                        type: integer
+    post:
+      summary: Crear un nuevo subapartado
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                category:
+                  type: string
+                description:
+                  type: string
+                rules:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      title:
+                        type: string
+                      description:
+                        type: string
+      responses:
+        '201':
+          description: Subapartado creado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      name:
+                        type: string
+                      category:
+                        type: string
+                      description:
+                        type: string
+                  message:
+                    type: string
+
+  /posts:
+    post:
+      summary: Crear un nuevo post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                content:
+                  type: string
+                subSection:
+                  type: string
+      responses:
+        '201':
+          description: Post creado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      title:
+                        type: string
+                      content:
+                        type: string
+                      subSection:
+                        type: string
+                  message:
+                    type: string
+
+    get:
+      summary: Obtener posts por subapartado
+      parameters:
+        - in: path
+          name: SUBSECTION_ID
+          required: true
+          description: ID del subapartado
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista de posts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        title:
+                          type: string
+                        content:
+                          type: string
+                        subSection:
+                          type: string

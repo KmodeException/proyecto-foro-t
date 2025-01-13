@@ -14,10 +14,8 @@
             <h2>Índice</h2>
             <ul>
                 <li><a href="#subapartados" onclick="showSection('subapartados')">Subapartados</a></li>
-                <li><a href="#crear-subapartado" onclick="showSection('crear-subapartado')">Crear un Subapartado</a></li>
                 <li><a href="#obtener-subapartados" onclick="showSection('obtener-subapartados')">Obtener Todos los Subapartados</a></li>
                 <li><a href="#posts" onclick="showSection('posts')">Posts</a></li>
-                <li><a href="#crear-post" onclick="showSection('crear-post')">Crear un Post</a></li>
                 <li><a href="#obtener-posts" onclick="showSection('obtener-posts')">Obtener Posts por Subapartado</a></li>
             </ul>
         </div>
@@ -28,7 +26,7 @@
 
         <div class="endpoint" id="subapartados" style="display: none;">
             <h2>Subapartados</h2>
-            <h3 id="crear-subapartado">Crear un Subapartado</h3>
+            <h3>Crear un Subapartado</h3>
             <p><strong>Método:</strong> POST</p>
             <p><strong>URL:</strong> /api/subsections</p>
             <p><strong>Headers:</strong> Authorization: Bearer {{token}}</p>
@@ -65,7 +63,7 @@
 
         <div class="endpoint" id="posts" style="display: none;">
             <h2>Posts</h2>
-            <h3 id="crear-post">Crear un Post</h3>
+            <h3>Crear un Post</h3>
             <p><strong>Método:</strong> POST</p>
             <p><strong>URL:</strong> /api/posts</p>
             <p><strong>Headers:</strong> Authorization: Bearer {{token}}</p>

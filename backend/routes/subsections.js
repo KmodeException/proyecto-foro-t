@@ -5,8 +5,16 @@ const router = express.Router();
 
 /**
  * @swagger
- * /subsections:
+ * tags:
+ *   name: Subsections
+ *   description: API de subapartados
+ */
+
+/**
+ * @swagger
+ * /api/subsections:  // Actualizar path
  *   get:
+ *     tags: [Subsections]  // Añadir tag
  *     summary: Obtener todos los subapartados
  *     responses:
  *       '200':

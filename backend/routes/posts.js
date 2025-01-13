@@ -6,8 +6,16 @@ const router = express.Router();
 
 /**
  * @swagger
- * /posts:
+ * tags:
+ *   name: Posts
+ *   description: API de posts
+ */
+
+/**
+ * @swagger
+ * /api/posts:
  *   post:
+ *     tags: [Posts]
  *     summary: Crear un nuevo post
  *     requestBody:
  *       required: true

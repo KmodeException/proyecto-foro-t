@@ -6,34 +6,34 @@ const router = express.Router();
 
 /**
  * @swagger
- * /auth/register:
+ * tags:
+ *   name: Auth
+ *   description: API de autenticación y autorización
+ */
+
+/**
+ * @swagger
+ * /api/auth/register:
  *   post:
- *     summary: Registrar un nuevo usuario
+ *     tags: [Auth]
+ *     summary: Registrar nuevo usuario
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               username:
- *                 type: string
- *               password:
- *                 type: string
- *               email:
- *                 type: string
+ *             $ref: '#/components/schemas/User'
  *     responses:
- *       '201':
+ *       201:
  *         description: Usuario registrado exitosamente
- *       '400':
- *         description: Solicitud inválida
  */
 router.post('/register', authController.register);
 
 /**
  * @swagger
- * /auth/login:
+ * /api/auth/login:
  *   post:
+ *     tags: [Auth]
  *     summary: Iniciar sesión
  *     requestBody:
  *       required: true
@@ -42,15 +42,20 @@ router.post('/register', authController.register);
  *           schema:
  *             type: object
  *             properties:
- *               username:
+ *               email:
  *                 type: string
  *               password:
  *                 type: string
  *     responses:
- *       '200':
- *         description: Inicio de sesión exitoso
- *       '401':
- *         description: Credenciales inválidas
+ *       200:
+ *         description: Login exitoso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
  */
 router.post('/login', authController.login);
 

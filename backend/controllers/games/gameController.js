@@ -1,5 +1,17 @@
 import Game from '../../models/Game.js';
 
+/**
+ * @swagger
+ * /api/games:
+ *   post:
+ *     description: Crear nuevo juego
+ *     parameters:
+ *       - name: title
+ *         description: Título del juego
+ *       - name: platform
+ *         description: Plataformas disponibles
+ */
+
 export const gameController = {
     // Crear nuevo juego
     create: async (req, res) => {

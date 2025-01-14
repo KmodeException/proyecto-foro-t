@@ -1,5 +1,5 @@
 import express from 'express';
-import { gameController } from '../controllers/games/gameController.js';
+import { gameController } from '../controllers/game/gameController.js';
 import { authMiddleware } from '../middleware/authMiddleware.js';
 import { roleCheck } from '../middleware/roleCheck.js';
 

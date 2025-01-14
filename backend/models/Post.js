@@ -22,6 +22,10 @@ import mongoose from 'mongoose';
  *         subSection:
  *           type: string
  *           format: uuid
+ * /api/posts:
+ *   post:
+ *     security:
+ *       - bearerAuth: []
  */
 
 /**

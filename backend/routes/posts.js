@@ -1,6 +1,6 @@
-// backend/routes/posts.js
 import express from 'express';
 import { postsController } from '../controllers/posts/postsController.js';
+import { authenticate } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
@@ -16,7 +16,9 @@ const router = express.Router();
  * /api/posts:
  *   post:
  *     tags: [Posts]
- *     summary: Crear un nuevo post
+ *     summary: Crear nuevo post
+ *     security:
+ *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -28,34 +30,36 @@ const router = express.Router();
  *                 type: string
  *               content:
  *                 type: string
- *               subSection:
+ *               subsectionId:
  *                 type: string
  *     responses:
- *       '201':
+ *       201:
  *         description: Post creado exitosamente
- *       '400':
- *         description: Solicitud inválida
  */
-router.post('/', postsController.create);
+router.post('/', authenticate, postsController.create);
 
 /**
  * @swagger
- * /posts/{subSectionId}:
+ * /api/posts/subsection/{subSectionId}:
  *   get:
- *     summary: Obtener posts por subapartado
+ *     tags: [Posts]
+ *     summary: Obtener posts por subsección
  *     parameters:
  *       - in: path
  *         name: subSectionId
  *         required: true
- *         description: ID del subapartado
  *         schema:
  *           type: string
  *     responses:
- *       '200':
+ *       200:
  *         description: Lista de posts
- *       '404':
- *         description: No se encontraron posts
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Post'
  */
-router.get('/:subSectionId', postsController.getBySubSection);
+router.get('/subsection/:subSectionId', postsController.getBySubSection);
 
 export default router;

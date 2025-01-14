@@ -1,35 +1,29 @@
 openapi: 3.0.0
 info:
-  title: Documentación de la API
-  description: API para gestionar subapartados, posts y autenticación de usuarios.
+  title: Foro-T API
   version: 1.0.0
+  description: API para foro de traducción de videojuegos
+
 servers:
-  - url: http://localhost:3000
+  - url: http://localhost:5000/api
     description: Servidor de desarrollo
+
 paths:
-  api/auth/register:
+  /auth/register:
     post:
-      summary: Registrar un nuevo usuario
+      tags: [Auth]
+      summary: Registrar nuevo usuario
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                username:
-                  type: string
-                password:
-                  type: string
-                email:
-                  type: string
+              $ref: '#/components/schemas/User'
       responses:
-        '201':
+        201:
           description: Usuario registrado exitosamente
-        '400':
-          description: Solicitud inválida
 
-  api/auth/login:
+  /auth/login:
     post:
       summary: Iniciar sesión
       requestBody:
@@ -49,7 +43,7 @@ paths:
         '401':
           description: Credenciales inválidas
 
-  api/auth/profile:
+  /auth/profile:
     get:
       summary: Obtener información del perfil del usuario autenticado
       security:
@@ -122,19 +116,17 @@ paths:
           description: Solicitud inválida
 
     get:
-      summary: Obtener posts por subapartado
-      parameters:
-        - in: path
-          name: subSectionId
-          required: true
-          description: ID del subapartado
-          schema:
-            type: string
+      tags: [Posts]
+      summary: Obtener todos los posts
       responses:
-        '200':
+        200:
           description: Lista de posts
-        '404':
-          description: No se encontraron posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
 
   /auth/check-role:
     get:
@@ -225,9 +217,19 @@ paths:
                   type: number
 
 components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
   schemas:
     User:
       type: object
+      required:
+        - username
+        - email
+        - password
       properties:
         _id:
           type: string
@@ -279,6 +281,8 @@ components:
           enum: [pending, in_progress, completed]
         translationProgress:
           type: number
+          minimum: 0
+          maximum: 100
         translationLead:
           $ref: '#/components/schemas/User'
         translators:
@@ -292,12 +296,55 @@ components:
                 type: string
                 format: date-time
 
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-    BearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
+    Post:
+      type: object
+      required:
+        - title
+        - content
+        - author
+      properties:
+        _id:
+          type: string
+        title:
+          type: string
+        content:
+          type: string
+        author:
+          $ref: '#/components/schemas/User'
+        subsection:
+          $ref: '#/components/schemas/SubSection'
+        createdAt:
+          type: string
+          format: date-time
+
+    Comment:
+      type: object
+      required:
+        - content
+        - author
+        - post
+      properties:
+        _id:
+          type: string
+        content:
+          type: string
+        author:
+          $ref: '#/components/schemas/User'
+        post:
+          $ref: '#/components/schemas/Post'
+        createdAt:
+          type: string
+          format: date-time
+
+    SubSection:
+      type: object
+      required:
+        - name
+        - description
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string

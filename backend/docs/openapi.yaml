@@ -156,6 +156,74 @@ paths:
                   translatorProfile:
                     $ref: '#/components/schemas/User/properties/translatorProfile'
 
+  /games:
+    get:
+      tags:
+        - Games
+      summary: Obtener lista de juegos
+      responses:
+        200:
+          description: Lista de juegos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Game'
+    
+    post:
+      tags:
+        - Games
+      summary: Crear nuevo juego
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                platform:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        201:
+          description: Juego creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Game'
+
+  /games/{id}/status:
+    patch:
+      tags:
+        - Games
+      summary: Actualizar estado de traducción
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [pending, in_progress, completed]
+                translationProgress:
+                  type: number
+
 components:
   schemas:
     User:
@@ -190,6 +258,39 @@ components:
               type: number
             translationsCount:
               type: number
+
+    Game:
+      type: object
+      required:
+        - title
+        - platform
+      properties:
+        _id:
+          type: string
+        title:
+          type: string
+        platform:
+          type: array
+          items:
+            type: string
+            enum: [PC, PS4, PS5, Xbox One, Xbox Series, Switch, Mobile]
+        status:
+          type: string
+          enum: [pending, in_progress, completed]
+        translationProgress:
+          type: number
+        translationLead:
+          $ref: '#/components/schemas/User'
+        translators:
+          type: array
+          items:
+            type: object
+            properties:
+              user:
+                $ref: '#/components/schemas/User'
+              assignedDate:
+                type: string
+                format: date-time
 
   securitySchemes:
     bearerAuth:

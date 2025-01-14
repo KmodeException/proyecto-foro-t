@@ -22,7 +22,14 @@ const router = express.Router();
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/User'
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
  *     responses:
  *       201:
  *         description: Usuario registrado exitosamente
@@ -61,16 +68,19 @@ router.post('/login', authController.login);
 
 /**
  * @swagger
- * /auth/profile:
+ * /api/auth/profile:
  *   get:
- *     summary: Obtener información del perfil del usuario autenticado
+ *     tags: [Auth]
+ *     summary: Obtener perfil de usuario
  *     security:
- *       - bearerAuth: []  # Indica que este endpoint requiere autenticación
+ *       - BearerAuth: []
  *     responses:
- *       '200':
- *         description: Información del perfil
- *       '401':
- *         description: No autorizado
+ *       200:
+ *         description: Perfil de usuario
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
  */
 router.get('/profile', authenticate, authController.getProfile);
 

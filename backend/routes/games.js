@@ -29,8 +29,37 @@ const router = express.Router();
  *           type: number
  */
 
-// Rutas públicas
+/**
+ * @swagger
+ * /api/games:
+ *   get:
+ *     tags: [Games]
+ *     summary: Obtener todos los juegos
+ *     responses:
+ *       200:
+ *         description: Lista de juegos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Game'
+ */
 router.get('/', gameController.getAll);
+
+/**
+ * @swagger
+ * /api/games/{id}:
+ *   get:
+ *     tags: [Games]
+ *     summary: Obtener juego por ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ */
 router.get('/:id', gameController.getById);
 
 // Rutas protegidas

@@ -3,6 +3,16 @@ import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 
 /**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     BearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ */
+
+/**
  * Middleware de autenticación unificado
  * Verifica el token JWT y añade el usuario a la request
  */

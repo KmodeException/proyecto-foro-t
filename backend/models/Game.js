@@ -2,6 +2,9 @@ import mongoose from 'mongoose';
 
 /**
  * @swagger
+ * tags:
+ *   name: Games
+ *   description: API para gestión de juegos y traducciones
  * components:
  *   schemas:
  *     Game:

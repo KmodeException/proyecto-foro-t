@@ -136,9 +136,67 @@ paths:
         '404':
           description: No se encontraron posts
 
+  /auth/check-role:
+    get:
+      tags:
+        - Authentication
+      summary: Verificar rol de usuario
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Rol verificado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  role:
+                    type: string
+                  translatorProfile:
+                    $ref: '#/components/schemas/User/properties/translatorProfile'
+
 components:
+  schemas:
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+          enum: [user, translator, moderator, admin]
+        translatorProfile:
+          type: object
+          properties:
+            level:
+              type: number
+            projects:
+              type: array
+              items:
+                type: string
+            reputation:
+              type: number
+        stats:
+          type: object
+          properties:
+            postsCount:
+              type: number
+            commentsCount:
+              type: number
+            translationsCount:
+              type: number
+
   securitySchemes:
     bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    BearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT

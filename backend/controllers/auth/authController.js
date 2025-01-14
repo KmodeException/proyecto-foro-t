@@ -2,12 +2,23 @@ import User from '../../models/User.js';
 import jwt from 'jsonwebtoken';
 
 /**
+ * @swagger
+ * tags:
+ *   name: Auth
+ *   description: API de autenticación
+ */
+
+/**
  * Controlador para manejar la autenticación de usuarios
  * @module controllers/auth/authController
  */
 export const authController = {
     /**
-     * Registra un nuevo usuario
+     * @swagger
+     * /api/auth/register:
+     *   post:
+     *     summary: Registrar nuevo usuario
+     *     tags: [Auth]
      * @async
      * @param {Object} req.body - Datos del usuario
      * @param {string} req.body.username - Nombre de usuario
@@ -21,7 +32,11 @@ export const authController = {
     },
 
     /**
-     * Inicia sesión de usuario
+     * @swagger
+     * /api/auth/login:
+     *   post:
+     *     summary: Iniciar sesión
+     *     tags: [Auth]
      * @async
      * @param {Object} req.body - Credenciales
      * @param {string} req.body.email - Email del usuario
@@ -33,7 +48,13 @@ export const authController = {
     },
 
     /**
-     * Obtiene el perfil del usuario actual
+     * @swagger
+     * /api/auth/profile:
+     *   get:
+     *     summary: Obtener perfil de usuario
+     *     tags: [Auth]
+     *     security:
+     *       - bearerAuth: []
      * @async
      * @param {Object} req.user - Usuario autenticado
      */

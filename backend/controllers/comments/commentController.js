@@ -2,22 +2,9 @@ import Comment from '../../models/Comment.js';
 import User from '../../models/User.js';
 import jwt from 'jsonwebtoken';
 
-/**
- * @swagger
- * tags:
- *   name: Comments
- *   description: API de gestión de comentarios
- */
+
 export const commentController = {
-    /**
-     * @swagger
-     * /api/comments:
-     *   post:
-     *     summary: Crear un nuevo comentario
-     *     tags: [Comments]
-     *     security:
-     *       - bearerAuth: []
-     */
+    
     create: async (req, res) => {
         try {
             const { content, postId } = req.body;
@@ -34,12 +21,7 @@ export const commentController = {
         }
     },
 
-    /**
-     * @swagger
-     * /api/comments/post/{postId}:
-     *   get:
-     *     summary: Obtener comentarios de un post
-     */
+    
     getByPost: async (req, res) => {
         try {
             const { postId } = req.params;

@@ -1,6 +1,6 @@
 import express from 'express';
 import { commentController } from '../controllers/comments/commentController.js';
-import { authenticate } from '../middleware/auth.js';
+import { authenticate } from '../middleware/authMiddleware.js';
 
 /**
  * @swagger
@@ -14,26 +14,49 @@ const router = express.Router();
  * @swagger
  * /api/comments:
  *   post:
- *     summary: Crear nuevo comentario
  *     tags: [Comments]
+ *     summary: Crear nuevo comentario
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               content:
+ *                 type: string
+ *               postId:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Comentario creado exitosamente
  */
 router.post('/', authenticate, commentController.create);
 
 /**
  * @swagger
- * /api/comments/post/{postId}:
+ * /api/comments/{postId}:
  *   get:
- *     summary: Obtener comentarios por post
  *     tags: [Comments]
+ *     summary: Obtener comentarios por post
  *     parameters:
  *       - in: path
  *         name: postId
  *         required: true
  *         schema:
  *           type: string
+ *     responses:
+ *       200:
+ *         description: Lista de comentarios
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Comment'
  */
-router.get('/post/:postId', commentController.getByPost);
+router.get('/:postId', commentController.getByPost);
 
 export default router;

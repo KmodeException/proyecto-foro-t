@@ -27,7 +27,16 @@ import bcrypt from 'bcrypt';
  *           type: number
  *         role:
  *           type: string
- *           enum: [user, admin]
+ *           enum: [user, translator, moderator, admin]
+ *         translatorProfile:
+ *           type: object
+ *           properties:
+ *             level:
+ *               type: number
+ *             projects:
+ *               type: array
+ *             reputation:
+ *               type: number
  */
 
 const userSchema = new mongoose.Schema({
@@ -54,9 +63,17 @@ const userSchema = new mongoose.Schema({
   },
   role: { 
     type: String,
-    enum: ['user', 'admin'],
+    enum: ['user', 'translator', 'moderator', 'admin'],
     default: 'user',
   },
+  translatorProfile: {
+    level: { type: Number, default: 1 },
+    projects: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Game'
+    }],
+    reputation: { type: Number, default: 0 }
+  }
 }, { timestamps: true });
 
 // Encrypt the password before saving

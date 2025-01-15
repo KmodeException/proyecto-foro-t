@@ -216,6 +216,26 @@ paths:
                 translationProgress:
                   type: number
 
+  /api/posts/subsection/{subSectionId}:
+    get:
+      tags: [Posts]
+      summary: Obtener posts por subsección
+      parameters:
+        - in: path
+          name: subSectionId
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Lista de posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
+
 components:
   securitySchemes:
     BearerAuth:
@@ -316,6 +336,16 @@ components:
         createdAt:
           type: string
           format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        votes:
+          type: object
+          properties:
+            upvotes:
+              type: number
+            downvotes:
+              type: number
 
     Comment:
       type: object

@@ -18,7 +18,16 @@ const forumPostSchema = new mongoose.Schema({
         ref: 'Thread'
     },
     votes: {
-        up: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-        down: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
+        up: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        }],
+        down: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        }]
     }
 }, { timestamps: true });
+
+const ForumPost = mongoose.model('ForumPost', forumPostSchema);
+export default ForumPost;

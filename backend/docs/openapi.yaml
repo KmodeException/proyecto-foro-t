@@ -382,6 +382,44 @@ paths:
                 items:
                   $ref: '#/components/schemas/ForumComment'
 
+  /api/forum/comments/{id}/vote:
+    post:
+      tags:
+        - Forum
+      summary: Votar un comentario
+      description: Permite votar positiva o negativamente un comentario
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID del comentario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                type:
+                  type: string
+                  enum: [up, down]
+                  description: Tipo de voto
+      responses:
+        200:
+          description: Voto registrado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForumComment'
+        403:
+          description: Karma insuficiente para votar
+        404:
+          description: Comentario no encontrado
+
 components:
   securitySchemes:
     BearerAuth:

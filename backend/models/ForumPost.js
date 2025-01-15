@@ -7,11 +7,38 @@
  *       required:
  *         - title
  *         - content
+ *         - author
+ *         - thread
  *       properties:
  *         title:
  *           type: string
+ *           description: Título del post
  *         content:
  *           type: string
+ *           description: Contenido del post
+ *         author:
+ *           $ref: '#/components/schemas/User'
+ *           description: Usuario que creó el post
+ *         thread:
+ *           $ref: '#/components/schemas/Thread'
+ *           description: Hilo al que pertenece el post
+ *         votes:
+ *           type: object
+ *           properties:
+ *             up:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/User'
+ *             down:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/User'
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
  */
 import mongoose from 'mongoose';
 

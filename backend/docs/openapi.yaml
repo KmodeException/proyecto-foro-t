@@ -420,6 +420,27 @@ paths:
         404:
           description: Comentario no encontrado
 
+  /api/forum/users/{userId}/karma:
+    get:
+      tags:
+        - Forum
+      summary: Obtener estado de karma del usuario
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Estado de karma
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KarmaResponse'
+        404:
+          description: Usuario no encontrado
+
 components:
   securitySchemes:
     BearerAuth:
@@ -581,3 +602,22 @@ components:
           enum: [official, community]
         creator:
           $ref: '#/components/schemas/User'
+
+    KarmaResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        currentKarma:
+          type: number
+        level:
+          type: string
+        restrictions:
+          type: object
+          properties:
+            canCreateThreads:
+              type: boolean
+            canComment:
+              type: boolean
+            readOnly:
+              type: boolean

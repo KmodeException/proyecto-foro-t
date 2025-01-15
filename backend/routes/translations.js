@@ -62,4 +62,8 @@ router.patch('/:id/review',
  */
 router.get('/game/:gameId', translationController.getByGame);
 
+router.get('/:id', translationController.getById);
+router.patch('/:id/approve', authenticate, translationController.approveTranslation);
+router.patch('/:id/reject', authenticate, translationController.rejectTranslation);
+
 export default router;

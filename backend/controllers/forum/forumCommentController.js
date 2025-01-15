@@ -1,11 +1,11 @@
 import ForumComment from '../../models/ForumComment.js';
 import { ReputationService } from '../../modules/reputation/reputation.service.js';
+import { REPUTATION_ACTIONS } from '../../modules/reputation/reputation.constants.js';
 
 export const forumCommentController = {
     create: async (req, res) => {
         try {
             const { content, postId, parentCommentId } = req.body;
-            
             const comment = new ForumComment({
                 content,
                 post: postId,
@@ -14,8 +14,7 @@ export const forumCommentController = {
             });
 
             await comment.save();
-            await comment.populate('author', 'username');
-            
+            await comment.populate('author', 'username reputation level');
             res.status(201).json(comment);
         } catch (error) {
             res.status(500).json({ message: error.message });
@@ -56,8 +55,16 @@ export const forumCommentController = {
                 { $addToSet: { [voteField]: req.user._id } }
             );
 
+            await ReputationService.updateReputation(
+                comment.author,
+                type === 'up' ? 
+                    REPUTATION_ACTIONS.COMMUNITY.COMMENT_UPVOTE : 
+                    REPUTATION_ACTIONS.COMMUNITY.COMMENT_DOWNVOTE,
+                comment._id
+            );
+
             const updatedComment = await ForumComment.findById(comment._id)
-                .populate('author', 'username');
+                .populate('author', 'username reputation level');
             
             res.json(updatedComment);
         } catch (error) {

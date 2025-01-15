@@ -1,3 +1,28 @@
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     ReputationUpdate:
+ *       type: object
+ *       properties:
+ *         points:
+ *           type: number
+ *         type:
+ *           type: string
+ *           enum: [translation, community, moderation]
+ *         reason:
+ *           type: string
+ *     ReputationHistory:
+ *       type: object
+ *       properties:
+ *         history:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/ReputationUpdate'
+ *         currentKarma:
+ *           type: number
+ */
+
 import User from '../../models/User.js';
 import { REPUTATION_ACTIONS, REPUTATION_LEVELS } from './reputation.constants.js';
 

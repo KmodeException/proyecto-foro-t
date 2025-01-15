@@ -1,6 +1,7 @@
 import express from 'express';
 import { authController } from '../controllers/auth/authController.js';
 import { authenticate } from '../middleware/authMiddleware.js';
+import { authValidators } from '../validators/auth.validators.js';
 
 const router = express.Router();
 
@@ -34,7 +35,7 @@ const router = express.Router();
  *       201:
  *         description: Usuario registrado exitosamente
  */
-router.post('/register', authController.register);
+router.post('/register', authValidators.register, authController.register);
 
 /**
  * @swagger
@@ -64,7 +65,7 @@ router.post('/register', authController.register);
  *                 token:
  *                   type: string
  */
-router.post('/login', authController.login);
+router.post('/login', authValidators.login, authController.login);
 
 /**
  * @swagger

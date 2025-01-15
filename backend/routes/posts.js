@@ -1,6 +1,7 @@
 import express from 'express';
 import { postsController } from '../controllers/posts/postsController.js';
 import { authenticate } from '../middleware/authMiddleware.js';
+import { postValidators } from '../validators/posts.validators.js';
 
 const router = express.Router();
 
@@ -36,7 +37,11 @@ const router = express.Router();
  *       201:
  *         description: Post creado exitosamente
  */
-router.post('/', authenticate, postsController.create);
+router.post('/', 
+    authenticate, 
+    postValidators.create, 
+    postsController.create
+);
 
 /**
  * @swagger

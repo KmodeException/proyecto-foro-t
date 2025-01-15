@@ -2,6 +2,60 @@ import ForumPost from '../../models/ForumPost.js';
 import { ReputationService } from '../../modules/reputation/reputation.service.js';
 import { REPUTATION_ACTIONS } from '../../modules/reputation/reputation.constants.js';
 
+/**
+ * @swagger
+ * /api/forum/posts:
+ *   post:
+ *     tags: [Forum]
+ *     summary: Crear nuevo post
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/ForumPost'
+ *     responses:
+ *       201:
+ *         description: Post creado exitosamente
+ *       403:
+ *         description: Karma insuficiente
+ * 
+ *   get:
+ *     tags: [Forum]
+ *     summary: Obtener posts por hilo
+ *     parameters:
+ *       - in: query
+ *         name: threadId
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Lista de posts
+ * 
+ * /api/forum/posts/{id}/vote:
+ *   post:
+ *     tags: [Forum]
+ *     summary: Votar en un post
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               type:
+ *                 type: string
+ *                 enum: [up, down]
+ */
+
 export const forumPostController = {
     create: async (req, res) => {
         try {

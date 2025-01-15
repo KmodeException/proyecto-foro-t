@@ -1,3 +1,18 @@
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     ForumPost:
+ *       type: object
+ *       required:
+ *         - title
+ *         - content
+ *       properties:
+ *         title:
+ *           type: string
+ *         content:
+ *           type: string
+ */
 import mongoose from 'mongoose';
 
 const forumPostSchema = new mongoose.Schema({

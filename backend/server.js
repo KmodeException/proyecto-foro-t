@@ -10,6 +10,11 @@ import { fileURLToPath } from 'url';
 import swaggerJsDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 
+// Importar rutas del foro
+import threadRoutes from './routes/forum/thread.routes.js';
+import forumPostRoutes from './routes/forum/post.routes.js';
+import forumCommentRoutes from './routes/forum/comment.routes.js';
+
 // Rutas
 import postRoutes from './routes/posts.js';
 import authRoutes from './routes/auth.js';
@@ -53,10 +58,15 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 // Servir archivos estáticos desde la carpeta 'docs'
 app.use(express.static(path.join(__dirname, 'docs')));
 
-// Rutas
+// Rutas existentes
 app.use('/api/posts', postRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/subsections', subsectionRoutes);
+
+// Rutas del foro
+app.use('/api/forum/threads', threadRoutes);
+app.use('/api/forum/posts', forumPostRoutes);
+app.use('/api/forum/comments', forumCommentRoutes);
 
 // Ruta para la documentación
 app.get('/api-docs', (req, res) => {

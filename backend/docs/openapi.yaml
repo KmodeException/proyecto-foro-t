@@ -570,6 +570,9 @@ components:
         createdAt:
           type: string
           format: date-time
+        updatedAt:
+          type: string
+          format: date-time
 
     SubSection:
       type: object
@@ -583,6 +586,16 @@ components:
           type: string
         description:
           type: string
+        posts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Post'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
 
     Thread:
       type: object

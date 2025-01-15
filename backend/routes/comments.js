@@ -1,6 +1,7 @@
 import express from 'express';
 import { commentController } from '../controllers/comments/commentController.js';
 import { authenticate } from '../middleware/authMiddleware.js';
+import { commentValidators } from '../validators/comments.validators.js';
 
 /**
  * @swagger
@@ -33,7 +34,11 @@ const router = express.Router();
  *       201:
  *         description: Comentario creado exitosamente
  */
-router.post('/', authenticate, commentController.create);
+router.post('/', 
+    authenticate, 
+    commentValidators.create,
+    commentController.create
+);
 
 /**
  * @swagger

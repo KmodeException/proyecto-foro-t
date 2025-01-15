@@ -607,7 +607,6 @@ components:
           type: string
         name:
           type: string
-          description: Nombre del hilo
         description:
           type: string
         type:

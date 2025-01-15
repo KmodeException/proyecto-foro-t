@@ -248,22 +248,64 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                description:
-                  type: string
-                type:
-                  type: string
-                  enum: [official, community]
+              $ref: '#/components/schemas/Thread'
       responses:
         201:
           description: Hilo creado exitosamente
+        403:
+          description: Karma insuficiente
+    
+    get:
+      tags:
+        - Forum
+      summary: Obtener todos los hilos
+      responses:
+        200:
+          description: Lista de hilos
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Thread'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Thread'
+
+  /api/forum/posts:
+    post:
+      tags:
+        - Forum
+      summary: Crear post en hilo
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ForumPost'
+      responses:
+        201:
+          description: Post creado exitosamente
+        403:
+          description: Karma insuficiente
+
+  /api/forum/comments:
+    post:
+      tags:
+        - Forum
+      summary: Crear comentario
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ForumComment'
+      responses:
+        201:
+          description: Comentario creado exitosamente
+        403:
+          description: Karma insuficiente para comentar
 
 components:
   securitySchemes:
@@ -407,3 +449,22 @@ components:
           type: string
         description:
           type: string
+
+    Thread:
+      type: object
+      required:
+        - name
+        - description
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+          description: Nombre del hilo
+        description:
+          type: string
+        type:
+          type: string
+          enum: [official, community]
+        creator:
+          $ref: '#/components/schemas/User'

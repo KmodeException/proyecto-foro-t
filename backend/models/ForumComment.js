@@ -1,3 +1,35 @@
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     ForumComment:
+ *       type: object
+ *       required:
+ *         - content
+ *         - author
+ *         - post
+ *       properties:
+ *         content:
+ *           type: string
+ *           description: Contenido del comentario
+ *         author:
+ *           $ref: '#/components/schemas/User'
+ *         post:
+ *           $ref: '#/components/schemas/ForumPost'
+ *         parentComment:
+ *           $ref: '#/components/schemas/ForumComment'
+ *         votes:
+ *           type: object
+ *           properties:
+ *             up:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/User'
+ *             down:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/User'
+ */
 import mongoose from 'mongoose';
 
 const forumCommentSchema = new mongoose.Schema({

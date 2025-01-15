@@ -1,5 +1,27 @@
 import { ReputationService } from '../modules/reputation/reputation.service.js';
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     KarmaError:
+ *       type: object
+ *       properties:
+ *         message:
+ *           type: string
+ *         currentKarma:
+ *           type: number
+ *         restrictions:
+ *           type: object
+ *           properties:
+ *             canCreateThreads:
+ *               type: boolean
+ *             canComment:
+ *               type: boolean
+ *             readOnly:
+ *               type: boolean
+ */
+
 export const karmaCheck = (action) => {
     return async (req, res, next) => {
         try {

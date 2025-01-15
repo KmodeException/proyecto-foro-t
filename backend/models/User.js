@@ -73,6 +73,31 @@ const userSchema = new mongoose.Schema({
       ref: 'Game'
     }],
     reputation: { type: Number, default: 0 }
+  },
+  reputation: {
+    type: Number,
+    default: 0
+  },
+  reputationHistory: [{
+    points: Number,
+    type: {
+      type: String,
+      enum: ['translation', 'community', 'moderation']
+    },
+    reason: String,
+    sourceId: {
+      type: mongoose.Schema.Types.ObjectId,
+      refPath: 'reputationHistory.type'
+    },
+    date: {
+      type: Date,
+      default: Date.now
+    }
+  }],
+  level: {
+    type: String,
+    enum: ['Novato', 'Contribuidor', 'Experto'],
+    default: 'Novato'
   }
 }, { timestamps: true });
 

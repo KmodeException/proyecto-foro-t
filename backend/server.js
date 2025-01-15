@@ -14,6 +14,7 @@ import swaggerUi from 'swagger-ui-express';
 import postRoutes from './routes/posts.js';
 import authRoutes from './routes/auth.js';
 import gamesRoutes from './routes/games.js';
+import translationRoutes from './routes/translations.js';
 
 // Rutas foro
 import threadRoutes from './routes/forum/thread.routes.js';
@@ -57,6 +58,7 @@ app.use(express.static(path.join(__dirname, 'docs')));
 app.use('/api/posts', postRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/games', gamesRoutes);
+app.use('/api/translations', translationRoutes);
 
 // Rutas del foro
 app.use('/api/forum/threads', threadRoutes);

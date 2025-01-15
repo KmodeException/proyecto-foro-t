@@ -22,3 +22,6 @@ const threadSchema = new mongoose.Schema({
         ref: 'User'
     }]
 }, { timestamps: true });
+
+const Thread = mongoose.model('Thread', threadSchema);
+export default Thread;

@@ -18,7 +18,7 @@ import forumCommentRoutes from './routes/forum/comment.routes.js';
 // Rutas
 import postRoutes from './routes/posts.js';
 import authRoutes from './routes/auth.js';
-import subsectionRoutes from './routes/subsections.js';
+
 import gamesRoutes from './routes/games.js';
 
 // Configuración
@@ -62,7 +62,6 @@ app.use(express.static(path.join(__dirname, 'docs')));
 // Rutas existentes
 app.use('/api/posts', postRoutes);
 app.use('/api/auth', authRoutes);
-app.use('/api/subsections', subsectionRoutes);
 app.use('/api/games', gamesRoutes);
 
 // Rutas del foro

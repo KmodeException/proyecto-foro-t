@@ -454,10 +454,7 @@ components:
       required:
         - username
         - email
-        - password
       properties:
-        _id:
-          type: string
         username:
           type: string
         email:
@@ -465,26 +462,10 @@ components:
         role:
           type: string
           enum: [user, translator, moderator, admin]
-        translatorProfile:
-          type: object
-          properties:
-            level:
-              type: number
-            projects:
-              type: array
-              items:
-                type: string
-            reputation:
-              type: number
-        stats:
-          type: object
-          properties:
-            postsCount:
-              type: number
-            commentsCount:
-              type: number
-            translationsCount:
-              type: number
+        reputation:
+          type: number
+        level:
+          type: string
 
     Game:
       type: object

@@ -1,6 +1,5 @@
 import express from 'express';
 import { authController } from '../controllers/auth/authController.js';
-import { authenticate } from '../middleware/authMiddleware.js';
 import { authValidators } from '../validators/auth.validators.js';
 
 const router = express.Router();
@@ -83,6 +82,6 @@ router.post('/login', authValidators.login, authController.login);
  *             schema:
  *               $ref: '#/components/schemas/User'
  */
-router.get('/profile', authenticate, authController.getProfile);
+router.get('/profile', authController.getProfile);
 
 export default router;

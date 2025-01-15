@@ -307,6 +307,81 @@ paths:
         403:
           description: Karma insuficiente para comentar
 
+  /api/forum/posts/{threadId}:
+    get:
+      tags:
+        - Forum
+      summary: Obtener posts de un hilo
+      parameters:
+        - in: path
+          name: threadId
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Lista de posts del hilo
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ForumPost'
+
+  /api/forum/posts/{id}/vote:
+    post:
+      tags:
+        - Forum
+      summary: Votar un post
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                type:
+                  type: string
+                  enum: [up, down]
+      responses:
+        200:
+          description: Voto registrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForumPost'
+        403:
+          description: Karma insuficiente para votar
+
+  /api/forum/comments/{postId}:
+    get:
+      tags:
+        - Forum
+      summary: Obtener comentarios de un post
+      parameters:
+        - in: path
+          name: postId
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Lista de comentarios
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ForumComment'
+
 components:
   securitySchemes:
     BearerAuth:

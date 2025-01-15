@@ -2,24 +2,23 @@
 
 import express from 'express';
 import cors from 'cors';
+import passport from 'passport';
 import dotenv from 'dotenv';
-import passport from './config/passport.js';
-import connectDB from './config/db.js';
-import path from 'path';
 import { fileURLToPath } from 'url';
+import path from 'path';
+import connectDB from './config/db.js';
 import swaggerJsDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 
-// Importar rutas del foro
+// Rutas base
+import postRoutes from './routes/posts.js';
+import authRoutes from './routes/auth.js';
+import gamesRoutes from './routes/games.js';
+
+// Rutas foro
 import threadRoutes from './routes/forum/thread.routes.js';
 import forumPostRoutes from './routes/forum/post.routes.js';
 import forumCommentRoutes from './routes/forum/comment.routes.js';
-
-// Rutas
-import postRoutes from './routes/posts.js';
-import authRoutes from './routes/auth.js';
-
-import gamesRoutes from './routes/games.js';
 
 // Configuración
 dotenv.config();
@@ -35,22 +34,17 @@ app.use(passport.initialize());
 // Conectar a MongoDB
 connectDB();
 
-// Swagger definition
+// Swagger configuration
 const swaggerOptions = {
-  swaggerDefinition: {
-    openapi: '3.0.0',
-    info: {
-      title: 'Documentación de la API',
-      version: '1.0.0',
-      description: 'API para gestionar subapartados y posts.',
+    swaggerDefinition: {
+        openapi: '3.0.0',
+        info: {
+            title: 'API Documentation',
+            version: '1.0.0',
+            description: 'API Documentation for Forum System',
+        },
     },
-    servers: [
-      {
-        url: 'http://localhost:3000/api-docs',
-      },
-    ],
-  },
-  apis: ['./routes/*.js'], // Ruta a tus archivos de rutas
+    apis: ['./routes/*.js', './routes/forum/*.js', './models/*.js'],
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);

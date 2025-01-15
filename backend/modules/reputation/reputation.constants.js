@@ -1,3 +1,32 @@
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     ReputationActions:
+ *       type: object
+ *       properties:
+ *         TRANSLATION:
+ *           type: object
+ *           properties:
+ *             APPROVED:
+ *               type: object
+ *               properties:
+ *                 points:
+ *                   type: number
+ *                 type:
+ *                   type: string
+ *                 reason:
+ *                   type: string
+ *         COMMUNITY:
+ *           type: object
+ *           properties:
+ *             POST_UPVOTE:
+ *               type: object
+ *               properties:
+ *                 points:
+ *                   type: number
+ */
+
 export const REPUTATION_ACTIONS = {
     TRANSLATION: {
         APPROVED: { points: 10, type: 'translation', reason: 'Traducción aprobada' },

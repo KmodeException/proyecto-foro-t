@@ -19,6 +19,7 @@ import forumCommentRoutes from './routes/forum/comment.routes.js';
 import postRoutes from './routes/posts.js';
 import authRoutes from './routes/auth.js';
 import subsectionRoutes from './routes/subsections.js';
+import gamesRoutes from './routes/games.js';
 
 // Configuración
 dotenv.config();
@@ -62,6 +63,7 @@ app.use(express.static(path.join(__dirname, 'docs')));
 app.use('/api/posts', postRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/subsections', subsectionRoutes);
+app.use('/api/games', gamesRoutes);
 
 // Rutas del foro
 app.use('/api/forum/threads', threadRoutes);

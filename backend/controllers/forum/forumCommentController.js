@@ -2,6 +2,62 @@ import ForumComment from '../../models/ForumComment.js';
 import { ReputationService } from '../../modules/reputation/reputation.service.js';
 import { REPUTATION_ACTIONS } from '../../modules/reputation/reputation.constants.js';
 
+/**
+ * @swagger
+ * /api/forum/comments:
+ *   post:
+ *     tags: [Forum]
+ *     summary: Crear nuevo comentario
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/ForumComment'
+ *     responses:
+ *       201:
+ *         description: Comentario creado exitosamente
+ *       403:
+ *         description: Karma insuficiente
+ * 
+ * /api/forum/comments/{postId}:
+ *   get:
+ *     tags: [Forum]
+ *     summary: Obtener comentarios de un post
+ *     parameters:
+ *       - in: path
+ *         name: postId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Lista de comentarios
+ * 
+ * /api/forum/comments/{id}/vote:
+ *   post:
+ *     tags: [Forum]
+ *     summary: Votar en un comentario
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               type:
+ *                 type: string
+ *                 enum: [up, down]
+ */
+
 export const forumCommentController = {
     create: async (req, res) => {
         try {

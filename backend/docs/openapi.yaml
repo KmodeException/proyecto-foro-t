@@ -236,6 +236,35 @@ paths:
                 items:
                   $ref: '#/components/schemas/Post'
 
+  /api/forum/threads:
+    post:
+      tags:
+        - Forum
+      summary: Crear nuevo hilo
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                type:
+                  type: string
+                  enum: [official, community]
+      responses:
+        201:
+          description: Hilo creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Thread'
+
 components:
   securitySchemes:
     BearerAuth:

@@ -160,5 +160,41 @@ describe('Translation Controller Test', () => {
                 })
             );
         });
+
+        it('debería rechazar actualización por usuario no autorizado', async () => {
+            const normalUser = await User.create({
+                username: 'normaluser',
+                email: 'user@test.com',
+                password: 'Test1234!',
+                role: 'user'
+            });
+
+            const translation = await Translation.create({
+                content: 'Test Translation',
+                game: new mongoose.Types.ObjectId(),
+                translator: new mongoose.Types.ObjectId(),
+                status: 'pending'
+            });
+
+            const req = {
+                params: { id: translation._id },
+                body: { status: 'approved' },
+                user: { _id: normalUser._id, role: 'user' }
+            };
+
+            const res = {
+                status: jest.fn().mockReturnThis(),
+                json: jest.fn()
+            };
+
+            await translationController.updateStatus(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(403);
+            expect(res.json).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    message: 'No autorizado para actualizar estados'
+                })
+            );
+        });
     });
 });

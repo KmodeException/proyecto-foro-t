@@ -100,5 +100,27 @@ describe('Translation Controller Test', () => {
                 })
             );
         });
+
+        it('debería manejar traducción no encontrada', async () => {
+            const nonExistentId = new mongoose.Types.ObjectId();
+            
+            const req = {
+                params: { id: nonExistentId }
+            };
+
+            const res = {
+                status: jest.fn().mockReturnThis(),
+                json: jest.fn()
+            };
+
+            await translationController.getById(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(404);
+            expect(res.json).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    message: 'Traducción no encontrada'
+                })
+            );
+        });
     });
 });

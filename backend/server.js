@@ -9,6 +9,7 @@ import path from 'path';
 import connectDB from './config/db.js';
 import swaggerJsDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
+import morgan from 'morgan';
 
 // Rutas
 import authRoutes from './routes/auth.js';
@@ -31,6 +32,10 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 app.use(passport.initialize());
+
+// Logging
+morgan.token('body', (req) => JSON.stringify(req.body));
+app.use(morgan(':method :url :status :response-time ms - :body'));
 
 // Conectar a MongoDB
 connectDB();

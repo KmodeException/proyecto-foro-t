@@ -49,5 +49,10 @@ router.post('/',
 );
 
 router.get('/', threadController.getAll);
+router.get('/:id', threadController.getById);
+
+// Rutas de gestión
+router.patch('/:id', authenticate, threadController.update);
+router.delete('/:id', authenticate, threadController.delete);
 
 export default router;

@@ -3,7 +3,7 @@ import User from '../../../models/User.js';
 
 describe('User Model Test', () => {
     beforeAll(async () => {
-        await mongoose.connect(global.__MONGO_URI__);
+        await mongoose.connect(process.env.MONGO_URI_TEST || 'mongodb://localhost:27017/forum-test');
     });
 
     afterAll(async () => {
@@ -11,14 +11,14 @@ describe('User Model Test', () => {
     });
 
     afterEach(async () => {
-        await User.deleteMany({});
+        await User.deleteMany();
     });
 
-    it('should validate a correct user model', async () => {
+    it('debería crear un usuario válido', async () => {
         const validUser = {
-            username: 'testUser',
-            email: 'test@example.com',
-            password: 'Password123!'
+            username: 'testuser',
+            email: 'test@test.com',
+            password: 'Test1234!'
         };
 
         const user = new User(validUser);

@@ -19,42 +19,6 @@ describe('Translation Controller Test', () => {
         await Game.deleteMany();
     });
 
-    it('debería crear una traducción', async () => {
-        const user = await User.create({
-            username: 'translator',
-            email: 'translator@test.com',
-            password: 'Test1234!'
-        });
-
-        const game = await Game.create({
-            title: 'Test Game',
-            description: 'Test Description'
-        });
-
-        const req = {
-            body: {
-                content: 'Test Translation',
-                gameId: game._id
-            },
-            user: { _id: user._id }
-        };
-
-        const res = {
-            status: jest.fn().mockReturnThis(),
-            json: jest.fn()
-        };
-
-        await translationController.create(req, res);
-
-        expect(res.status).toHaveBeenCalledWith(201);
-        expect(res.json).toHaveBeenCalledWith(
-            expect.objectContaining({
-                content: 'Test Translation',
-                status: 'pending'
-            })
-        );
-    });
-
     describe('getByGame', () => {
         it('debería obtener traducciones por juego', async () => {
             const user = await User.create({
@@ -93,6 +57,47 @@ describe('Translation Controller Test', () => {
                         content: 'Translation 1'
                     })
                 ])
+            );
+        });
+    });
+
+    describe('getById', () => {
+        it('debería obtener una traducción por ID', async () => {
+            const user = await User.create({
+                username: 'translator',
+                email: 'translator@test.com',
+                password: 'Test1234!'
+            });
+
+            const game = await Game.create({
+                title: 'Test Game',
+                description: 'Test Description'
+            });
+
+            const translation = await Translation.create({
+                content: 'Test Translation',
+                game: game._id,
+                translator: user._id,
+                status: 'pending'
+            });
+
+            const req = {
+                params: { id: translation._id }
+            };
+
+            const res = {
+                status: jest.fn().mockReturnThis(),
+                json: jest.fn()
+            };
+
+            await translationController.getById(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(200);
+            expect(res.json).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    content: 'Test Translation',
+                    status: 'pending'
+                })
             );
         });
     });

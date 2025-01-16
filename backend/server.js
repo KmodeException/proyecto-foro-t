@@ -120,10 +120,22 @@ app.use((err, req, res, next) => {
     });
 });
 
-// Puerto
-app.listen(PORT, () => {
-    console.log(`✅ Servidor corriendo en http://localhost:${PORT}`);
-    console.log(`📝 Documentación API en http://localhost:${PORT}/api-docs`);
-});
+// Export app
+const startServer = () => {
+    try {
+        // Conectar DB
+        connectDB();
+        
+        // Iniciar servidor
+        app.listen(PORT, () => {
+            console.log(`✅ Servidor corriendo en http://localhost:${PORT}`);
+            console.log(`📝 Documentación API en http://localhost:${PORT}/api-docs`);
+            console.log(`🔋 Health check en http://localhost:${PORT}/health`);
+        });
+    } catch (error) {
+        console.error('❌ Error al iniciar servidor:', error);
+        process.exit(1);
+    }
+};
 
-export default app;
+export { app, startServer };

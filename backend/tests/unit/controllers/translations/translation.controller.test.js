@@ -54,4 +54,46 @@ describe('Translation Controller Test', () => {
             })
         );
     });
+
+    describe('getByGame', () => {
+        it('debería obtener traducciones por juego', async () => {
+            const user = await User.create({
+                username: 'translator',
+                email: 'translator@test.com',
+                password: 'Test1234!'
+            });
+
+            const game = await Game.create({
+                title: 'Test Game',
+                description: 'Test Description'
+            });
+
+            await Translation.create({
+                content: 'Translation 1',
+                game: game._id,
+                translator: user._id,
+                status: 'pending'
+            });
+
+            const req = {
+                params: { gameId: game._id }
+            };
+
+            const res = {
+                status: jest.fn().mockReturnThis(),
+                json: jest.fn()
+            };
+
+            await translationController.getByGame(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(200);
+            expect(res.json).toHaveBeenCalledWith(
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        content: 'Translation 1'
+                    })
+                ])
+            );
+        });
+    });
 });

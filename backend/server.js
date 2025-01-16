@@ -10,8 +10,7 @@ import connectDB from './config/db.js';
 import swaggerJsDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 
-// Rutas base
-import postRoutes from './routes/posts.js';
+// Rutas
 import authRoutes from './routes/auth.js';
 import gamesRoutes from './routes/games.js';
 import translationRoutes from './routes/translations.js';

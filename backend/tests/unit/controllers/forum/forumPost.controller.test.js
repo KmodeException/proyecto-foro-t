@@ -56,4 +56,45 @@ describe('Forum Post Controller Test', () => {
             })
         );
     });
+
+    describe('getById', () => {
+        it('debería obtener un post por ID', async () => {
+            const user = await User.create({
+                username: 'testuser',
+                email: 'test@test.com',
+                password: 'Test1234!'
+            });
+
+            const thread = await Thread.create({
+                name: 'Test Thread',
+                description: 'Test Description',
+                creator: user._id
+            });
+
+            const post = await ForumPost.create({
+                title: 'Test Post',
+                content: 'Test Content',
+                author: user._id,
+                thread: thread._id
+            });
+
+            const req = {
+                params: { id: post._id }
+            };
+
+            const res = {
+                status: jest.fn().mockReturnThis(),
+                json: jest.fn()
+            };
+
+            await forumPostController.getById(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(200);
+            expect(res.json).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    title: 'Test Post'
+                })
+            );
+        });
+    });
 });

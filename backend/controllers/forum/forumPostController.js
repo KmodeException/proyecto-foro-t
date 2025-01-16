@@ -120,5 +120,59 @@ export const forumPostController = {
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
+    },
+
+    upvote: async (req, res) => {
+        try {
+            const post = await ForumPost.findById(req.params.id);
+            if (!post) {
+                return res.status(404).json({ message: 'Post no encontrado' });
+            }
+
+            // Verificar si ya votó
+            if (post.votes.up.includes(req.user._id)) {
+                return res.status(400).json({ message: 'Ya votaste este post' });
+            }
+
+            // Remover downvote si existe
+            post.votes.down = post.votes.down.filter(
+                id => id.toString() !== req.user._id.toString()
+            );
+
+            // Añadir upvote
+            post.votes.up.push(req.user._id);
+            await post.save();
+
+            res.status(200).json(post);
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    },
+
+    downvote: async (req, res) => {
+        try {
+            const post = await ForumPost.findById(req.params.id);
+            if (!post) {
+                return res.status(404).json({ message: 'Post no encontrado' });
+            }
+
+            // Verificar si ya votó
+            if (post.votes.down.includes(req.user._id)) {
+                return res.status(400).json({ message: 'Ya votaste este post' });
+            }
+
+            // Remover upvote si existe
+            post.votes.up = post.votes.up.filter(
+                id => id.toString() !== req.user._id.toString()
+            );
+
+            // Añadir downvote
+            post.votes.down.push(req.user._id);
+            await post.save();
+
+            res.status(200).json(post);
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
     }
 };

@@ -123,4 +123,42 @@ describe('Translation Controller Test', () => {
             );
         });
     });
+
+    describe('updateStatus', () => {
+        it('debería actualizar el estado de una traducción', async () => {
+            const moderator = await User.create({
+                username: 'moderator',
+                email: 'mod@test.com',
+                password: 'Test1234!',
+                role: 'moderator'
+            });
+
+            const translation = await Translation.create({
+                content: 'Test Translation',
+                game: new mongoose.Types.ObjectId(),
+                translator: new mongoose.Types.ObjectId(),
+                status: 'pending'
+            });
+
+            const req = {
+                params: { id: translation._id },
+                body: { status: 'approved' },
+                user: { _id: moderator._id, role: 'moderator' }
+            };
+
+            const res = {
+                status: jest.fn().mockReturnThis(),
+                json: jest.fn()
+            };
+
+            await translationController.updateStatus(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(200);
+            expect(res.json).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    status: 'approved'
+                })
+            );
+        });
+    });
 });

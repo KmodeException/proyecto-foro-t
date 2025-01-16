@@ -158,5 +158,48 @@ describe('Forum Post Controller Test', () => {
                 })
             );
         });
+
+        it('debería impedir actualización por usuario no autorizado', async () => {
+            const originalUser = await User.create({
+                username: 'originaluser',
+                email: 'original@test.com',
+                password: 'Test1234!'
+            });
+
+            const otherUser = await User.create({
+                username: 'otheruser',
+                email: 'other@test.com',
+                password: 'Test1234!'
+            });
+
+            const post = await ForumPost.create({
+                title: 'Original Title',
+                content: 'Original Content',
+                author: originalUser._id
+            });
+
+            const req = {
+                params: { id: post._id },
+                body: {
+                    title: 'Updated Title',
+                    content: 'Updated Content'
+                },
+                user: { _id: otherUser._id }
+            };
+
+            const res = {
+                status: jest.fn().mockReturnThis(),
+                json: jest.fn()
+            };
+
+            await forumPostController.update(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(403);
+            expect(res.json).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    message: expect.stringContaining('No autorizado')
+                })
+            );
+        });
     });
 });

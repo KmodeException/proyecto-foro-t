@@ -1,3 +1,13 @@
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     TranslationStatus:
+ *       type: string
+ *       enum: [pending, approved, rejected]
+ *       description: Estado actual de la traducción
+ */
+
 import mongoose from 'mongoose';
 
 const translationSchema = new mongoose.Schema({
@@ -16,14 +26,20 @@ const translationSchema = new mongoose.Schema({
     },
     translator: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'User',
+        required: true
     },
     status: {
         type: String,
         enum: ['pending', 'approved', 'rejected'],
         default: 'pending'
-    }
+    },
+    reviewedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
+    reviewDate: Date,
+    reviewComments: String
 }, { timestamps: true });
 
-const Translation = mongoose.model('Translation', translationSchema);
-export default Translation;
+export default mongoose.model('Translation', translationSchema);

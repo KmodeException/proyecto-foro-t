@@ -1,7 +1,6 @@
 import express from 'express';
 import { forumPostController } from '../../controllers/forum/forumPostController.js';
 import { authenticate } from '../../middleware/authMiddleware.js';
-import { postValidator } from '../../validators/forum/post.validator.js';
 
 /**
  * @swagger
@@ -53,16 +52,13 @@ import { postValidator } from '../../validators/forum/post.validator.js';
 
 const router = express.Router();
 
-router.post('/', 
-    authenticate, 
-    postValidator.create,
-    forumPostController.create
-);
+// Rutas base
+router.post('/', authenticate, forumPostController.create);
 router.get('/thread/:threadId', forumPostController.getByThread);
-router.post('/:id/vote',
-    authenticate,
-    postValidator.vote,
-    forumPostController.vote
-);
+router.get('/:id', forumPostController.getById);
+
+// Rutas de votos
+router.post('/:id/upvote', authenticate, forumPostController.upvote);
+router.post('/:id/downvote', authenticate, forumPostController.downvote);
 
 export default router;

@@ -3,25 +3,14 @@ import Translation from '../../models/Translation.js';
 export const translationController = {
     create: async (req, res) => {
         try {
-            const { gameId, originalText, translatedText, section } = req.body;
-            
             const translation = new Translation({
-                game: gameId,
-                originalText,
-                translatedText,
-                section,
+                ...req.body,
                 translator: req.user._id
             });
-
             await translation.save();
-            await translation.populate('translator', 'username');
-            
             res.status(201).json(translation);
         } catch (error) {
-            res.status(500).json({
-                message: 'Error al crear traducción',
-                error: error.message
-            });
+            res.status(500).json({ message: error.message });
         }
     },
 

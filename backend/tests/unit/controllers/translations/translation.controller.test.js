@@ -196,5 +196,41 @@ describe('Translation Controller Test', () => {
                 })
             );
         });
+
+        it('debería validar estados permitidos', async () => {
+            const moderator = await User.create({
+                username: 'moderator',
+                email: 'mod@test.com',
+                password: 'Test1234!',
+                role: 'moderator'
+            });
+
+            const translation = await Translation.create({
+                content: 'Test Translation',
+                game: new mongoose.Types.ObjectId(),
+                translator: new mongoose.Types.ObjectId(),
+                status: 'pending'
+            });
+
+            const req = {
+                params: { id: translation._id },
+                body: { status: 'invalid_status' },
+                user: { _id: moderator._id, role: 'moderator' }
+            };
+
+            const res = {
+                status: jest.fn().mockReturnThis(),
+                json: jest.fn()
+            };
+
+            await translationController.updateStatus(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(400);
+            expect(res.json).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    message: expect.stringContaining('Estado no válido')
+                })
+            );
+        });
     });
 });

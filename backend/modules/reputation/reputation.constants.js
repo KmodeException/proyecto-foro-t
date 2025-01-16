@@ -13,11 +13,26 @@
  *               properties:
  *                 points:
  *                   type: number
+ *                   example: 10
  *                 type:
  *                   type: string
+ *                   example: "translation"
  *                 reason:
  *                   type: string
- *         COMMUNITY:
+ *                   example: "Traducción aprobada"
+ *             REJECTED:
+ *               type: object
+ *               properties:
+ *                 points:
+ *                   type: number
+ *                   example: -5
+ *                 type:
+ *                   type: string
+ *                   example: "translation"
+ *                 reason:
+ *                   type: string
+ *                   example: "Traducción rechazada"
+ *         FORUM:
  *           type: object
  *           properties:
  *             POST_UPVOTE:
@@ -25,6 +40,30 @@
  *               properties:
  *                 points:
  *                   type: number
+ *                   example: 2
+ *                 type:
+ *                   type: string
+ *                   example: "community"
+ *                 reason:
+ *                   type: string
+ *                   example: "Voto positivo en post"
+ */
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     ReputationAction:
+ *       type: object
+ *       properties:
+ *         points:
+ *           type: number
+ *           description: Puntos otorgados por la acción
+ *         type:
+ *           $ref: '#/components/schemas/ReputationType'
+ *         reason:
+ *           type: string
+ *           description: Razón del cambio de reputación
  */
 
 export const REPUTATION_ACTIONS = {
@@ -32,20 +71,14 @@ export const REPUTATION_ACTIONS = {
         APPROVED: { points: 10, type: 'translation', reason: 'Traducción aprobada' },
         REJECTED: { points: -5, type: 'translation', reason: 'Traducción rechazada' }
     },
-    COMMUNITY: {
-        POST_UPVOTE: { points: 2, type: 'community', reason: 'Post votado positivamente' },
-        POST_DOWNVOTE: { points: -1, type: 'community', reason: 'Post votado negativamente' },
-        COMMENT_UPVOTE: { points: 1, type: 'community', reason: 'Comentario votado positivamente' },
-        COMMENT_DOWNVOTE: { points: -1, type: 'community', reason: 'Comentario votado negativamente' }
-    },
-    MODERATION: {
-        WARN: { points: -3, type: 'moderation', reason: 'Advertencia de moderador' },
-        REPORT_ACCEPTED: { points: -5, type: 'moderation', reason: 'Reporte aceptado' }
+    FORUM: {
+        POST_UPVOTE: { points: 2, type: 'community', reason: 'Voto positivo en post' },
+        POST_DOWNVOTE: { points: -1, type: 'community', reason: 'Voto negativo en post' }
     }
 };
 
 export const REPUTATION_LEVELS = {
-    NOVICE: { min: 0, max: 100, name: 'Novato' },
-    CONTRIBUTOR: { min: 101, max: 500, name: 'Contribuidor' },
-    EXPERT: { min: 501, max: null, name: 'Experto' }
+    NOVICE: { min: 0, name: 'Novato' },
+    CONTRIBUTOR: { min: 100, name: 'Contribuidor' },
+    EXPERT: { min: 500, name: 'Experto' }
 };

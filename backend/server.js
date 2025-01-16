@@ -25,6 +25,7 @@ dotenv.config();
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors());
@@ -36,15 +37,20 @@ connectDB();
 
 // Swagger configuration
 const swaggerOptions = {
-    swaggerDefinition: {
+    definition: {
         openapi: '3.0.0',
         info: {
             title: 'API Documentation',
             version: '1.0.0',
-            description: 'API Documentation for Forum System',
+            description: 'Documentación API Foro y Traducciones'
         },
+        servers: [
+            {
+                url: `http://localhost:${PORT}`
+            }
+        ]
     },
-    apis: ['./routes/*.js', './routes/forum/*.js', './models/*.js'],
+    apis: ['./routes/**/*.js', './models/*.js']
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
@@ -83,9 +89,9 @@ app.use((err, req, res, next) => {
 });
 
 // Puerto
-const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`✅ Servidor corriendo en http://localhost:${PORT}`);
+    console.log(`📝 Documentación en http://localhost:${PORT}/api-docs`);
 });
 
 export default app;

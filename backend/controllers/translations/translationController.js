@@ -4,7 +4,8 @@ export const translationController = {
     create: async (req, res) => {
         try {
             const translation = new Translation({
-                ...req.body,
+                content: req.body.content,
+                game: req.body.gameId,
                 translator: req.user._id,
                 status: 'pending'
             });
@@ -17,8 +18,11 @@ export const translationController = {
 
     getByGame: async (req, res) => {
         try {
-            const translations = await Translation.find({ game: req.params.gameId })
-                .populate('translator', 'username');
+            const translations = await Translation.find({ 
+                game: req.params.gameId 
+            })
+            .populate('translator', 'username')
+            .populate('reviewedBy', 'username');
             res.status(200).json(translations);
         } catch (error) {
             res.status(500).json({ message: error.message });
@@ -29,8 +33,8 @@ export const translationController = {
         try {
             const translation = await Translation.findById(req.params.id)
                 .populate('translator', 'username')
-                .populate('game', 'title');
-
+                .populate('game', 'title')
+                .populate('reviewedBy', 'username');
             if (!translation) {
                 return res.status(404).json({ message: 'Traducción no encontrada' });
             }

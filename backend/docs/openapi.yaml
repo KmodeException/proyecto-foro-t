@@ -441,6 +441,42 @@ paths:
         404:
           description: Usuario no encontrado
 
+  /api/forum/users/{userId}/karma:
+    get:
+      tags: [Forum]
+      summary: Obtener karma y nivel del usuario
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Karma y nivel del usuario
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  karma:
+                    type: number
+                  level:
+                    $ref: '#/components/schemas/UserLevel'
+
+  /api/forum/moderation/reports:
+    post:
+      tags: [Moderation]
+      summary: Crear reporte
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Report'
+
 components:
   securitySchemes:
     BearerAuth:
@@ -669,3 +705,67 @@ components:
               type: boolean
             readOnly:
               type: boolean
+
+    KarmaRestrictions:
+      type: object
+      properties:
+        canCreateThreads:
+          type: boolean
+          description: Permiso para crear hilos
+        canComment:
+          type: boolean
+          description: Permiso para comentar
+        readOnly:
+          type: boolean
+          description: Usuario en modo lectura
+    
+    UserLevel:
+      type: object
+      properties:
+        name:
+          type: string
+          enum: [Novato, Contribuidor, Experto]
+        minPoints:
+          type: number
+        permissions:
+          $ref: '#/components/schemas/KarmaRestrictions'
+
+    ModAction:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [warn, temp_ban, perm_ban]
+        reason:
+          type: string
+        moderator:
+          $ref: '#/components/schemas/User'
+        targetUser:
+          $ref: '#/components/schemas/User'
+        expiresAt:
+          type: string
+          format: date-time
+    
+    Report:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [spam, offensive, inappropriate]
+        reason:
+          type: string
+        reporter:
+          $ref: '#/components/schemas/User'
+        reported:
+          $ref: '#/components/schemas/User'
+        content:
+          type: object
+          properties:
+            type:
+              type: string
+              enum: [post, comment, thread]
+            id:
+              type: string
+        status:
+          type: string
+          enum: [pending, resolved, dismissed]

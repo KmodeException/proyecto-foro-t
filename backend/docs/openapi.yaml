@@ -584,17 +584,72 @@ components:
         - name
         - description
       properties:
-        _id:
-          type: string
         name:
           type: string
+          description: Nombre del hilo
         description:
           type: string
+          description: Descripción del hilo
         type:
           type: string
           enum: [official, community]
         creator:
           $ref: '#/components/schemas/User'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    ForumPost:
+      type: object
+      required:
+        - title
+        - content
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+        author:
+          $ref: '#/components/schemas/User'
+        thread:
+          $ref: '#/components/schemas/Thread'
+        votes:
+          type: object
+          properties:
+            up:
+              type: array
+              items:
+                $ref: '#/components/schemas/User'
+            down:
+              type: array
+              items:
+                $ref: '#/components/schemas/User'
+
+    ForumComment:
+      type: object
+      required:
+        - content
+      properties:
+        content:
+          type: string
+        author:
+          $ref: '#/components/schemas/User'
+        post:
+          $ref: '#/components/schemas/ForumPost'
+        votes:
+          type: object
+          properties:
+            up:
+              type: array
+              items:
+                $ref: '#/components/schemas/User'
+            down:
+              type: array
+              items:
+                $ref: '#/components/schemas/User'
 
     KarmaResponse:
       type: object

@@ -40,4 +40,27 @@ describe('Auth Controller Test', () => {
             })
         );
     });
+
+    it('debería validar campos requeridos en registro', async () => {
+        const req = {
+            body: {
+                username: '',
+                email: '',
+                password: ''
+            }
+        };
+        const res = {
+            status: jest.fn().mockReturnThis(),
+            json: jest.fn()
+        };
+
+        await authController.register(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(400);
+        expect(res.json).toHaveBeenCalledWith(
+            expect.objectContaining({
+                message: expect.stringContaining('requeridos')
+            })
+        );
+    });
 });

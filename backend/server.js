@@ -42,15 +42,16 @@ const swaggerOptions = {
         info: {
             title: 'API Documentation',
             version: '1.0.0',
-            description: 'Documentación API Foro y Traducciones'
+            description: 'API Documentation for Forum & Translation System'
         },
         servers: [
             {
-                url: `http://localhost:${PORT}`
+                url: `http://localhost:${PORT}`,
+                description: 'Development server'
             }
         ]
     },
-    apis: ['./routes/**/*.js', './models/*.js']
+    apis: ['./routes/**/*.js', './models/*.js', './docs/**/*.yaml']
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
@@ -82,16 +83,17 @@ app.get('/', (req, res) => {
 // Manejo de errores global
 app.use((err, req, res, next) => {
     console.error(err.stack);
-    res.status(500).json({
-        error: 'Error interno del servidor',
-        message: process.env.NODE_ENV === 'development' ? err.message : undefined
+    res.status(err.status || 500).json({
+        status: 'error',
+        message: err.message || 'Error interno del servidor',
+        ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
     });
 });
 
 // Puerto
 app.listen(PORT, () => {
     console.log(`✅ Servidor corriendo en http://localhost:${PORT}`);
-    console.log(`📝 Documentación en http://localhost:${PORT}/api-docs`);
+    console.log(`📝 Documentación API en http://localhost:${PORT}/api-docs`);
 });
 
 export default app;

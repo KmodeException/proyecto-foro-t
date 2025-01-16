@@ -7,7 +7,7 @@ import { roleCheck } from '../middleware/roleCheck.js';
  * @swagger
  * tags:
  *   name: Translations
- *   description: API para gestión de traducciones
+ *   description: API para gestionar traducciones
  */
 
 const router = express.Router();
@@ -63,7 +63,7 @@ router.patch('/:id/review',
 router.get('/game/:gameId', translationController.getByGame);
 
 router.get('/:id', translationController.getById);
-router.patch('/:id/approve', authenticate, translationController.approveTranslation);
-router.patch('/:id/reject', authenticate, translationController.rejectTranslation);
+router.patch('/:id/approve', authenticate, roleCheck(['admin']), translationController.approveTranslation);
+router.patch('/:id/reject', authenticate, roleCheck(['admin']), translationController.rejectTranslation);
 
 export default router;

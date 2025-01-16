@@ -85,5 +85,26 @@ export const translationController = {
                 error: error.message
             });
         }
+    },
+
+    getById: async (req, res) => {
+        try {
+            const translation = await Translation.findById(req.params.id)
+                .populate('translator', 'username')
+                .populate('game', 'title');
+                
+            if (!translation) {
+                return res.status(404).json({ 
+                    message: 'Traducción no encontrada' 
+                });
+            }
+            
+            res.status(200).json(translation);
+        } catch (error) {
+            res.status(500).json({ 
+                message: 'Error al obtener traducción',
+                error: error.message 
+            });
+        }
     }
 };

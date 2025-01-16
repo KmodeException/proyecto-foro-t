@@ -119,4 +119,44 @@ describe('Forum Post Controller Test', () => {
             );
         });
     });
+
+    describe('update', () => {
+        it('debería actualizar un post existente', async () => {
+            const user = await User.create({
+                username: 'testuser',
+                email: 'test@test.com',
+                password: 'Test1234!'
+            });
+
+            const post = await ForumPost.create({
+                title: 'Original Title',
+                content: 'Original Content',
+                author: user._id
+            });
+
+            const req = {
+                params: { id: post._id },
+                body: {
+                    title: 'Updated Title',
+                    content: 'Updated Content'
+                },
+                user: { _id: user._id }
+            };
+
+            const res = {
+                status: jest.fn().mockReturnThis(),
+                json: jest.fn()
+            };
+
+            await forumPostController.update(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(200);
+            expect(res.json).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    title: 'Updated Title',
+                    content: 'Updated Content'
+                })
+            );
+        });
+    });
 });

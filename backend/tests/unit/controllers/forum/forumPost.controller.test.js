@@ -202,4 +202,42 @@ describe('Forum Post Controller Test', () => {
             );
         });
     });
+
+    describe('delete', () => {
+        it('debería eliminar un post existente', async () => {
+            const user = await User.create({
+                username: 'testuser',
+                email: 'test@test.com',
+                password: 'Test1234!'
+            });
+
+            const post = await ForumPost.create({
+                title: 'Test Post',
+                content: 'Test Content',
+                author: user._id
+            });
+
+            const req = {
+                params: { id: post._id },
+                user: { _id: user._id }
+            };
+
+            const res = {
+                status: jest.fn().mockReturnThis(),
+                json: jest.fn()
+            };
+
+            await forumPostController.delete(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(200);
+            expect(res.json).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    message: expect.stringContaining('eliminado')
+                })
+            );
+
+            const deletedPost = await ForumPost.findById(post._id);
+            expect(deletedPost).toBeNull();
+        });
+    });
 });

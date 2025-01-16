@@ -131,11 +131,18 @@ const startServer = () => {
             console.log(`✅ Servidor corriendo en http://localhost:${PORT}`);
             console.log(`📝 Documentación API en http://localhost:${PORT}/api-docs`);
             console.log(`🔋 Health check en http://localhost:${PORT}/health`);
+            console.log(`⚙️  Ambiente: ${process.env.NODE_ENV || 'development'}`);
         });
     } catch (error) {
         console.error('❌ Error al iniciar servidor:', error);
         process.exit(1);
     }
 };
+
+// Manejo de señales de terminación
+process.on('SIGTERM', () => {
+    console.log('👋 Cerrando servidor...');
+    process.exit(0);
+});
 
 export { app, startServer };

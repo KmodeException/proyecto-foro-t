@@ -63,4 +63,27 @@ describe('Auth Controller Test', () => {
             })
         );
     });
+
+    it('debería validar formato de contraseña', async () => {
+        const req = {
+            body: {
+                username: 'testuser',
+                email: 'test@test.com',
+                password: '123' // Contraseña muy corta
+            }
+        };
+        const res = {
+            status: jest.fn().mockReturnThis(),
+            json: jest.fn()
+        };
+
+        await authController.register(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(400);
+        expect(res.json).toHaveBeenCalledWith(
+            expect.objectContaining({
+                message: expect.stringContaining('contraseña')
+            })
+        );
+    });
 });

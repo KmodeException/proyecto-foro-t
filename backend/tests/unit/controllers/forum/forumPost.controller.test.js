@@ -96,5 +96,27 @@ describe('Forum Post Controller Test', () => {
                 })
             );
         });
+
+        it('debería manejar post no encontrado', async () => {
+            const nonExistentId = new mongoose.Types.ObjectId();
+            
+            const req = {
+                params: { id: nonExistentId }
+            };
+
+            const res = {
+                status: jest.fn().mockReturnThis(),
+                json: jest.fn()
+            };
+
+            await forumPostController.getById(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(404);
+            expect(res.json).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    message: 'Post no encontrado'
+                })
+            );
+        });
     });
 });

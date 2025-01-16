@@ -56,6 +56,14 @@ import { REPUTATION_ACTIONS } from '../../modules/reputation/reputation.constant
  *               type:
  *                 type: string
  *                 enum: [up, down]
+ * components:
+ *   schemas:
+ *     CommentVote:
+ *       type: object
+ *       properties:
+ *         type:
+ *           type: string
+ *           enum: [up, down]
  */
 
 export const forumCommentController = {

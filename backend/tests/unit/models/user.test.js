@@ -28,4 +28,38 @@ describe('User Model Test', () => {
         expect(savedUser.username).toBe(validUser.username);
         expect(savedUser.email).toBe(validUser.email);
     });
+
+    it('debería validar campos requeridos', async () => {
+        const userSinCampos = new User({});
+
+        try {
+            await userSinCampos.save();
+        } catch (error) {
+            expect(error.errors.username).toBeDefined();
+            expect(error.errors.email).toBeDefined();
+            expect(error.errors.password).toBeDefined();
+        }
+    });
+
+    it('debería validar email único', async () => {
+        const primerUsuario = new User({
+            username: 'test1',
+            email: 'test@test.com',
+            password: 'Password123!'
+        });
+
+        await primerUsuario.save();
+
+        const segundoUsuario = new User({
+            username: 'test2',
+            email: 'test@test.com',
+            password: 'Password123!'
+        });
+
+        try {
+            await segundoUsuario.save();
+        } catch (error) {
+            expect(error.code).toBe(11000);
+        }
+    });
 });

@@ -72,17 +72,12 @@ import { karmaCheck } from '../../middleware/karmaCheck.js';
 
 const router = express.Router();
 
-router.post('/',
-    authenticate,
-    karmaCheck('comment'),
-    commentValidator.create,
-    forumCommentController.create
-);
+// Rutas base
+router.post('/', authenticate, forumCommentController.create);
 router.get('/post/:postId', forumCommentController.getByPost);
-router.post('/:id/vote',
-    authenticate,
-    karmaCheck('vote'),
-    forumCommentController.vote
-);
+
+// Rutas de votos
+router.post('/:id/upvote', authenticate, forumCommentController.upvote);
+router.post('/:id/downvote', authenticate, forumCommentController.downvote);
 
 export default router;

@@ -80,6 +80,31 @@ app.get('/', (req, res) => {
     res.redirect('/api-docs');
 });
 
+// Health check
+app.get('/health', (req, res) => {
+    res.status(200).json({
+        status: 'success',
+        message: 'API funcionando correctamente',
+        environment: process.env.NODE_ENV || 'development',
+        timestamp: new Date(),
+        uptime: process.uptime()
+    });
+});
+
+// Logging middleware
+app.use((req, res, next) => {
+    console.log(`${new Date().toISOString()} - ${req.method} ${req.originalUrl}`);
+    next();
+});
+
+// Manejar rutas no encontradas
+app.use('*', (req, res) => {
+    res.status(404).json({
+        status: 'error',
+        message: 'Ruta no encontrada'
+    });
+});
+
 // Manejo de errores global
 app.use((err, req, res, next) => {
     console.error(err.stack);

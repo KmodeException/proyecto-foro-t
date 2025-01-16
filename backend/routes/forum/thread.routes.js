@@ -11,26 +11,54 @@
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *               description:
- *                 type: string
- *               type:
- *                 type: string
- *                 enum: [official, community]
+ *             $ref: '#/components/schemas/Thread'
  *     responses:
  *       201:
  *         description: Hilo creado exitosamente
  *       403:
  *         description: Karma insuficiente o no autorizado
+ * 
  *   get:
  *     tags: [Forum]
  *     summary: Listar todos los hilos
  *     responses:
  *       200:
  *         description: Lista de hilos obtenida exitosamente
+ * 
+ * /api/forum/threads/{id}:
+ *   patch:
+ *     tags: [Forum]
+ *     summary: Actualizar hilo
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Hilo actualizado
+ *       403:
+ *         description: No autorizado
+ * 
+ *   delete:
+ *     tags: [Forum]
+ *     summary: Eliminar hilo
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Hilo eliminado
+ *       403:
+ *         description: No autorizado
  */
 
 import express from 'express';

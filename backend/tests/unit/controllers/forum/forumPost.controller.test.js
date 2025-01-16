@@ -275,5 +275,40 @@ describe('Forum Post Controller Test', () => {
             const updatedPost = await ForumPost.findById(post._id);
             expect(updatedPost.votes.up).toContainEqual(user._id);
         });
+
+        it('debería permitir dar downvote a un post', async () => {
+            const user = await User.create({
+                username: 'testuser',
+                email: 'test@test.com',
+                password: 'Test1234!'
+            });
+
+            const post = await ForumPost.create({
+                title: 'Test Post',
+                content: 'Test Content',
+                author: user._id,
+                votes: {
+                    up: [],
+                    down: []
+                }
+            });
+
+            const req = {
+                params: { id: post._id },
+                user: { _id: user._id }
+            };
+
+            const res = {
+                status: jest.fn().mockReturnThis(),
+                json: jest.fn()
+            };
+
+            await forumPostController.downvote(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(200);
+            const updatedPost = await ForumPost.findById(post._id);
+            expect(updatedPost.votes.down).toContainEqual(user._id);
+            expect(updatedPost.votes.up).not.toContainEqual(user._id);
+        });
     });
 });

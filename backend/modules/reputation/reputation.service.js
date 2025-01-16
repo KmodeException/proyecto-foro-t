@@ -5,6 +5,30 @@
  *     ReputationUpdate:
  *       type: object
  *       properties:
+ *         userId:
+ *           type: string
+ *           description: ID del usuario a actualizar
+ *         action:
+ *           $ref: '#/components/schemas/ReputationAction'
+ *         sourceId:
+ *           type: string
+ *           description: ID de la fuente que generó el cambio
+ *     
+ *     ReputationResponse:
+ *       type: object
+ *       properties:
+ *         currentPoints:
+ *           type: number
+ *         level:
+ *           type: string
+ *           enum: [Novato, Contribuidor, Experto]
+ *         history:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/ReputationHistory'
+ *     ReputationUpdate:
+ *       type: object
+ *       properties:
  *         points:
  *           type: number
  *         type:

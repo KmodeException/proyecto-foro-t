@@ -54,7 +54,6 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use(express.static(path.join(__dirname, 'docs')));
 
 // Rutas existentes
-app.use('/api/posts', postRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/games', gamesRoutes);
 app.use('/api/translations', translationRoutes);

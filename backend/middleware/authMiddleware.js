@@ -1,3 +1,4 @@
+import jwt from 'jsonwebtoken';
 import passport from 'passport';
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import User from '../models/User.js';
@@ -28,6 +29,43 @@ passport.use(new JwtStrategy(options, async (payload, done) => {
         return done(error, false);
     }
 }));
+
+const generateAccessToken = (user) => {
+    return jwt.sign(
+        { id: user._id, role: user.role },
+        process.env.JWT_SECRET,
+        { expiresIn: '1h' }
+    );
+};
+
+const generateRefreshToken = (user) => {
+    return jwt.sign(
+        { id: user._id },
+        process.env.JWT_SECRET,
+        { expiresIn: '7d' }
+    );
+};
+
+export const refreshToken = async (req, res) => {
+    try {
+        const { refreshToken } = req.body;
+        if (!refreshToken) {
+            return res.status(401).json({ message: 'No refresh token' });
+        }
+
+        const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
+        const user = await User.findById(decoded.id);
+        
+        if (!user) {
+            return res.status(404).json({ message: 'Usuario no encontrado' });
+        }
+
+        const accessToken = generateAccessToken(user);
+        res.json({ accessToken });
+    } catch (error) {
+        res.status(401).json({ message: 'Invalid refresh token' });
+    }
+};
 
 /**
  * Middleware de autenticación unificado

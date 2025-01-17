@@ -61,4 +61,53 @@ describe('Games Routes', () => {
             expect(res.status).toBe(401);
         });
     });
+
+    describe('POST /api/games/:id/translators', () => {
+        it('debería asignar un traductor al juego', async () => {
+            const game = await Game.create({
+                title: 'Test Game',
+                platform: 'PC',
+                translationLead: testUser._id
+            });
+
+            const translator = await User.create({
+                username: 'translator',
+                email: 'translator@test.com',
+                password: 'Test1234!'
+            });
+
+            const res = await request(app)
+                .post(`/api/games/${game._id}/translators`)
+                .set('Authorization', `Bearer ${authToken}`)
+                .send({
+                    translatorId: translator._id
+                });
+
+            expect(res.status).toBe(200);
+            expect(res.body.translators).toContainEqual(
+                expect.objectContaining({
+                    user: translator._id.toString()
+                })
+            );
+        });
+
+        it('no debería permitir asignar un traductor ya asignado', async () => {
+            const game = await Game.create({
+                title: 'Test Game',
+                platform: 'PC',
+                translationLead: testUser._id,
+                translators: [{ user: testUser._id }]
+            });
+
+            const res = await request(app)
+                .post(`/api/games/${game._id}/translators`)
+                .set('Authorization', `Bearer ${authToken}`)
+                .send({
+                    translatorId: testUser._id
+                });
+
+            expect(res.status).toBe(400);
+            expect(res.body).toHaveProperty('message', 'Traductor ya asignado');
+        });
+    });
 }); 

@@ -29,6 +29,45 @@ describe('Auth Routes', () => {
             expect(res.status).toBe(201);
             expect(res.body).toHaveProperty('message', 'Usuario registrado exitosamente');
         });
+
+        it('debería validar campos requeridos en registro', async () => {
+            const res = await request(app)
+                .post('/api/auth/register')
+                .send({
+                    username: '',
+                    email: '',
+                    password: ''
+                });
+
+            expect(res.status).toBe(400);
+            expect(res.body).toHaveProperty('message', 'Todos los campos son requeridos');
+        });
+
+        it('debería validar formato de email', async () => {
+            const res = await request(app)
+                .post('/api/auth/register')
+                .send({
+                    username: 'testuser',
+                    email: 'invalidemail',
+                    password: 'Test1234!'
+                });
+
+            expect(res.status).toBe(400);
+            expect(res.body).toHaveProperty('message', 'Email inválido');
+        });
+
+        it('debería validar contraseña segura', async () => {
+            const res = await request(app)
+                .post('/api/auth/register')
+                .send({
+                    username: 'testuser',
+                    email: 'test@test.com',
+                    password: '123'
+                });
+
+            expect(res.status).toBe(400);
+            expect(res.body).toHaveProperty('message', 'La contraseña debe tener al menos 8 caracteres, una mayúscula y un número');
+        });
     });
 
     describe('POST /api/auth/login', () => {

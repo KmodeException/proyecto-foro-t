@@ -72,4 +72,50 @@ describe('Translation Routes', () => {
             expect(res.status).toBe(401);
         });
     });
+
+    describe('POST /api/translations/:id/review', () => {
+        it('debería permitir revisar una traducción', async () => {
+            const translation = await Translation.create({
+                content: 'Test Translation',
+                game: testGame._id,
+                translator: testUser._id,
+                language: 'es',
+                status: 'pending'
+            });
+
+            const res = await request(app)
+                .post(`/api/translations/${translation._id}/review`)
+                .set('Authorization', `Bearer ${authToken}`)
+                .send({
+                    status: 'approved',
+                    reviewComments: 'Excelente traducción'
+                });
+
+            expect(res.status).toBe(200);
+            expect(res.body).toHaveProperty('status', 'approved');
+            expect(res.body).toHaveProperty('reviewComments', 'Excelente traducción');
+            expect(res.body).toHaveProperty('reviewedBy', testUser._id.toString());
+        });
+
+        it('debería validar estados de revisión válidos', async () => {
+            const translation = await Translation.create({
+                content: 'Test Translation',
+                game: testGame._id,
+                translator: testUser._id,
+                language: 'es',
+                status: 'pending'
+            });
+
+            const res = await request(app)
+                .post(`/api/translations/${translation._id}/review`)
+                .set('Authorization', `Bearer ${authToken}`)
+                .send({
+                    status: 'invalid_status',
+                    reviewComments: 'Test review'
+                });
+
+            expect(res.status).toBe(400);
+            expect(res.body).toHaveProperty('message', 'Estado de revisión inválido');
+        });
+    });
 }); 

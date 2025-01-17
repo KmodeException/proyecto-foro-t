@@ -59,4 +59,59 @@ describe('User Controller', () => {
             });
         });
     });
+
+    describe('updateProfile', () => {
+        it('debería actualizar el perfil del usuario', async () => {
+            mockReq.params.id = mockUser._id;
+            mockReq.user._id = mockUser._id; // Usuario actualizando su propio perfil
+            mockReq.body = {
+                username: 'updateduser',
+                email: 'updated@test.com'
+            };
+            mockUser.save.mockResolvedValue({
+                ...mockUser,
+                ...mockReq.body
+            });
+
+            await userController.updateProfile(mockReq, mockRes);
+
+            expect(mockRes.status).toHaveBeenCalledWith(200);
+            expect(mockRes.json).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    username: 'updateduser',
+                    email: 'updated@test.com'
+                })
+            );
+        });
+
+        it('debería impedir actualizar perfil de otro usuario', async () => {
+            mockReq.params.id = new mongoose.Types.ObjectId(); // ID diferente
+            mockReq.user._id = mockUser._id;
+            mockReq.body = {
+                username: 'updateduser'
+            };
+
+            await userController.updateProfile(mockReq, mockRes);
+
+            expect(mockRes.status).toHaveBeenCalledWith(403);
+            expect(mockRes.json).toHaveBeenCalledWith({
+                message: 'No autorizado para actualizar este perfil'
+            });
+        });
+
+        it('debería validar campos de actualización', async () => {
+            mockReq.params.id = mockUser._id;
+            mockReq.user._id = mockUser._id;
+            mockReq.body = {
+                username: '' // username vacío
+            };
+
+            await userController.updateProfile(mockReq, mockRes);
+
+            expect(mockRes.status).toHaveBeenCalledWith(400);
+            expect(mockRes.json).toHaveBeenCalledWith({
+                message: 'Nombre de usuario no puede estar vacío'
+            });
+        });
+    });
 }); 

@@ -71,4 +71,62 @@ describe('Forum Routes', () => {
             expect(res.status).toBe(401);
         });
     });
+
+    describe('POST /api/forum/posts/:id/vote', () => {
+        it('debería permitir dar upvote a un post', async () => {
+            const post = await ForumPost.create({
+                title: 'Test Post',
+                content: 'Test Content',
+                author: testUser._id,
+                thread: new mongoose.Types.ObjectId(),
+                votes: {
+                    up: [],
+                    down: []
+                }
+            });
+
+            const res = await request(app)
+                .post(`/api/forum/posts/${post._id}/upvote`)
+                .set('Authorization', `Bearer ${authToken}`);
+
+            expect(res.status).toBe(200);
+            expect(res.body.votes.up).toContainEqual(testUser._id.toString());
+            expect(res.body.votes.down).not.toContainEqual(testUser._id.toString());
+        });
+
+        it('debería permitir dar downvote a un post', async () => {
+            const post = await ForumPost.create({
+                title: 'Test Post',
+                content: 'Test Content',
+                author: testUser._id,
+                thread: new mongoose.Types.ObjectId(),
+                votes: {
+                    up: [],
+                    down: []
+                }
+            });
+
+            const res = await request(app)
+                .post(`/api/forum/posts/${post._id}/downvote`)
+                .set('Authorization', `Bearer ${authToken}`);
+
+            expect(res.status).toBe(200);
+            expect(res.body.votes.down).toContainEqual(testUser._id.toString());
+            expect(res.body.votes.up).not.toContainEqual(testUser._id.toString());
+        });
+
+        it('debería requerir autenticación para votar', async () => {
+            const post = await ForumPost.create({
+                title: 'Test Post',
+                content: 'Test Content',
+                author: testUser._id,
+                thread: new mongoose.Types.ObjectId()
+            });
+
+            const res = await request(app)
+                .post(`/api/forum/posts/${post._id}/upvote`);
+
+            expect(res.status).toBe(401);
+        });
+    });
 }); 

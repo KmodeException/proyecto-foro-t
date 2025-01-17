@@ -122,4 +122,164 @@ describe('Thread Controller Test', () => {
             );
         });
     });
+
+    describe('update', () => {
+        it('debería actualizar un hilo existente', async () => {
+            const user = await User.create({
+                username: 'testuser',
+                email: 'test@test.com',
+                password: 'Test1234!'
+            });
+
+            const thread = await Thread.create({
+                name: 'Original Thread',
+                description: 'Original Description',
+                creator: user._id
+            });
+
+            const req = {
+                params: { id: thread._id },
+                body: {
+                    name: 'Updated Thread',
+                    description: 'Updated Description'
+                },
+                user: { _id: user._id }
+            };
+
+            const res = {
+                status: jest.fn().mockReturnThis(),
+                json: jest.fn()
+            };
+
+            await threadController.update(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(200);
+            expect(res.json).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    name: 'Updated Thread',
+                    description: 'Updated Description'
+                })
+            );
+        });
+
+        it('debería impedir actualización por usuario no autorizado', async () => {
+            const originalUser = await User.create({
+                username: 'originaluser',
+                email: 'original@test.com',
+                password: 'Test1234!'
+            });
+
+            const otherUser = await User.create({
+                username: 'otheruser',
+                email: 'other@test.com',
+                password: 'Test1234!'
+            });
+
+            const thread = await Thread.create({
+                name: 'Original Thread',
+                description: 'Original Description',
+                creator: originalUser._id
+            });
+
+            const req = {
+                params: { id: thread._id },
+                body: {
+                    name: 'Updated Thread',
+                    description: 'Updated Description'
+                },
+                user: { _id: otherUser._id }
+            };
+
+            const res = {
+                status: jest.fn().mockReturnThis(),
+                json: jest.fn()
+            };
+
+            await threadController.update(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(403);
+            expect(res.json).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    message: 'No autorizado'
+                })
+            );
+        });
+    });
+
+    describe('delete', () => {
+        it('debería eliminar un hilo existente', async () => {
+            const user = await User.create({
+                username: 'testuser',
+                email: 'test@test.com',
+                password: 'Test1234!'
+            });
+
+            const thread = await Thread.create({
+                name: 'Test Thread',
+                description: 'Test Description',
+                creator: user._id
+            });
+
+            const req = {
+                params: { id: thread._id },
+                user: { _id: user._id }
+            };
+
+            const res = {
+                status: jest.fn().mockReturnThis(),
+                json: jest.fn()
+            };
+
+            await threadController.delete(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(200);
+            expect(res.json).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    message: 'Hilo eliminado'
+                })
+            );
+
+            const deletedThread = await Thread.findById(thread._id);
+            expect(deletedThread).toBeNull();
+        });
+
+        it('debería impedir eliminación por usuario no autorizado', async () => {
+            const originalUser = await User.create({
+                username: 'originaluser',
+                email: 'original@test.com',
+                password: 'Test1234!'
+            });
+
+            const otherUser = await User.create({
+                username: 'otheruser',
+                email: 'other@test.com',
+                password: 'Test1234!'
+            });
+
+            const thread = await Thread.create({
+                name: 'Test Thread',
+                description: 'Test Description',
+                creator: originalUser._id
+            });
+
+            const req = {
+                params: { id: thread._id },
+                user: { _id: otherUser._id }
+            };
+
+            const res = {
+                status: jest.fn().mockReturnThis(),
+                json: jest.fn()
+            };
+
+            await threadController.delete(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(403);
+            expect(res.json).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    message: 'No autorizado'
+                })
+            );
+        });
+    });
 }); 

@@ -114,4 +114,61 @@ describe('User Controller', () => {
             });
         });
     });
+
+    describe('changeRole', () => {
+        it('debería cambiar el rol de un usuario', async () => {
+            const adminUser = await User.create({
+                username: 'adminuser',
+                email: 'admin@test.com',
+                password: 'Test1234!',
+                role: 'admin'
+            });
+
+            mockReq.params.id = mockUser._id; // ID del usuario a cambiar
+            mockReq.body = { role: 'moderator' };
+            mockReq.user._id = adminUser._id; // Admin cambiando el rol
+
+            await userController.changeRole(mockReq, mockRes);
+
+            expect(mockRes.status).toHaveBeenCalledWith(200);
+            expect(mockRes.json).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    role: 'moderator'
+                })
+            );
+        });
+
+        it('debería impedir cambio de rol por usuario no autorizado', async () => {
+            mockReq.params.id = mockUser._id; // ID del usuario a cambiar
+            mockReq.body = { role: 'moderator' };
+            mockReq.user._id = mockUser._id; // Usuario normal intentando cambiar su propio rol
+
+            await userController.changeRole(mockReq, mockRes);
+
+            expect(mockRes.status).toHaveBeenCalledWith(403);
+            expect(mockRes.json).toHaveBeenCalledWith({
+                message: 'No autorizado para cambiar el rol'
+            });
+        });
+
+        it('debería validar rol permitido', async () => {
+            const adminUser = await User.create({
+                username: 'adminuser',
+                email: 'admin@test.com',
+                password: 'Test1234!',
+                role: 'admin'
+            });
+
+            mockReq.params.id = mockUser._id; // ID del usuario a cambiar
+            mockReq.body = { role: 'invalid_role' }; // Rol no válido
+            mockReq.user._id = adminUser._id; // Admin cambiando el rol
+
+            await userController.changeRole(mockReq, mockRes);
+
+            expect(mockRes.status).toHaveBeenCalledWith(400);
+            expect(mockRes.json).toHaveBeenCalledWith({
+                message: 'Rol no válido'
+            });
+        });
+    });
 }); 

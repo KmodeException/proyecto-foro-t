@@ -58,4 +58,56 @@ describe('Karma Routes', () => {
             expect(Array.isArray(res.body.history)).toBe(true);
         });
     });
+
+    describe('POST /api/karma/:userId/update', () => {
+        it('debería actualizar karma por traducción aprobada', async () => {
+            const translation = await Translation.create({
+                content: 'Test Translation',
+                translator: testUser._id,
+                status: 'approved'
+            });
+
+            const res = await request(app)
+                .post(`/api/karma/${testUser._id}/update`)
+                .set('Authorization', `Bearer ${authToken}`)
+                .send({
+                    type: 'translation_approved',
+                    referenceId: translation._id
+                });
+
+            expect(res.status).toBe(200);
+            expect(res.body.karma).toBeGreaterThan(0);
+            expect(res.body).toHaveProperty('message', 'Karma actualizado correctamente');
+        });
+
+        it('debería actualizar karma por post votado positivamente', async () => {
+            const post = await ForumPost.create({
+                title: 'Test Post',
+                content: 'Test Content',
+                author: testUser._id
+            });
+
+            const res = await request(app)
+                .post(`/api/karma/${testUser._id}/update`)
+                .set('Authorization', `Bearer ${authToken}`)
+                .send({
+                    type: 'post_upvoted',
+                    referenceId: post._id
+                });
+
+            expect(res.status).toBe(200);
+            expect(res.body.karma).toBeGreaterThan(0);
+        });
+
+        it('debería requerir autenticación', async () => {
+            const res = await request(app)
+                .post(`/api/karma/${testUser._id}/update`)
+                .send({
+                    type: 'translation_approved',
+                    referenceId: new mongoose.Types.ObjectId()
+                });
+
+            expect(res.status).toBe(401);
+        });
+    });
 }); 

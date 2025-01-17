@@ -56,4 +56,50 @@ describe('Game Controller', () => {
             });
         });
     });
+
+    describe('assignTranslator', () => {
+        it('debería asignar un traductor al juego', async () => {
+            const translatorId = new mongoose.Types.ObjectId();
+            mockReq.params.id = mockGame._id;
+            mockReq.body.translatorId = translatorId;
+            mockGame.translators = [];
+            mockGame.save.mockResolvedValue(mockGame);
+
+            await gameController.assignTranslator(mockReq, mockRes);
+
+            expect(mockGame.translators).toContainEqual(
+                expect.objectContaining({
+                    user: translatorId
+                })
+            );
+            expect(mockRes.status).toHaveBeenCalledWith(200);
+            expect(mockRes.json).toHaveBeenCalledWith(mockGame);
+        });
+
+        it('debería validar si el traductor ya está asignado', async () => {
+            const translatorId = new mongoose.Types.ObjectId();
+            mockReq.params.id = mockGame._id;
+            mockReq.body.translatorId = translatorId;
+            mockGame.translators = [{ user: translatorId }];
+
+            await gameController.assignTranslator(mockReq, mockRes);
+
+            expect(mockRes.status).toHaveBeenCalledWith(400);
+            expect(mockRes.json).toHaveBeenCalledWith({
+                message: 'Traductor ya asignado'
+            });
+        });
+
+        it('debería validar si el juego existe', async () => {
+            Game.findById.mockResolvedValue(null);
+            mockReq.params.id = new mongoose.Types.ObjectId();
+
+            await gameController.assignTranslator(mockReq, mockRes);
+
+            expect(mockRes.status).toHaveBeenCalledWith(404);
+            expect(mockRes.json).toHaveBeenCalledWith({
+                message: 'Juego no encontrado'
+            });
+        });
+    });
 }); 

@@ -64,4 +64,38 @@ describe('Auth Routes', () => {
             expect(res.body).toHaveProperty('message', 'Credenciales inválidas');
         });
     });
+
+    describe('GET /api/auth/profile', () => {
+        it('debería obtener perfil de usuario autenticado', async () => {
+            // Crear usuario y obtener token
+            const user = await User.create({
+                username: 'testuser',
+                email: 'test@test.com',
+                password: 'Test1234!'
+            });
+            
+            const loginRes = await request(app)
+                .post('/api/auth/login')
+                .send({
+                    email: 'test@test.com',
+                    password: 'Test1234!'
+                });
+
+            const res = await request(app)
+                .get('/api/auth/profile')
+                .set('Authorization', `Bearer ${loginRes.body.token}`);
+
+            expect(res.status).toBe(200);
+            expect(res.body).toHaveProperty('username', user.username);
+            expect(res.body).not.toHaveProperty('password');
+        });
+
+        it('debería rechazar acceso sin token', async () => {
+            const res = await request(app)
+                .get('/api/auth/profile');
+
+            expect(res.status).toBe(401);
+            expect(res.body).toHaveProperty('message', 'Token no proporcionado');
+        });
+    });
 });

@@ -171,4 +171,47 @@ describe('User Controller', () => {
             });
         });
     });
+
+    describe('deleteUser', () => {
+        it('debería eliminar un usuario', async () => {
+            mockReq.params.id = mockUser._id; // ID del usuario a eliminar
+            mockReq.user._id = mockUser._id; // Usuario eliminando su propio perfil
+
+            await userController.deleteUser(mockReq, mockRes);
+
+            expect(mockRes.status).toHaveBeenCalledWith(200);
+            expect(mockRes.json).toHaveBeenCalledWith({
+                message: 'Usuario eliminado correctamente'
+            });
+        });
+
+        it('debería impedir eliminación de otro usuario', async () => {
+            const anotherUser = await User.create({
+                username: 'anotheruser',
+                email: 'another@test.com',
+                password: 'Test1234!'
+            });
+
+            mockReq.params.id = anotherUser._id; // ID de otro usuario
+            mockReq.user._id = mockUser._id; // Usuario normal intentando eliminar a otro
+
+            await userController.deleteUser(mockReq, mockRes);
+
+            expect(mockRes.status).toHaveBeenCalledWith(403);
+            expect(mockRes.json).toHaveBeenCalledWith({
+                message: 'No autorizado para eliminar este usuario'
+            });
+        });
+
+        it('debería manejar usuario no encontrado', async () => {
+            mockReq.params.id = new mongoose.Types.ObjectId(); // ID no existente
+
+            await userController.deleteUser(mockReq, mockRes);
+
+            expect(mockRes.status).toHaveBeenCalledWith(404);
+            expect(mockRes.json).toHaveBeenCalledWith({
+                message: 'Usuario no encontrado'
+            });
+        });
+    });
 }); 

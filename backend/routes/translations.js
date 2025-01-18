@@ -60,7 +60,10 @@ router.patch('/:id/review',
  *     tags: [Translations]
  *     summary: Obtener traducciones por juego
  */
-router.get('/game/:gameId', translationController.getByGame);
+router.get('/game/:gameId', 
+    authenticate, 
+    translationController.getByGame
+);
 
 router.get('/:id', translationController.getById);
 router.patch('/:id/approve', authenticate, checkRole(['admin']), translationController.approveTranslation);

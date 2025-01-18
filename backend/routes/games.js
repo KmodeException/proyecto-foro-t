@@ -1,7 +1,7 @@
 import express from 'express';
 import { gameController } from '../controllers/games/gameController.js';
 import { authenticate } from '../middleware/authMiddleware.js';
-import { roleCheck } from '../middleware/roleCheck.js';
+import { checkRole } from '../middleware/authMiddleware.js';
 import { gameValidators } from '../validators/games.validators.js';
 
 const router = express.Router();
@@ -119,14 +119,14 @@ const router = express.Router();
 router.get('/', gameController.getAll);
 router.post('/', 
     authenticate, 
-    roleCheck(['admin', 'translator']), 
+    checkRole(['admin', 'translator']),
     gameValidators.create, 
     gameController.create
 );
 router.get('/:id', gameController.getById);
 router.patch('/:id/status',
     authenticate,
-    roleCheck(['admin', 'translator']),
+    checkRole(['admin', 'translator']),
     gameValidators.updateStatus,
     gameController.updateStatus
 );

@@ -96,12 +96,6 @@ app.get('/health', (req, res) => {
     });
 });
 
-// Logging middleware
-app.use((req, res, next) => {
-    console.log(`${new Date().toISOString()} - ${req.method} ${req.originalUrl}`);
-    next();
-});
-
 // Manejar rutas no encontradas
 app.use('*', (req, res) => {
     res.status(404).json({
@@ -144,5 +138,6 @@ process.on('SIGTERM', () => {
     console.log('👋 Cerrando servidor...');
     process.exit(0);
 });
-
+// Exportar la función para iniciar el servidor
 export { app, startServer };
+

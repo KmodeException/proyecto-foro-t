@@ -2,6 +2,9 @@ import jwt from 'jsonwebtoken';
 import passport from 'passport';
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import User from '../models/User.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 /**
  * @swagger

@@ -1,7 +1,7 @@
 import express from 'express';
 import { translationController } from '../controllers/translations/translationController.js';
 import { authenticate } from '../middleware/authMiddleware.js';
-import { roleCheck } from '../middleware/roleCheck.js';
+import { checkRole } from '../middleware/authMiddleware.js';
 
 /**
  * @swagger
@@ -23,7 +23,7 @@ const router = express.Router();
  */
 router.post('/', 
     authenticate, 
-    roleCheck(['translator', 'admin']), 
+    checkRole(['translator', 'admin']), 
     translationController.create
 );
 
@@ -36,7 +36,7 @@ router.post('/',
  */
 router.put('/:id', 
     authenticate, 
-    roleCheck(['translator', 'admin']), 
+    checkRole(['translator', 'admin']), 
     translationController.update
 );
 
@@ -49,7 +49,7 @@ router.put('/:id',
  */
 router.patch('/:id/review', 
     authenticate, 
-    roleCheck(['admin']), 
+    checkRole(['admin']), 
     translationController.review
 );
 
@@ -63,7 +63,7 @@ router.patch('/:id/review',
 router.get('/game/:gameId', translationController.getByGame);
 
 router.get('/:id', translationController.getById);
-router.patch('/:id/approve', authenticate, roleCheck(['admin']), translationController.approveTranslation);
-router.patch('/:id/reject', authenticate, roleCheck(['admin']), translationController.rejectTranslation);
+router.patch('/:id/approve', authenticate, checkRole(['admin']), translationController.approveTranslation);
+router.patch('/:id/reject', authenticate, checkRole(['admin']), translationController.rejectTranslation);
 
 export default router;

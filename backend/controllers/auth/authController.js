@@ -12,10 +12,30 @@ export const authController = {
     login: async (req, res) => {
         try {
             const { email, password } = req.body;
-            // ...existing code...
+
+            // Lógica para autenticar al usuario
+            const user = await User.findOne({ email });
+            if (!user) {
+                return res.status(401).json({ message: 'Credenciales inválidas' });
+            }
+
+            // Verificar la contraseña
+            const isMatch = await user.comparePassword(password);
+            if (!isMatch) {
+                return res.status(401).json({ message: 'Credenciales inválidas' });
+            }
+
+            // Generar el token JWT
+            const token = jwt.sign(
+                { id: user._id, role: user.role }, // Payload
+                process.env.JWT_SECRET, // Clave secreta para firmar el token
+                { expiresIn: '1h' } // Tiempo de expiración
+            );
+
+            // Devolver el token al cliente
             res.status(200).json({ 
                 message: 'Inicio de sesión exitoso',
-                token
+                token // Devuelve el token al cliente
             });
         } catch (error) {
             res.status(500).json({ 

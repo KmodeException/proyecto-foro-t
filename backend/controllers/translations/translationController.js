@@ -42,5 +42,22 @@ export const translationController = {
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
-    }
+    },
+
+    review: async (req, res) => {
+        // Lógica para revisar una traducción
+        res.status(200).json({ message: 'Traducción revisada exitosamente' });
+    },
+
+    update: async (req, res) => {
+        try {
+            const translation = await Translation.findByIdAndUpdate(req.params.id, req.body, { new: true });
+            if (!translation) {
+                return res.status(404).json({ message: 'Traducción no encontrada' });
+            }
+            res.status(200).json(translation);
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    },
 };

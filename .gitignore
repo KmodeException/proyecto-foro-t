@@ -47,3 +47,6 @@ Thumbs.db
 *.gz
 *.swp
 *.txt
+
+# Ignorar carpeta de cobertura
+/backend/coverage/

@@ -47,9 +47,9 @@
  *           type: number
  */
 
-import User from '../../models/User.js';
-import { REPUTATION_ACTIONS, REPUTATION_LEVELS } from './reputation.constants.js';
-import { ReputationTypes } from './reputation.types.js';
+import User from '../models/User.js';
+import { REPUTATION_ACTIONS, REPUTATION_LEVELS } from '../constants/reputation.constants.js';
+import { ReputationTypes } from '../constants/reputation.types.js';
 
 export class ReputationService {
     static async updateReputation(userId, action, sourceId = null) {

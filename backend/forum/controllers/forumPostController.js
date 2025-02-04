@@ -1,7 +1,7 @@
 import ForumPost from '../models/ForumPost.js';
-import { ReputationService } from '../../../users/services/reputation.service.js';
-import { REPUTATION_ACTIONS } from '../../../users/constants/reputation.constants.js';
-import { get } from 'http';
+import { ReputationService } from '../../users/services/reputation.service.js';
+import { REPUTATION_ACTIONS } from '../../users/constants/reputation.constants.js';
+
 
 /**
  * @swagger

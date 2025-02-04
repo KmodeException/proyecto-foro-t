@@ -62,10 +62,10 @@
  */
 
 import express from 'express';
-import { threadController } from '../../controllers/forum/threadController.js';
-import { authenticate } from '../../middleware/authMiddleware.js';
-import { threadValidator } from '../../validators/forum/thread.validator.js';
-import { karmaCheck } from '../../middleware/karmaCheck.js';
+import { threadController } from '../controllers/threadController.js';
+import { authenticate } from '../../auth/middleware/authMiddleware.js';
+import { threadValidator } from '../validators/thread.validator.js';
+import { karmaCheck } from '../../common/middleware/karmaCheck.js';
 
 const router = express.Router();
 

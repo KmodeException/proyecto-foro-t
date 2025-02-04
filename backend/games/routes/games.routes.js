@@ -1,7 +1,7 @@
 import express from 'express';
-import { gameController } from '../controllers/games/gameController.js';
-import { authenticate } from '../middleware/authMiddleware.js';
-import { checkRole } from '../middleware/authMiddleware.js';
+import { gameController } from '../controllers/gameController.js';
+import { authenticate } from '../../auth/middleware/authMiddleware.js';
+import { checkRole } from '../../auth/middleware/authMiddleware.js';
 import { gameValidators } from '../validators/games.validators.js';
 
 const router = express.Router();

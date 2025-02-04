@@ -1,7 +1,7 @@
 import express from 'express';
-import { translationController } from '../controllers/translations/translationController.js';
-import { authenticate } from '../middleware/authMiddleware.js';
-import { checkRole } from '../middleware/authMiddleware.js';
+import { translationController } from '../controllers/translationController.js';
+import { authenticate } from '../../auth/middleware/authMiddleware.js';
+import { checkRole } from '../../auth/middleware/authMiddleware.js';
 
 /**
  * @swagger

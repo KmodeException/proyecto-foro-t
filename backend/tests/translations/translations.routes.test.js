@@ -1,9 +1,9 @@
 import request from 'supertest';
 import mongoose from 'mongoose';
 import { app } from '../../../server.js';
-import User from '../../../models/User.js';
-import Game from '../../../models/Game.js';
-import Translation from '../../../models/Translation.js';
+import User from '../../users/models/User.js';
+import Game from '../../games/models/Game.js';
+import Translation from '../../translations/models/Translation.js';
 
 describe('Translation Routes', () => {
     let authToken;

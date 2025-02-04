@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import { app } from '../../../server.js';
 import User from '../../users/models/User.js';
 import ForumPost from '../../forum/models/ForumPost.js';
-import Translation from '../../../models/Translation.js';
+import Translation from '../../translations/models/Translation.js';
 
 describe('Karma Routes', () => {
     let authToken;

@@ -65,10 +65,10 @@
  */
 
 import express from 'express';
-import { forumCommentController } from '../../controllers/forum/forumCommentController.js';
-import { authenticate } from '../../middleware/authMiddleware.js';
-import { commentValidator } from '../../validators/forum/comment.validator.js';
-import { karmaCheck } from '../../middleware/karmaCheck.js';
+import { forumCommentController } from '../controllers/forumCommentController.js';
+import { authenticate } from '../../auth/middleware/authMiddleware.js';
+import { commentValidator } from '../validators/comments.validators.js';
+import { karmaCheck } from '../../common/middleware/karmaCheck.js';
 
 const router = express.Router();
 

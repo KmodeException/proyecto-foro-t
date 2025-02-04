@@ -1,5 +1,5 @@
 import { karmaCheck } from '../../../common/middleware/karmaCheck.js';
-import User from '../../../models/User.js';
+import User from '../../users/models/User.js';
 import mongoose from 'mongoose';
 
 describe('Karma Check Middleware', () => {

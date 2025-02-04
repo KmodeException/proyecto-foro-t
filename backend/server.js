@@ -13,14 +13,14 @@ import swaggerUi from 'swagger-ui-express';
 import morgan from 'morgan';
 
 // Rutas
-import authRoutes from './routes/auth.js';
-import gamesRoutes from './routes/games.js';
-import translationRoutes from './routes/translations.js';
+import authRoutes from './users/routes/auth.routes.js';
+import gamesRoutes from './games/routes/games.routes.js';
+import translationRoutes from './translations/routes/translations.routes.js';
 
 // Rutas foro
-import threadRoutes from './routes/forum/thread.routes.js';
-import forumPostRoutes from './routes/forum/post.routes.js';
-import forumCommentRoutes from './routes/forum/comment.routes.js';
+import threadRoutes from './forum/routes/thread.routes.js';
+import forumPostRoutes from './forum/routes/post.routes.js';
+import forumCommentRoutes from './forum/routes/comment.routes.js';
 // import { load } from 'yamljs';
 
 // Configuración
@@ -68,7 +68,13 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use(express.static(path.join(__dirname, 'docs')));
 
 // Rutas existentes
+// Configuración de rutas
 app.use('/api/auth', authRoutes);
+app.use('/api/games', gamesRoutes);
+app.use('/api/translations', translationRoutes);
+app.use('/api/forum/threads', threadRoutes);
+app.use('/api/forum/posts', forumPostRoutes);
+app.use('/api/forum/comments', forumCommentRoutes);
 app.use('/api/games', gamesRoutes);
 app.use('/api/translations', translationRoutes);
 

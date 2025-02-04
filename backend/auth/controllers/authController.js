@@ -2,40 +2,81 @@ import User from '../../users/models/User.js';
 import jwt from 'jsonwebtoken';
 
 export const authController = {
-    
-    register: (req, res) => {
-        // Lógica para registrar un usuario
-        res.status(201).json({ message: 'Usuario registrado exitosamente' });
+    register: async (req, res) => {
+        try {
+            const { username, email, password } = req.body;
+
+            // Verificar si el usuario ya existe
+            const existingUser = await User.findOne({ 
+                $or: [{ email }, { username }] 
+            });
+            
+            if (existingUser) {
+                return res.status(400).json({ 
+                    message: 'El usuario o email ya está registrado' 
+                });
+            }
+
+            // Crear nuevo usuario
+            const user = new User({
+                username,
+                email,
+                password
+            });
+
+            await user.save();
+
+            // Generar token
+            const token = jwt.sign(
+                { id: user._id, role: user.role },
+                process.env.JWT_SECRET,
+                { expiresIn: '1h' }
+            );
+
+            res.status(201).json({ 
+                message: 'Usuario registrado exitosamente',
+                token
+            });
+        } catch (error) {
+            res.status(500).json({ 
+                message: 'Error al registrar usuario',
+                error: error.message 
+            });
+        }
     },
 
-    
     login: async (req, res) => {
         try {
             const { email, password } = req.body;
 
-            // Lógica para autenticar al usuario
+            // Buscar usuario
             const user = await User.findOne({ email });
             if (!user) {
                 return res.status(401).json({ message: 'Credenciales inválidas' });
             }
 
-            // Verificar la contraseña
+            // Verificar contraseña
             const isMatch = await user.comparePassword(password);
             if (!isMatch) {
                 return res.status(401).json({ message: 'Credenciales inválidas' });
             }
 
-            // Generar el token JWT
+            // Generar token
             const token = jwt.sign(
-                { id: user._id, role: user.role }, // Payload
-                process.env.JWT_SECRET, // Clave secreta para firmar el token
-                { expiresIn: '1h' } // Tiempo de expiración
+                { id: user._id, role: user.role },
+                process.env.JWT_SECRET,
+                { expiresIn: '1h' }
             );
 
-            // Devolver el token al cliente
             res.status(200).json({ 
                 message: 'Inicio de sesión exitoso',
-                token // Devuelve el token al cliente
+                token,
+                user: {
+                    id: user._id,
+                    username: user.username,
+                    email: user.email,
+                    role: user.role
+                }
             });
         } catch (error) {
             res.status(500).json({ 
@@ -45,10 +86,16 @@ export const authController = {
         }
     },
 
-    
     getProfile: async (req, res) => {
         try {
-            const user = await User.findById(req.user._id).select('-password');
+            const user = await User.findById(req.user.id)
+                .select('-password')
+                .select('-__v');
+                
+            if (!user) {
+                return res.status(404).json({ message: 'Usuario no encontrado' });
+            }
+
             res.json(user);
         } catch (error) {
             res.status(500).json({ 

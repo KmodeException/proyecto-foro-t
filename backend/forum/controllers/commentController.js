@@ -1,4 +1,4 @@
-import Comment from '../../models/Comment.js';
+import Comment from '../models/Comment.js';
 import User from '../../models/User.js';
 import jwt from 'jsonwebtoken';
 

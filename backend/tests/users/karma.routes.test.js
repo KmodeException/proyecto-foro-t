@@ -1,8 +1,8 @@
 import request from 'supertest';
 import mongoose from 'mongoose';
 import { app } from '../../../server.js';
-import User from '../../../models/User.js';
-import ForumPost from '../../../models/ForumPost.js';
+import User from '../../users/models/User.js';
+import ForumPost from '../../forum/models/ForumPost.js';
 import Translation from '../../../models/Translation.js';
 
 describe('Karma Routes', () => {

@@ -1,4 +1,4 @@
-import { ReputationService } from '../modules/reputation/reputation.service.js';
+import { ReputationService } from '../users/services/reputation.service.js';
 
 /**
  * @swagger

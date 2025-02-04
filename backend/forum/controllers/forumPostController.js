@@ -1,6 +1,6 @@
 import ForumPost from '../../models/ForumPost.js';
-import { ReputationService } from '../../modules/reputation/reputation.service.js';
-import { REPUTATION_ACTIONS } from '../../modules/reputation/reputation.constants.js';
+import { ReputationService } from '../../../users/services/reputation.service.js';
+import { REPUTATION_ACTIONS } from '../../../users/constants/reputation.constants.js';
 import { get } from 'http';
 
 /**

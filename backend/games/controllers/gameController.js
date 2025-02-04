@@ -1,4 +1,4 @@
-import Game from '../../models/Game.js';
+import Game from '../models/Game.js';
 
 export const gameController = {
     // Crear nuevo juego

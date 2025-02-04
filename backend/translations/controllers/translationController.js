@@ -1,4 +1,4 @@
-import Translation from '../../models/Translation.js';
+import Translation from '../models/Translation.js';
 
 export const translationController = {
     create: async (req, res) => {

@@ -1,4 +1,4 @@
-import Thread from '../../models/Thread.js';
+import Thread from '../models/Thread.js';
 
 /**
  * @swagger

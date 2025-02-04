@@ -1,4 +1,4 @@
-import ForumComment from '../../models/ForumComment.js';
+import ForumComment from '../models/ForumComment.js';
 import { ReputationService } from '../../../users/services/reputation.service.js';
 import { REPUTATION_ACTIONS } from '../../../users/constants/reputation.constants.js';
 

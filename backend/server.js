@@ -13,7 +13,7 @@ import swaggerUi from 'swagger-ui-express';
 import morgan from 'morgan';
 
 // Rutas
-import authRoutes from './users/routes/auth.routes.js';
+import authRoutes from './auth/routes/auth.routes.js';
 import gamesRoutes from './games/routes/games.routes.js';
 import translationRoutes from './translations/routes/translations.routes.js';
 

@@ -1,4 +1,5 @@
 import Translation from '../models/Translation.js';
+import { ReputationService } from '../../users/services/reputation.service.js';
 
 export const translationController = {
     create: async (req, res) => {

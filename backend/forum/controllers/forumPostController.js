@@ -1,6 +1,7 @@
 import ForumPost from '../../models/ForumPost.js';
 import { ReputationService } from '../../modules/reputation/reputation.service.js';
 import { REPUTATION_ACTIONS } from '../../modules/reputation/reputation.constants.js';
+import { get } from 'http';
 
 /**
  * @swagger
@@ -89,6 +90,16 @@ export const forumPostController = {
             res.status(500).json({ message: error.message });
         }
     },
+
+    getById: async (req, res) => {
+        try {
+            const post = await ForumPost.findById(req.params.id)
+                .populate('author', 'username reputation level');
+            res.json(post);
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    }, 
 
     vote: async (req, res) => {
         try {

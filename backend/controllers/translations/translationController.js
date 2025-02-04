@@ -60,4 +60,11 @@ export const translationController = {
             res.status(500).json({ message: error.message });
         }
     },
+    approveTranslation: async (req, res) => {
+        res.status(200).json({ message: 'Traducción aprobada exitosamente' });
+    },
+
+    rejectTranslation: async (req, res) => {
+        res.status(200).json({ message: 'Traducción rechazada exitosamente' });
+    }
 };

@@ -113,12 +113,14 @@ export const forumCommentController = {
                 return res.status(404).json({ message: 'Comentario no encontrado' });
             }
 
+            // Actualizar votos
             const voteField = `votes.${type}`;
             await ForumComment.updateOne(
                 { _id: comment._id },
                 { $addToSet: { [voteField]: req.user._id } }
             );
 
+            // Actualizar reputación
             await ReputationService.updateReputation(
                 comment.author,
                 type === 'up' ? 
@@ -134,5 +136,62 @@ export const forumCommentController = {
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
+    },
+
+    upvote: async (req, res) => {
+        try {
+            const comment = await ForumComment.findById(req.params.id);
+            if (!comment) {
+                return res.status(404).json({ message: 'Comentario no encontrado' });
+            }
+
+            // Verificar si el usuario ya votó
+            if (comment.votes.up.includes(req.user._id)) {
+                return res.status(403).json({ message: 'Ya votaste este comentario' });
+            }
+
+            // Remover voto down si existe
+            comment.votes.down = comment.votes.down.filte(
+                id => id.toString() !== req.user._id.toString()
+            );
+
+            // Agregar voto up
+            comment.votes.up.push(req.user._id);
+            await comment.save();
+
+            res.status(200).json(comment);
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+
+    },
+
+    downvote: async (req, res) => {
+        try {
+            const comment = await ForumComment.findById(req.params.id);
+            if (!comment) {
+                return res.status(404).json({ message: 'Comentario no encontrado' });
+            }
+
+            // Verificar si el usuario ya votó
+            if (comment.votes.down.includes(req.user._id)) {
+                return res.status(403).json({ message: 'Ya votaste este comentario' });
+            }
+
+            // Remover voto up si existe
+            comment.votes.up = comment.votes.up.filter(
+                id => id.toString() !== req.user._id.toString()
+            );
+
+            // Agregar voto down
+            comment.votes.down.push(req.user._id);
+            await comment.save();
+
+            res.status(200).json(comment);
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
     }
+
+
 };

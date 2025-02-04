@@ -1,9 +1,10 @@
 // backend/server.js
 
+// dependencias
 import express from 'express';
 import cors from 'cors';
 import passport from 'passport';
-import dotenv from 'dotenv';
+import dotenv from 'dotenv'; ;
 import { fileURLToPath } from 'url';
 import path from 'path';
 import connectDB from './config/db.js';
@@ -20,6 +21,7 @@ import translationRoutes from './routes/translations.js';
 import threadRoutes from './routes/forum/thread.routes.js';
 import forumPostRoutes from './routes/forum/post.routes.js';
 import forumCommentRoutes from './routes/forum/comment.routes.js';
+// import { load } from 'yamljs';
 
 // Configuración
 dotenv.config();
@@ -115,11 +117,8 @@ app.use((err, req, res, next) => {
 });
 
 // Export app
-const startServer = () => {
-    try {
-        // Conectar DB
-        connectDB();
-        
+///const startServer = () => {
+    try {        
         // Iniciar servidor
         app.listen(PORT, () => {
             console.log(`✅ Servidor corriendo en http://localhost:${PORT}`);
@@ -131,13 +130,11 @@ const startServer = () => {
         console.error('❌ Error al iniciar servidor:', error);
         process.exit(1);
     }
-};
+//};
 
 // Manejo de señales de terminación
 process.on('SIGTERM', () => {
     console.log('👋 Cerrando servidor...');
     process.exit(0);
 });
-// Exportar la función para iniciar el servidor
-export { app, startServer };
 

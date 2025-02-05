@@ -58,8 +58,7 @@ const userSchema = new mongoose.Schema({
   },
   age: { 
     type: Number,
-    required: [true, 'La edad es obligatoria'],
-    min: [1, 'La edad debe ser un número positivo'],
+    required: false,
   },
   role: { 
     type: String,
@@ -90,6 +89,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ['Novato', 'Contribuidor', 'Experto'],
     default: 'Novato'
+  },
+  karma: {
+    type: Number,
+    default: 0
   }
 }, { timestamps: true });
 

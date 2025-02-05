@@ -67,17 +67,27 @@
 import express from 'express';
 import { forumCommentController } from '../controllers/forumCommentController.js';
 import { authenticate } from '../../auth/middleware/authMiddleware.js';
-import { commentValidator } from '../validators/comments.validators.js';
+import { commentValidator } from '../validators/comment.validator.js';
 import { karmaCheck } from '../../common/middleware/karmaCheck.js';
 
 const router = express.Router();
 
 // Rutas base
-router.post('/', authenticate, forumCommentController.create);
+router.post('/', 
+    authenticate, 
+    karmaCheck('createComment'),
+    commentValidator.create,
+    forumCommentController.create
+);
+
 router.get('/post/:postId', forumCommentController.getByPost);
 
 // Rutas de votos
-router.post('/:id/upvote', authenticate, forumCommentController.upvote);
-router.post('/:id/downvote', authenticate, forumCommentController.downvote);
+router.post('/:id/vote',
+    authenticate,
+    karmaCheck('vote'),
+    commentValidator.vote,
+    forumCommentController.vote
+);
 
 export default router;

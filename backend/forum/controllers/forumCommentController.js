@@ -70,71 +70,74 @@ export const forumCommentController = {
     create: async (req, res) => {
         try {
             const { content, postId, parentCommentId } = req.body;
-            const comment = new ForumComment({
+            const comment = await ForumComment.create({
                 content,
                 post: postId,
                 author: req.user._id,
                 parentComment: parentCommentId || null
             });
+            
+            await comment.populate('author', 'username');
+            
+            // Actualizar reputación
+            await ReputationService.updateReputation(
+                req.user._id,
+                REPUTATION_ACTIONS.CREATE_COMMENT
+            );
 
-            await comment.save();
-            await comment.populate('author', 'username reputation level');
             res.status(201).json(comment);
         } catch (error) {
-            res.status(500).json({ message: error.message });
+            res.status(400).json({ message: error.message });
         }
     },
 
     getByPost: async (req, res) => {
         try {
-            const comments = await ForumComment.find({ 
-                post: req.params.postId,
-                parentComment: null 
-            })
-            .populate('author', 'username')
-            .populate({
-                path: 'replies',
-                populate: { path: 'author', select: 'username' }
-            })
-            .sort('-createdAt');
-
+            const { postId } = req.params;
+            const comments = await ForumComment.find({ post: postId })
+                .populate('author', 'username')
+                .populate({
+                    path: 'replies',
+                    populate: { path: 'author', select: 'username' }
+                })
+                .sort('-createdAt');
             res.json(comments);
         } catch (error) {
-            res.status(500).json({ message: error.message });
+            res.status(400).json({ message: error.message });
         }
     },
 
     vote: async (req, res) => {
         try {
+            const { id } = req.params;
             const { type } = req.body;
-            const comment = await ForumComment.findById(req.params.id);
+            const comment = await ForumComment.findById(id);
             
             if (!comment) {
                 return res.status(404).json({ message: 'Comentario no encontrado' });
             }
 
-            // Actualizar votos
-            const voteField = `votes.${type}`;
-            await ForumComment.updateOne(
-                { _id: comment._id },
-                { $addToSet: { [voteField]: req.user._id } }
+            // Remover voto existente si existe
+            comment.votes.up = comment.votes.up.filter(
+                userId => userId.toString() !== req.user._id.toString()
             );
+            comment.votes.down = comment.votes.down.filter(
+                userId => userId.toString() !== req.user._id.toString()
+            );
+
+            // Agregar nuevo voto
+            comment.votes[type].push(req.user._id);
+            await comment.save();
 
             // Actualizar reputación
             await ReputationService.updateReputation(
                 comment.author,
-                type === 'up' ? 
-                    REPUTATION_ACTIONS.COMMUNITY.COMMENT_UPVOTE : 
-                    REPUTATION_ACTIONS.COMMUNITY.COMMENT_DOWNVOTE,
-                comment._id
+                type === 'up' ? REPUTATION_ACTIONS.COMMENT_UPVOTE : REPUTATION_ACTIONS.COMMENT_DOWNVOTE
             );
 
-            const updatedComment = await ForumComment.findById(comment._id)
-                .populate('author', 'username reputation level');
-            
-            res.json(updatedComment);
+            res.json(comment);
         } catch (error) {
-            res.status(500).json({ message: error.message });
+            res.status(400).json({ message: error.message });
         }
     },
 

@@ -93,7 +93,7 @@ app.get('/', (req, res) => {
     res.redirect('/api-docs');
 });
 
-// Health check
+// Agregar antes de los manejadores de errores
 app.get('/health', (req, res) => {
     res.status(200).json({
         status: 'success',
@@ -122,25 +122,18 @@ app.use((err, req, res, next) => {
     });
 });
 
-// Export app
-///const startServer = () => {
-    try {        
-        // Iniciar servidor
-        app.listen(PORT, () => {
-            console.log(`✅ Servidor corriendo en http://localhost:${PORT}`);
-            console.log(`📝 Documentación API en http://localhost:${PORT}/api-docs`);
-            console.log(`🔋 Health check en http://localhost:${PORT}/health`);
-            console.log(`⚙️  Ambiente: ${process.env.NODE_ENV || 'development'}`);
-        });
-    } catch (error) {
-        console.error('❌ Error al iniciar servidor:', error);
-        process.exit(1);
-    }
-//};
+// Exportar app para tests
+export { app };
 
-// Manejo de señales de terminación
-process.on('SIGTERM', () => {
-    console.log('👋 Cerrando servidor...');
-    process.exit(0);
-});
+// Iniciar servidor solo si no estamos en test
+if (process.env.NODE_ENV !== 'test') {
+    app.listen(PORT, () => {
+        console.log(`✅ Servidor corriendo en http://localhost:${PORT}`);
+        console.log(`📝 Documentación API en http://localhost:${PORT}/api-docs`);
+        console.log(`🔋 Health check en http://localhost:${PORT}/health`);
+        console.log(`⚙️  Ambiente: ${process.env.NODE_ENV || 'development'}`);
+    });
+}
+
+export default app;
 

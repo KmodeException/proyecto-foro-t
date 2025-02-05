@@ -63,24 +63,32 @@
 
 import express from 'express';
 import { threadController } from '../controllers/threadController.js';
-import { authenticate } from '../../auth/middleware/authMiddleware.js';
+import { authenticate, checkRole } from '../../auth/middleware/authMiddleware.js';
 import { threadValidator } from '../validators/thread.validator.js';
-import { karmaCheck } from '../../common/middleware/karmaCheck.js';
 
 const router = express.Router();
 
 router.post('/', 
     authenticate, 
-    karmaCheck('createThread'),
-    threadValidator.create,
+    checkRole(['admin', 'moderator']), 
+    threadValidator.create, 
     threadController.create
 );
 
 router.get('/', threadController.getAll);
 router.get('/:id', threadController.getById);
 
-// Rutas de gestión
-router.patch('/:id', authenticate, threadController.update);
-router.delete('/:id', authenticate, threadController.delete);
+router.put('/:id',
+    authenticate,
+    checkRole(['admin', 'moderator']),
+    threadValidator.update,
+    threadController.update
+);
+
+router.delete('/:id',
+    authenticate,
+    checkRole(['admin']),
+    threadController.delete
+);
 
 export default router;

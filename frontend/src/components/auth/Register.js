@@ -12,7 +12,7 @@ const Register = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/register', { username, email, password, age });
+      const response = await axios.post('http://localhost:5000/api/auth/register', { username, email, password, age });
       console.log('Registered:', response.data);
       // Maneja la redirección después del registro
       navigate('/login');

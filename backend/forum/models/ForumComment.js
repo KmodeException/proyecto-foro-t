@@ -35,15 +35,19 @@ import mongoose from 'mongoose';
 const forumCommentSchema = new mongoose.Schema({
     content: {
         type: String,
-        required: true
+        required: [true, 'El contenido es requerido'],
+        trim: true,
+        minlength: [3, 'Mínimo 3 caracteres']
     },
     author: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'User',
+        required: true
     },
     post: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'ForumPost'
+        ref: 'ForumPost',
+        required: true
     },
     parentComment: {
         type: mongoose.Schema.Types.ObjectId,
@@ -70,5 +74,4 @@ forumCommentSchema.virtual('replies', {
     foreignField: 'parentComment'
 });
 
-const ForumComment = mongoose.model('ForumComment', forumCommentSchema);
-export default ForumComment;
+export default mongoose.model('ForumComment', forumCommentSchema); 

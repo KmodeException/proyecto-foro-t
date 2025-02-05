@@ -1,5 +1,4 @@
 import request from 'supertest';
-import mongoose from 'mongoose';
 import { app } from '../../server.js';
 import User from '../../users/models/User.js';
 import Game from '../../games/models/Game.js';
@@ -11,8 +10,6 @@ describe('Translation Routes', () => {
     let testGame;
 
     beforeAll(async () => {
-        await mongoose.connect(process.env.MONGO_URI_TEST || 'mongodb://localhost:27017/forum-test');
-        
         testUser = await User.create({
             username: 'testuser',
             email: 'test@test.com',
@@ -36,11 +33,9 @@ describe('Translation Routes', () => {
     });
 
     afterAll(async () => {
-        await mongoose.connection.close();
-    });
-
-    afterEach(async () => {
-        await Translation.deleteMany();
+        await User.deleteMany({});
+        await Game.deleteMany({});
+        await Translation.deleteMany({});
     });
 
     describe('POST /api/translations', () => {

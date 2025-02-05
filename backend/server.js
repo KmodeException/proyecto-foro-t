@@ -40,7 +40,12 @@ morgan.token('body', (req) => JSON.stringify(req.body));
 app.use(morgan(':method :url :status :response-time ms - :body'));
 
 // Conectar a MongoDB
-connectDB();
+try {
+    await connectDB();
+} catch (error) {
+    console.error('❌ Error fatal: No se pudo conectar a MongoDB');
+    process.exit(1);
+}
 
 // Swagger configuration
 const swaggerOptions = {
@@ -72,13 +77,8 @@ app.use(express.static(path.join(__dirname, 'docs')));
 app.use('/api/auth', authRoutes);
 app.use('/api/games', gameRoutes);
 app.use('/api/translations', translationRoutes);
-app.use('/api/forum/threads', threadRoutes);
-app.use('/api/forum/posts', forumPostRoutes);
-app.use('/api/forum/comments', forumCommentRoutes);
-app.use('/api/games', gameRoutes);
-app.use('/api/translations', translationRoutes);
 
-// Rutas del foro
+// Rutas foro
 app.use('/api/forum/threads', threadRoutes);
 app.use('/api/forum/posts', forumPostRoutes);
 app.use('/api/forum/comments', forumCommentRoutes);

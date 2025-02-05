@@ -10,26 +10,25 @@ describe('Karma Routes', () => {
     let testUser;
 
     beforeAll(async () => {
-        await mongoose.connect(process.env.MONGO_URI_TEST || 'mongodb://localhost:27017/forum-test');
-        
+        // No necesitamos conectar aquí, jest.setup.js lo hace
         testUser = await User.create({
             username: 'testuser',
             email: 'test@test.com',
-            password: 'Test1234!'
+            password: 'password123'
         });
 
         const loginRes = await request(app)
             .post('/api/auth/login')
             .send({
                 email: 'test@test.com',
-                password: 'Test1234!'
+                password: 'password123'
             });
 
         authToken = loginRes.body.token;
     });
 
     afterAll(async () => {
-        await mongoose.connection.close();
+        await User.deleteMany({});
     });
 
     afterEach(async () => {

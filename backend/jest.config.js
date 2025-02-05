@@ -6,10 +6,14 @@ export default {
     collectCoverage: true,
     coverageDirectory: 'coverage',
     transform: {
-        '^.+\\.js$': ['babel-jest', { configFile: './babel.config.js' }]
+        '^.+\\.js$': ['babel-jest']
     },
     moduleNameMapper: {
+        '^@/(.*)$': '<rootDir>/$1',
         '^(\\.{1,2}/.*)\\.js$': '$1'
     },
-    setupFilesAfterEnv: ['./jest.setup.js']
+    testPathIgnorePatterns: ['/node_modules/'],
+    setupFilesAfterEnv: ['./jest.setup.js'],
+    roots: ['<rootDir>'],
+    modulePaths: ['<rootDir>']
 };

@@ -46,8 +46,25 @@ export const translationController = {
     },
 
     review: async (req, res) => {
-        // Lógica para revisar una traducción
-        res.status(200).json({ message: 'Traducción revisada exitosamente' });
+        try {
+            const { id } = req.params;
+            const { status, reviewComments } = req.body;
+            
+            const translation = await Translation.findById(id);
+            if (!translation) {
+                return res.status(404).json({ message: 'Traducción no encontrada' });
+            }
+
+            translation.status = status;
+            translation.reviewComments = reviewComments;
+            translation.reviewedBy = req.user._id;
+            translation.reviewDate = new Date();
+
+            await translation.save();
+            res.json(translation);
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
     },
 
     update: async (req, res) => {
@@ -62,7 +79,32 @@ export const translationController = {
         }
     },
     approveTranslation: async (req, res) => {
-        res.status(200).json({ message: 'Traducción aprobada exitosamente' });
+        try {
+            const translation = await Translation.findByIdAndUpdate(
+                req.params.id,
+                {
+                    status: 'approved',
+                    reviewedBy: req.user._id,
+                    reviewDate: new Date()
+                },
+                { new: true }
+            );
+            
+            if (!translation) {
+                return res.status(404).json({ message: 'Traducción no encontrada' });
+            }
+
+            // Actualizar reputación del traductor
+            await ReputationService.updateReputation(
+                translation.translator,
+                'TRANSLATION_APPROVED',
+                translation._id
+            );
+
+            res.json(translation);
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
     },
 
     rejectTranslation: async (req, res) => {

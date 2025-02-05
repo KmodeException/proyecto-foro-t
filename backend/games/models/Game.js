@@ -12,6 +12,36 @@ import mongoose from 'mongoose';
  *       required:
  *         - title
  *         - platform
+ *       properties:
+ *         title:
+ *           type: string
+ *           description: Título del juego
+ *         platform:
+ *           type: array
+ *           items:
+ *             type: string
+ *             enum: [PC, PS4, PS5, Xbox One, Xbox Series, Switch, Mobile]
+ *         status:
+ *           type: string
+ *           enum: [pending, in_progress, completed]
+ *           default: pending
+ *         translationProgress:
+ *           type: number
+ *           minimum: 0
+ *           maximum: 100
+ *           default: 0
+ *         translationLead:
+ *           $ref: '#/components/schemas/User'
+ *         translators:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               user:
+ *                 $ref: '#/components/schemas/User'
+ *               assignedDate:
+ *                 type: string
+ *                 format: date-time
  */
 
 const gameSchema = new mongoose.Schema({

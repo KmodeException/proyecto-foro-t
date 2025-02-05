@@ -14,7 +14,7 @@ import morgan from 'morgan';
 
 // Rutas
 import authRoutes from './auth/routes/auth.routes.js';
-import gamesRoutes from './games/routes/games.routes.js';
+import gameRoutes from './games/routes/game.routes.js';
 import translationRoutes from './translations/routes/translations.routes.js';
 
 // Rutas foro
@@ -70,12 +70,12 @@ app.use(express.static(path.join(__dirname, 'docs')));
 // Rutas existentes
 // Configuración de rutas
 app.use('/api/auth', authRoutes);
-app.use('/api/games', gamesRoutes);
+app.use('/api/games', gameRoutes);
 app.use('/api/translations', translationRoutes);
 app.use('/api/forum/threads', threadRoutes);
 app.use('/api/forum/posts', forumPostRoutes);
 app.use('/api/forum/comments', forumCommentRoutes);
-app.use('/api/games', gamesRoutes);
+app.use('/api/games', gameRoutes);
 app.use('/api/translations', translationRoutes);
 
 // Rutas del foro

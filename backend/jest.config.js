@@ -6,6 +6,10 @@ export default {
     collectCoverage: true,
     coverageDirectory: 'coverage',
     transform: {
-        '^.+\\.js$': 'babel-jest',
+        '^.+\\.js$': 'babel-jest'
     },
+    extensionsToTreatAsEsm: ['.js'],
+    moduleNameMapper: {
+        '^(\\.{1,2}/.*)\\.js$': '$1'
+    }
 };

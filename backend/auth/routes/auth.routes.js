@@ -7,7 +7,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /auth/register:
+ * /api/auth/register:
  *   post:
  *     tags: [Auth]
  *     summary: Registra un nuevo usuario
@@ -24,16 +24,26 @@ const router = express.Router();
  *             properties:
  *               username:
  *                 type: string
+ *                 example: "john_doe"
  *               email:
  *                 type: string
+ *                 format: email
+ *                 example: "john@example.com"
  *               password:
  *                 type: string
+ *                 format: password
+ *                 example: "password123"
+ *     responses:
+ *       201:
+ *         description: Usuario registrado exitosamente
+ *       400:
+ *         description: Datos inválidos o usuario ya existe
  */
 router.post('/register', authValidators.register, authController.register);
 
 /**
  * @swagger
- * /auth/login:
+ * /api/auth/login:
  *   post:
  *     tags: [Auth]
  *     summary: Inicia sesión de usuario
@@ -49,8 +59,15 @@ router.post('/register', authValidators.register, authController.register);
  *             properties:
  *               email:
  *                 type: string
+ *                 format: email
  *               password:
  *                 type: string
+ *                 format: password
+ *     responses:
+ *       200:
+ *         description: Login exitoso
+ *       401:
+ *         description: Credenciales inválidas
  */
 router.post('/login', authValidators.login, authController.login);
 
@@ -65,24 +82,7 @@ router.post('/login', authValidators.login, authController.login);
  */
 router.get('/profile', authenticate, authController.getProfile);
 
-/**
- * @swagger
- * /auth/refresh-token:
- *   post:
- *     tags: [Auth]
- *     summary: Refresca el token de acceso
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - refreshToken
- *             properties:
- *               refreshToken:
- *                 type: string
- */
-router.post('/refresh-token', refreshToken);
+// Remover ruta de refresh-token hasta que se implemente
+// router.post('/refresh-token', refreshToken);
 
 export default router; 

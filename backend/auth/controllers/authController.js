@@ -1,23 +1,24 @@
 import User from '../../users/models/User.js';
 import jwt from 'jsonwebtoken';
+import { ReputationService } from '../../users/services/reputation.service.js';
 
 export const authController = {
     register: async (req, res) => {
         try {
             const { username, email, password } = req.body;
 
-            // Verificar si el usuario ya existe
             const existingUser = await User.findOne({ 
                 $or: [{ email }, { username }] 
             });
             
             if (existingUser) {
                 return res.status(400).json({ 
-                    message: 'El usuario o email ya está registrado' 
+                    message: existingUser.email === email ? 
+                        'Email ya registrado' : 
+                        'Nombre de usuario no disponible'
                 });
             }
 
-            // Crear nuevo usuario
             const user = new User({
                 username,
                 email,
@@ -25,8 +26,8 @@ export const authController = {
             });
 
             await user.save();
+            await ReputationService.initializeReputation(user._id);
 
-            // Generar token
             const token = jwt.sign(
                 { id: user._id, role: user.role },
                 process.env.JWT_SECRET,
@@ -35,12 +36,19 @@ export const authController = {
 
             res.status(201).json({ 
                 message: 'Usuario registrado exitosamente',
-                token
+                token,
+                user: {
+                    id: user._id,
+                    username: user.username,
+                    email: user.email,
+                    role: user.role
+                }
             });
         } catch (error) {
+            console.error('Error en registro:', error);
             res.status(500).json({ 
                 message: 'Error al registrar usuario',
-                error: error.message 
+                error: process.env.NODE_ENV === 'development' ? error.message : undefined
             });
         }
     },

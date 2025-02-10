@@ -104,7 +104,7 @@ export const forumPostController = {
     vote: async (req, res) => {
         try {
             const { type } = req.body;
-            const post = await ForumPost.findById(req.params.id);
+            const post = await ForumPost.findById(req.params.id).populate('author', 'username reputation level');
 
             if (!post) {
                 return res.status(404).json({ message: 'Post no encontrado' });
@@ -112,15 +112,17 @@ export const forumPostController = {
 
             // Verificar si el usuario ya votó
             const voteField = `votes.${type}`;
-            const alreadyVoted = post[voteField].includes(req.user._id);
+            const alreadyVoted = post.votes[type].some(userId => userId.toString() === req.user._id.toString());
+
             if (alreadyVoted) {
                 return res.status(400).json({ message: 'Ya votaste este post' });
             }
 
             // Agregar el voto
-            await ForumPost.updateOne(
-                { _id: post._id },
-                { $addToSet: { [voteField]: req.user._id } }
+            await ForumPost.findByIdAndUpdate(
+                post._id,
+                { $push: { [voteField]: req.user._id } },
+                { new: true }
             );
 
             // Actualizar reputación
@@ -130,12 +132,10 @@ export const forumPostController = {
                 post._id
             );
 
-            const updatedPost = await ForumPost.findById(post._id)
-                .populate('author', 'username reputation level');
-            
-            res.json(updatedPost);
+            res.json(post);
         } catch (error) {
-            res.status(500).json({ message: error.message });
+            console.error("Error al votar:", error);
+            res.status(500).json({ message: 'Error al votar' });
         }
     }
 };

@@ -90,10 +90,25 @@ export const forumPostController = {
 
     getByThread: async (req, res) => {
         try {
+            const limit = parseInt(req.query.limit) || 10;
+            const page = parseInt(req.query.page) || 1;
+            const skip = (page - 1) * limit;
+
             const posts = await ForumPost.find({ thread: req.params.threadId })
                 .populate('author', 'username')
-                .sort('-createdAt');
-            res.json(posts);
+                .sort('-createdAt')
+                .limit(limit)
+                .skip(skip);
+
+            const totalPosts = await ForumPost.countDocuments({ thread: req.params.threadId });
+            const totalPages = Math.ceil(totalPosts / limit);
+
+            res.json({
+                posts,
+                currentPage: page,
+                totalPages,
+                totalPosts
+            });
         } catch (error) {
             res.status(500).json({ message: error.message });
         }

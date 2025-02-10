@@ -1,6 +1,7 @@
 import ForumPost from '../models/ForumPost.js';
 import { ReputationService } from '../../users/services/reputation.service.js';
 import { REPUTATION_ACTIONS } from '../../users/constants/reputation.constants.js';
+import Thread from '../models/Thread.js';
 
 
 /**
@@ -66,6 +67,13 @@ export const forumPostController = {
             }
 
             const { title, content, threadId } = req.body;
+
+            // Validación de threadId
+            const threadExists = await Thread.findById(threadId);
+            if (!threadExists) {
+                return res.status(400).json({ message: 'Hilo no encontrado' });
+            }
+
             const post = new ForumPost({
                 title,
                 content,

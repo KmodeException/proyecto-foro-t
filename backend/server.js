@@ -21,6 +21,7 @@ import translationRoutes from './translations/routes/translations.routes.js';
 import threadRoutes from './forum/routes/thread.routes.js';
 import forumPostRoutes from './forum/routes/post.routes.js';
 import forumCommentRoutes from './forum/routes/comment.routes.js';
+import userRoutes from './users/routes/user.routes.js';
 // import { load } from 'yamljs';
 
 // Configuración
@@ -82,6 +83,9 @@ app.use('/api/translations', translationRoutes);
 app.use('/api/forum/threads', threadRoutes);
 app.use('/api/forum/posts', forumPostRoutes);
 app.use('/api/forum/comments', forumCommentRoutes);
+
+// Rutas de usuarios
+app.use('/api/users', userRoutes);
 
 // Ruta para la documentación
 app.get('/api-docs', (req, res) => {

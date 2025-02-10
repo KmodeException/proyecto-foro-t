@@ -1,9 +1,10 @@
 // backend/server.js
 
+// dependencias
 import express from 'express';
 import cors from 'cors';
 import passport from 'passport';
-import dotenv from 'dotenv';
+import dotenv from 'dotenv'; ;
 import { fileURLToPath } from 'url';
 import path from 'path';
 import connectDB from './config/db.js';
@@ -12,14 +13,16 @@ import swaggerUi from 'swagger-ui-express';
 import morgan from 'morgan';
 
 // Rutas
-import authRoutes from './routes/auth.js';
-import gamesRoutes from './routes/games.js';
-import translationRoutes from './routes/translations.js';
+import authRoutes from './auth/routes/auth.routes.js';
+import gameRoutes from './games/routes/game.routes.js';
+import translationRoutes from './translations/routes/translations.routes.js';
 
 // Rutas foro
-import threadRoutes from './routes/forum/thread.routes.js';
-import forumPostRoutes from './routes/forum/post.routes.js';
-import forumCommentRoutes from './routes/forum/comment.routes.js';
+import threadRoutes from './forum/routes/thread.routes.js';
+import forumPostRoutes from './forum/routes/post.routes.js';
+import forumCommentRoutes from './forum/routes/comment.routes.js';
+import userRoutes from './users/routes/user.routes.js';
+// import { load } from 'yamljs';
 
 // Configuración
 dotenv.config();
@@ -38,7 +41,12 @@ morgan.token('body', (req) => JSON.stringify(req.body));
 app.use(morgan(':method :url :status :response-time ms - :body'));
 
 // Conectar a MongoDB
-connectDB();
+try {
+    await connectDB();
+} catch (error) {
+    console.error('❌ Error fatal: No se pudo conectar a MongoDB');
+    process.exit(1);
+}
 
 // Swagger configuration
 const swaggerOptions = {
@@ -66,14 +74,18 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use(express.static(path.join(__dirname, 'docs')));
 
 // Rutas existentes
+// Configuración de rutas
 app.use('/api/auth', authRoutes);
-app.use('/api/games', gamesRoutes);
+app.use('/api/games', gameRoutes);
 app.use('/api/translations', translationRoutes);
 
-// Rutas del foro
+// Rutas foro
 app.use('/api/forum/threads', threadRoutes);
 app.use('/api/forum/posts', forumPostRoutes);
 app.use('/api/forum/comments', forumCommentRoutes);
+
+// Rutas de usuarios
+app.use('/api/users', userRoutes);
 
 // Ruta para la documentación
 app.get('/api-docs', (req, res) => {
@@ -85,7 +97,7 @@ app.get('/', (req, res) => {
     res.redirect('/api-docs');
 });
 
-// Health check
+// Agregar antes de los manejadores de errores
 app.get('/health', (req, res) => {
     res.status(200).json({
         status: 'success',
@@ -114,30 +126,18 @@ app.use((err, req, res, next) => {
     });
 });
 
-// Export app
-const startServer = () => {
-    try {
-        // Conectar DB
-        connectDB();
-        
-        // Iniciar servidor
-        app.listen(PORT, () => {
-            console.log(`✅ Servidor corriendo en http://localhost:${PORT}`);
-            console.log(`📝 Documentación API en http://localhost:${PORT}/api-docs`);
-            console.log(`🔋 Health check en http://localhost:${PORT}/health`);
-            console.log(`⚙️  Ambiente: ${process.env.NODE_ENV || 'development'}`);
-        });
-    } catch (error) {
-        console.error('❌ Error al iniciar servidor:', error);
-        process.exit(1);
-    }
-};
+// Exportar app para tests
+export { app };
 
-// Manejo de señales de terminación
-process.on('SIGTERM', () => {
-    console.log('👋 Cerrando servidor...');
-    process.exit(0);
-});
-// Exportar la función para iniciar el servidor
-export { app, startServer };
+// Iniciar servidor solo si no estamos en test
+if (process.env.NODE_ENV !== 'test') {
+    app.listen(PORT, () => {
+        console.log(`✅ Servidor corriendo en http://localhost:${PORT}`);
+        console.log(`📝 Documentación API en http://localhost:${PORT}/api-docs`);
+        console.log(`🔋 Health check en http://localhost:${PORT}/health`);
+        console.log(`⚙️  Ambiente: ${process.env.NODE_ENV || 'development'}`);
+    });
+}
+
+export default app;
 

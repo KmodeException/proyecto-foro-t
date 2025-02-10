@@ -107,7 +107,7 @@ paths:
                   type: string
                 content:
                   type: string
-                subSection:
+                threadId:
                   type: string
       responses:
         '201':
@@ -441,28 +441,7 @@ paths:
         404:
           description: Usuario no encontrado
 
-  /api/forum/users/{userId}/karma:
-    get:
-      tags: [Forum]
-      summary: Obtener karma y nivel del usuario
-      parameters:
-        - in: path
-          name: userId
-          required: true
-          schema:
-            type: string
-      responses:
-        200:
-          description: Karma y nivel del usuario
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  karma:
-                    type: number
-                  level:
-                    $ref: '#/components/schemas/UserLevel'
+
 
   /api/forum/moderation/reports:
     post:

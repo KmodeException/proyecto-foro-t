@@ -10,7 +10,7 @@ const Login = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/login', { email, password });
+      const response = await axios.post('http://localhost:5000/api/auth/login', { email, password });
       console.log('Logged in:', response.data);
       // Maneja el almacenamiento del token y redirección
       localStorage.setItem('token', response.data.token);

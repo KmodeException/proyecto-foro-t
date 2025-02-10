@@ -5,19 +5,7 @@ import { body, param, validationResult } from 'express-validator';
  */
 export const validatePost = {
     create: [
-        body('title')
-            .trim()
-            .isLength({ min: 3, max: 100 })
-            .withMessage('El título debe tener entre 3 y 100 caracteres'),
-        
-        body('content')
-            .trim()
-            .isLength({ min: 10 })
-            .withMessage('El contenido debe tener al menos 10 caracteres'),
-        
-        body('subSection')
-            .notEmpty()
-            .withMessage('El subapartado es obligatorio')
+        // Se eliminan las validaciones redundantes con post.validator.js
     ],
 
     update: [

@@ -49,10 +49,25 @@ export const threadController = {
      */
     getAll: async (req, res) => {
         try {
+            const limit = parseInt(req.query.limit) || 10; // Límite por defecto: 10
+            const page = parseInt(req.query.page) || 1;   // Página por defecto: 1
+            const skip = (page - 1) * limit;
+
             const threads = await Thread.find()
                 .populate('creator', 'username')
-                .sort('-createdAt');
-            res.status(200).json(threads);
+                .sort('-createdAt')
+                .limit(limit)
+                .skip(skip);
+
+            const totalThreads = await Thread.countDocuments();
+            const totalPages = Math.ceil(totalThreads / limit);
+
+            res.status(200).json({
+                threads,
+                currentPage: page,
+                totalPages,
+                totalThreads
+            });
         } catch (error) {
             res.status(500).json({ message: error.message });
         }

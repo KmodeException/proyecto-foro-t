@@ -11,7 +11,7 @@ export const postValidator = {
             .trim()
             .isLength({ min: 10, max: 10000 })
             .withMessage('El contenido debe tener entre 10 y 10000 caracteres'),
-        body('threadId')  // Cambiar de subsectionId a threadId
+        body('threadId')
             .isMongoId()
             .withMessage('ID de hilo inválido'),
         handleValidationErrors

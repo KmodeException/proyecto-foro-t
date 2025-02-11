@@ -23,16 +23,18 @@
  *           $ref: '#/components/schemas/Thread'
  *           description: Hilo al que pertenece el post
  *         votes:
- *           type: object
- *           properties:
- *             up:
- *               type: array
- *               items:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               userId:
  *                 $ref: '#/components/schemas/User'
- *             down:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/User'
+ *               type:
+ *                 type: string
+ *                 enum: [up, down]
+ *               createdAt:
+ *                 type: string
+ *                 format: date-time
  *         createdAt:
  *           type: string
  *           format: date-time
@@ -59,16 +61,22 @@ const forumPostSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Thread'
     },
-    votes: {
-        up: [{
+    votes: [{
+        userId: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'User'
-        }],
-        down: [{
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User'
-        }]
-    }
+            ref: 'User',
+            required: true
+        },
+        type: {
+            type: String,
+            enum: ['up', 'down'],
+            required: true
+        },
+        createdAt: {
+            type: Date,
+            default: Date.now
+        }
+    }]
 }, { timestamps: true });
 
 const ForumPost = mongoose.model('ForumPost', forumPostSchema);

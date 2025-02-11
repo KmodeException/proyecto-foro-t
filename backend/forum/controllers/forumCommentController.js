@@ -111,90 +111,37 @@ export const forumCommentController = {
         try {
             const { id } = req.params;
             const { type } = req.body;
-            const comment = await ForumComment.findById(id);
-            
+            const comment = await ForumComment.findById(id).populate('author');
             if (!comment) {
                 return res.status(404).json({ message: 'Comentario no encontrado' });
             }
 
-            // Remover voto existente si existe
-            comment.votes.up = comment.votes.up.filter(
-                userId => userId.toString() !== req.user._id.toString()
-            );
-            comment.votes.down = comment.votes.down.filter(
-                userId => userId.toString() !== req.user._id.toString()
-            );
+            // Verificar si el usuario ya votó
+            const existingVote = comment.votes.find(vote => vote.userId.toString() === req.user._id.toString());
+            if (existingVote) {
+                if (existingVote.type === type) {
+                    return res.status(400).json({ message: 'Ya votaste este comentario con este tipo de voto' });
+                } else {
+                    await ForumComment.findByIdAndUpdate(id, { $pull: { votes: existingVote } });
+                }
+            }
 
             // Agregar nuevo voto
-            comment.votes[type].push(req.user._id);
+            comment.votes.push({ userId: req.user._id, type });
             await comment.save();
 
             // Actualizar reputación
             await ReputationService.updateReputation(
-                comment.author,
+                comment.author._id,
                 type === 'up' ? REPUTATION_ACTIONS.COMMENT_UPVOTE : REPUTATION_ACTIONS.COMMENT_DOWNVOTE
             );
 
             res.json(comment);
         } catch (error) {
-            res.status(400).json({ message: error.message });
+            res.status(500).json({ message: error.message });
         }
     },
 
-    upvote: async (req, res) => {
-        try {
-            const comment = await ForumComment.findById(req.params.id);
-            if (!comment) {
-                return res.status(404).json({ message: 'Comentario no encontrado' });
-            }
-
-            // Verificar si el usuario ya votó
-            if (comment.votes.up.includes(req.user._id)) {
-                return res.status(403).json({ message: 'Ya votaste este comentario' });
-            }
-
-            // Remover voto down si existe
-            comment.votes.down = comment.votes.down.filte(
-                id => id.toString() !== req.user._id.toString()
-            );
-
-            // Agregar voto up
-            comment.votes.up.push(req.user._id);
-            await comment.save();
-
-            res.status(200).json(comment);
-        } catch (error) {
-            res.status(500).json({ message: error.message });
-        }
-
-    },
-
-    downvote: async (req, res) => {
-        try {
-            const comment = await ForumComment.findById(req.params.id);
-            if (!comment) {
-                return res.status(404).json({ message: 'Comentario no encontrado' });
-            }
-
-            // Verificar si el usuario ya votó
-            if (comment.votes.down.includes(req.user._id)) {
-                return res.status(403).json({ message: 'Ya votaste este comentario' });
-            }
-
-            // Remover voto up si existe
-            comment.votes.up = comment.votes.up.filter(
-                id => id.toString() !== req.user._id.toString()
-            );
-
-            // Agregar voto down
-            comment.votes.down.push(req.user._id);
-            await comment.save();
-
-            res.status(200).json(comment);
-        } catch (error) {
-            res.status(500).json({ message: error.message });
-        }
-    }
-
+    // Eliminar upvote y downvote, ya que vote los reemplaza
 
 };

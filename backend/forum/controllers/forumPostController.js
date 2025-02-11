@@ -127,30 +127,32 @@ export const forumPostController = {
     vote: async (req, res) => {
         try {
             const { type } = req.body;
-            const post = await ForumPost.findById(req.params.id).populate('author', 'username reputation level');
+            const post = await ForumPost.findById(req.params.id).populate('author');
 
             if (!post) {
                 return res.status(404).json({ message: 'Post no encontrado' });
             }
 
             // Verificar si el usuario ya votó
-            const voteField = `votes.${type}`;
-            const alreadyVoted = post.votes[type].some(userId => userId.toString() === req.user._id.toString());
-
-            if (alreadyVoted) {
-                return res.status(400).json({ message: 'Ya votaste este post' });
+            const existingVote = post.votes.find(vote => vote.userId.toString() === req.user._id.toString());
+            if (existingVote) {
+                if (existingVote.type === type) {
+                    return res.status(400).json({ message: 'Ya votaste este post con este tipo de voto' });
+                } else {
+                    await ForumPost.findByIdAndUpdate(req.params.id, { $pull: { votes: existingVote } });
+                }
             }
 
             // Agregar el voto
             await ForumPost.findByIdAndUpdate(
-                post._id,
-                { $push: { [voteField]: req.user._id } },
+                req.params.id,
+                { $push: { votes: { userId: req.user._id, type } } },
                 { new: true }
             );
 
             // Actualizar reputación
             await ReputationService.updateReputation(
-                post.author,
+                post.author._id,
                 type === 'up' ? REPUTATION_ACTIONS.COMMUNITY.POST_UPVOTE : REPUTATION_ACTIONS.COMMUNITY.POST_DOWNVOTE,
                 post._id
             );

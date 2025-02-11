@@ -53,16 +53,22 @@ const forumCommentSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'ForumComment'
     },
-    votes: {
-        up: [{
+    votes: [{
+        userId: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'User'
-        }],
-        down: [{
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User'
-        }]
-    }
+            ref: 'User',
+            required: true
+        },
+        type: {
+            type: String,
+            enum: ['up', 'down'],
+            required: true
+        },
+        createdAt: {
+            type: Date,
+            default: Date.now
+        }
+    }]
 }, { 
     timestamps: true,
     toJSON: { virtuals: true }

@@ -117,5 +117,26 @@ export const threadController = {
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
+    },
+
+    search: async (req, res) => {
+        try {
+            const query = req.query.q;
+            if (!query) {
+                return res.status(400).json({ message: 'El parámetro de búsqueda "q" es obligatorio' });
+            }
+
+            const threads = await Thread.find({
+                $or: [
+                    { name: { $regex: query, $options: 'i' } },
+                    { description: { $regex: query, $options: 'i' } }
+                ]
+            })
+            .populate('creator', 'username');
+
+            res.json(threads);
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
     }
 };

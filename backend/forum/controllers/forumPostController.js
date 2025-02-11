@@ -160,5 +160,26 @@ export const forumPostController = {
             console.error("Error al votar:", error);
             res.status(500).json({ message: 'Error al votar' });
         }
+    },
+
+    search: async (req, res) => {
+        try {
+            const query = req.query.q;
+            if (!query) {
+                return res.status(400).json({ message: 'El parámetro de búsqueda "q" es obligatorio' });
+            }
+
+            const posts = await ForumPost.find({
+                $or: [
+                    { title: { $regex: query, $options: 'i' } },
+                    { content: { $regex: query, $options: 'i' } }
+                ]
+            })
+            .populate('author', 'username');
+
+            res.json(posts);
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
     }
 };

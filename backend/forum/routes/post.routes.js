@@ -14,4 +14,6 @@ router.post('/',
     forumPostController.create
 );
 
+router.get('/search', forumPostController.search);
+
 export default router;

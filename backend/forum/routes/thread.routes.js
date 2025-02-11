@@ -91,4 +91,6 @@ router.delete('/:id',
     threadController.delete
 );
 
+router.get('/search', threadController.search);
+
 export default router;

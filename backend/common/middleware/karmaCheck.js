@@ -49,6 +49,13 @@ export const karmaCheck = (action) => {
                         });
                     }
                     break;
+                case 'createTranslation':
+                    if (!restrictions.canCreateTranslation) {
+                        return res.status(403).json({
+                            message: 'Karma insuficiente para crear traducciones'
+                        });
+                    }
+                    break;
             }
             next();
         } catch (error) {

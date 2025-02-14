@@ -1,4 +1,4 @@
-import ForumComment from '../models/ForumComment.js';
+import Comment from '../models/Comment.js';
 import { ReputationService } from '../../users/services/reputation.service.js';
 import { REPUTATION_ACTIONS } from '../../users/constants/reputation.constants.js';
 
@@ -15,7 +15,7 @@ import { REPUTATION_ACTIONS } from '../../users/constants/reputation.constants.j
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/ForumComment'
+ *             $ref: '#/components/schemas/Comment'
  *     responses:
  *       201:
  *         description: Comentario creado exitosamente
@@ -66,11 +66,11 @@ import { REPUTATION_ACTIONS } from '../../users/constants/reputation.constants.j
  *           enum: [up, down]
  */
 
-export const forumCommentController = {
+export const commentController = {
     create: async (req, res) => {
         try {
             const { content, postId, parentCommentId } = req.body;
-            const comment = await ForumComment.create({
+            const comment = await Comment.create({
                 content,
                 post: postId,
                 author: req.user._id,
@@ -94,7 +94,7 @@ export const forumCommentController = {
     getByPost: async (req, res) => {
         try {
             const { postId } = req.params;
-            const comments = await ForumComment.find({ post: postId })
+            const comments = await Comment.find({ post: postId })
                 .populate('author', 'username')
                 .populate({
                     path: 'replies',
@@ -111,7 +111,7 @@ export const forumCommentController = {
         try {
             const { id } = req.params;
             const { type } = req.body;
-            const comment = await ForumComment.findById(id).populate('author');
+            const comment = await Comment.findById(id).populate('author');
             if (!comment) {
                 return res.status(404).json({ message: 'Comentario no encontrado' });
             }
@@ -122,7 +122,7 @@ export const forumCommentController = {
                 if (existingVote.type === type) {
                     return res.status(400).json({ message: 'Ya votaste este comentario con este tipo de voto' });
                 } else {
-                    await ForumComment.findByIdAndUpdate(id, { $pull: { votes: existingVote } });
+                    await Comment.findByIdAndUpdate(id, { $pull: { votes: existingVote } });
                 }
             }
 

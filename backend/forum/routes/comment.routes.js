@@ -65,10 +65,11 @@
  */
 
 import express from 'express';
-import { forumCommentController } from '../controllers/forumCommentController.js';
+import { commentController } from '../controllers/commentController.js';
 import { authenticate } from '../../auth/middleware/authMiddleware.js';
 import { commentValidator } from '../validators/comment.validator.js';
 import { karmaCheck } from '../../common/middleware/karmaCheck.js';
+import Comment from '../models/Comment.js';
 
 const router = express.Router();
 
@@ -77,17 +78,17 @@ router.post('/',
     authenticate, 
     karmaCheck('createComment'),
     commentValidator.create,
-    forumCommentController.create
+    commentController.create
 );
 
-router.get('/post/:postId', forumCommentController.getByPost);
+router.get('/post/:postId', commentController.getByPost);
 
 // Rutas de votos
 router.post('/:id/vote',
     authenticate,
     karmaCheck('vote'),
     commentValidator.vote,
-    forumCommentController.vote
+    commentController.vote
 );
 
 export default router;

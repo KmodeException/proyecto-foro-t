@@ -51,56 +51,46 @@ import User from '../models/User.js';
 import { REPUTATION_ACTIONS, REPUTATION_LEVELS } from '../constants/reputation.constants.js';
 import { ReputationTypes } from '../constants/reputation.types.js';
 
-export class ReputationService {
-    static async updateReputation(userId, action, sourceId = null) {
+export const ReputationService = {
+    initializeReputation: async (userId) => {
         try {
             const user = await User.findById(userId);
             if (!user) {
                 throw new Error('Usuario no encontrado');
             }
-
-            // Actualizar puntos
-            user.reputation = (user.reputation || 0) + action.points;
-
-            // Registrar historial
-            if (!user.reputationHistory) user.reputationHistory = [];
-            
-            user.reputationHistory.push({
-                points: action.points,
-                type: action.type,
-                reason: action.reason,
-                sourceId,
-                timestamp: new Date()
-            });
-
-            // Actualizar nivel
-            user.level = this.calculateLevel(user.reputation);
-
+            user.reputation = 0;
             await user.save();
-            return user;
-
         } catch (error) {
-            throw new Error(`Error al actualizar reputación: ${error.message}`);
+            console.error('Error al inicializar la reputación:', error.message);
+            throw error;
         }
-    }
+    },
 
-    static calculateLevel(points) {
-        if (points >= REPUTATION_LEVELS.EXPERT.min) return 'Experto';
-        if (points >= REPUTATION_LEVELS.CONTRIBUTOR.min) return 'Contribuidor';
-        return 'Novato';
-    }
+    updateReputation: async (userId, amount) => {
+        try {
+            const user = await User.findById(userId);
+            if (!user) {
+                throw new Error('Usuario no encontrado');
+            }
+            user.reputation += amount;
+            await user.save();
+        } catch (error) {
+            console.error('Error al actualizar la reputación:', error.message);
+            throw error;
+        }
+    },
 
-    static checkRestrictions(reputation) {
+    checkRestrictions: (reputation) => {
+        const canCreateThreads = reputation >= 5;
+        const canComment = reputation >= 0;
+        const readOnly = reputation < -10;
+        const canCreateTranslation = reputation >= 10;
+
         return {
-            canCreateThreads: reputation >= 0,
-            canComment: reputation >= -10,
-            readOnly: reputation < -20
+            canCreateThreads,
+            canComment,
+            readOnly,
+            canCreateTranslation
         };
     }
-
-    static async getReputationHistory(userId) {
-        const user = await User.findById(userId);
-        if (!user) throw new Error('Usuario no encontrado');
-        return user.reputationHistory || [];
-    }
-}
+};

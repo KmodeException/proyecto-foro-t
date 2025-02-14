@@ -82,6 +82,18 @@ const gameSchema = new mongoose.Schema({
             type: Date,
             default: Date.now
         }
+    }],
+    description: {
+        type: String,
+        required: false
+    },
+    imageUrl: {
+        type: String,
+        required: false
+    },
+    genres: [{
+        type: String,
+        required: false
     }]
 }, { timestamps: true });
 

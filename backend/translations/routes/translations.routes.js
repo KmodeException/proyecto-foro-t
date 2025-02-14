@@ -1,7 +1,7 @@
 import express from 'express';
 import { translationController } from '../controllers/translationController.js';
 import { authenticate, checkRole } from '../../auth/middleware/authMiddleware.js';
-import { translationValidator } from '../validators/translation.validator.js';
+import { translationValidators } from '../validators/translations.validators.js';
 import { karmaCheck } from '../../common/middleware/karmaCheck.js';
 
 /**
@@ -26,7 +26,7 @@ router.post('/',
     authenticate, 
     checkRole(['translator', 'admin']),
     karmaCheck('createTranslation'),
-    translationValidator.create,
+    translationValidators.create,
     translationController.create
 );
 
@@ -40,7 +40,7 @@ router.post('/',
 router.put('/:id', 
     authenticate, 
     checkRole(['translator', 'admin']),
-    translationValidator.update,
+    translationValidators.update,
     translationController.update
 );
 
@@ -54,7 +54,7 @@ router.put('/:id',
 router.patch('/:id/review', 
     authenticate, 
     checkRole(['admin']),
-    translationValidator.review,
+    translationValidators.review,
     translationController.review
 );
 

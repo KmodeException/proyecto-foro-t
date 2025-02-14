@@ -73,22 +73,58 @@ import Comment from '../models/Comment.js';
 
 const router = express.Router();
 
-// Rutas base
+/**
+ * @swagger
+ * /api/comments:
+ *   post:
+ *     summary: Crear un nuevo comentario
+ *     tags: [Comments]
+ *     security:
+ *       - BearerAuth: []
+ */
 router.post('/', 
     authenticate, 
-    karmaCheck('createComment'),
+    karmaCheck('comment'),
     commentValidator.create,
     commentController.create
 );
 
-router.get('/post/:postId', commentController.getByPost);
+/**
+ * @swagger
+ * /api/comments/{id}:
+ *   get:
+ *     summary: Obtener un comentario por ID
+ *     tags: [Comments]
+ */
+router.get('/:id', commentController.getById);
 
-// Rutas de votos
-router.post('/:id/vote',
+/**
+ * @swagger
+ * /api/comments/{id}:
+ *   put:
+ *     summary: Actualizar un comentario por ID
+ *     tags: [Comments]
+ *     security:
+ *       - BearerAuth: []
+ */
+router.put('/:id', 
     authenticate,
-    karmaCheck('vote'),
-    commentValidator.vote,
-    commentController.vote
+    commentValidator.update,
+    commentController.update
+);
+
+/**
+ * @swagger
+ * /api/comments/{id}:
+ *   delete:
+ *     summary: Eliminar un comentario por ID
+ *     tags: [Comments]
+ *     security:
+ *       - BearerAuth: []
+ */
+router.delete('/:id', 
+    authenticate, 
+    commentController.delete
 );
 
 export default router;

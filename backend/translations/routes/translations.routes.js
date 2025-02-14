@@ -2,6 +2,8 @@ import express from 'express';
 import { translationController } from '../controllers/translationController.js';
 import { authenticate } from '../../auth/middleware/authMiddleware.js';
 import { checkRole } from '../../auth/middleware/authMiddleware.js';
+import { translationValidator } from '../validators/translation.validator.js';
+import { karmaCheck } from '../../common/middleware/karmaCheck.js';
 
 /**
  * @swagger
@@ -23,7 +25,9 @@ const router = express.Router();
  */
 router.post('/', 
     authenticate, 
-    checkRole(['translator', 'admin']), 
+    checkRole(['translator', 'admin']),
+    karmaCheck('createTranslation'),
+    translationValidator.create,
     translationController.create
 );
 
@@ -36,7 +40,8 @@ router.post('/',
  */
 router.put('/:id', 
     authenticate, 
-    checkRole(['translator', 'admin']), 
+    checkRole(['translator', 'admin']),
+    translationValidator.update,
     translationController.update
 );
 
@@ -49,7 +54,8 @@ router.put('/:id',
  */
 router.patch('/:id/review', 
     authenticate, 
-    checkRole(['admin']), 
+    checkRole(['admin']),
+    translationValidator.review,
     translationController.review
 );
 

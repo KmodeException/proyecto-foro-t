@@ -56,7 +56,8 @@ const gameSchema = new mongoose.Schema({
         enum: ['PC', 'PS4', 'PS5', 'Xbox One', 'Xbox Series', 'Switch', 'Mobile']
     }],
     releaseDate: {
-        type: Date
+        type: Date,
+        required: false
     },
     status: {
         type: String,

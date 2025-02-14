@@ -11,22 +11,30 @@
 import mongoose from 'mongoose';
 
 const translationSchema = new mongoose.Schema({
-    content: {
-        type: String,
-        required: true
-    },
-    language: {
-        type: String,
-        required: true
-    },
     game: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Game',
         required: true
     },
-    translator: {
+    author: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
+        required: true
+    },
+    originalContent: {
+        type: String,
+        required: true
+    },
+    translatedContent: {
+        type: String,
+        required: true
+    },
+    sourceLanguage: {
+        type: String,
+        required: true
+    },
+    targetLanguage: {
+        type: String,
         required: true
     },
     status: {
@@ -34,12 +42,36 @@ const translationSchema = new mongoose.Schema({
         enum: ['pending', 'approved', 'rejected'],
         default: 'pending'
     },
+    votes: [{
+        user: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        },
+        voteType: {
+            type: String,
+            enum: ['up', 'down']
+        }
+    }],
+    comments: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Comment'
+    }],
+    reviewComments: {
+        type: String
+    },
     reviewedBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
-    reviewDate: Date,
-    reviewComments: String
+    reviewDate: {
+        type: Date
+    },
+    version: {
+        type: Number,
+        default: 1
+    }
 }, { timestamps: true });
 
-export default mongoose.model('Translation', translationSchema);
+const Translation = mongoose.model('Translation', translationSchema);
+
+export default Translation;

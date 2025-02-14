@@ -22,6 +22,9 @@ import threadRoutes from './forum/routes/thread.routes.js';
 import forumPostRoutes from './forum/routes/post.routes.js';
 import forumCommentRoutes from './forum/routes/comment.routes.js';
 import userRoutes from './users/routes/user.routes.js';
+import commentRoutes from './forum/routes/comment.routes.js';
+import voteRoutes from './forum/routes/vote.routes.js';
+import achievementRoutes from './users/routes/achievement.routes.js';
 // import { load } from 'yamljs';
 
 // Configuración
@@ -86,6 +89,11 @@ app.use('/api/forum/comments', forumCommentRoutes);
 
 // Rutas de usuarios
 app.use('/api/users', userRoutes);
+
+// Rutas adicionales
+app.use('/api/comments', commentRoutes);
+app.use('/api/votes', voteRoutes);
+app.use('/api/achievements', achievementRoutes);
 
 // Ruta para la documentación
 app.get('/api-docs', (req, res) => {

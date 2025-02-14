@@ -4,14 +4,10 @@ import { ReputationService } from '../../users/services/reputation.service.js';
 export const translationController = {
     create: async (req, res) => {
         try {
-            const translation = new Translation({
-                content: req.body.content,
-                game: req.body.gameId,
-                translator: req.user._id,
-                status: 'pending'
-            });
-            await translation.save();
-            res.status(201).json(translation);
+            const newTranslation = new Translation(req.body);
+            newTranslation.author = req.user._id;
+            const savedTranslation = await newTranslation.save();
+            res.status(201).json(savedTranslation);
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
@@ -19,11 +15,7 @@ export const translationController = {
 
     getByGame: async (req, res) => {
         try {
-            const translations = await Translation.find({ 
-                game: req.params.gameId 
-            })
-            .populate('translator', 'username')
-            .populate('reviewedBy', 'username');
+            const translations = await Translation.find({ game: req.params.gameId });
             res.status(200).json(translations);
         } catch (error) {
             res.status(500).json({ message: error.message });
@@ -32,36 +24,11 @@ export const translationController = {
 
     getById: async (req, res) => {
         try {
-            const translation = await Translation.findById(req.params.id)
-                .populate('translator', 'username')
-                .populate('game', 'title')
-                .populate('reviewedBy', 'username');
+            const translation = await Translation.findById(req.params.id);
             if (!translation) {
                 return res.status(404).json({ message: 'Traducción no encontrada' });
             }
             res.status(200).json(translation);
-        } catch (error) {
-            res.status(500).json({ message: error.message });
-        }
-    },
-
-    review: async (req, res) => {
-        try {
-            const { id } = req.params;
-            const { status, reviewComments } = req.body;
-            
-            const translation = await Translation.findById(id);
-            if (!translation) {
-                return res.status(404).json({ message: 'Traducción no encontrada' });
-            }
-
-            translation.status = status;
-            translation.reviewComments = reviewComments;
-            translation.reviewedBy = req.user._id;
-            translation.reviewDate = new Date();
-
-            await translation.save();
-            res.json(translation);
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
@@ -69,45 +36,81 @@ export const translationController = {
 
     update: async (req, res) => {
         try {
-            const translation = await Translation.findByIdAndUpdate(req.params.id, req.body, { new: true });
-            if (!translation) {
+            const updatedTranslation = await Translation.findByIdAndUpdate(req.params.id, req.body, { new: true });
+            if (!updatedTranslation) {
                 return res.status(404).json({ message: 'Traducción no encontrada' });
             }
-            res.status(200).json(translation);
+            res.status(200).json(updatedTranslation);
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
     },
-    approveTranslation: async (req, res) => {
+
+    delete: async (req, res) => {
         try {
-            const translation = await Translation.findByIdAndUpdate(
-                req.params.id,
-                {
-                    status: 'approved',
-                    reviewedBy: req.user._id,
-                    reviewDate: new Date()
-                },
-                { new: true }
-            );
-            
+            const deletedTranslation = await Translation.findByIdAndDelete(req.params.id);
+            if (!deletedTranslation) {
+                return res.status(404).json({ message: 'Traducción no encontrada' });
+            }
+            res.status(200).json({ message: 'Traducción eliminada' });
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    },
+
+    review: async (req, res) => {
+        try {
+            const translation = await Translation.findById(req.params.id);
             if (!translation) {
                 return res.status(404).json({ message: 'Traducción no encontrada' });
             }
 
-            // Actualizar reputación del traductor
-            await ReputationService.updateReputation(
-                translation.translator,
-                'TRANSLATION_APPROVED',
-                translation._id
-            );
+            translation.status = req.body.status; // 'approved' or 'rejected'
+            translation.reviewComments = req.body.reviewComments;
+            translation.reviewedBy = req.user._id;
+            translation.reviewDate = Date.now();
 
-            res.json(translation);
+            const reviewedTranslation = await translation.save();
+            res.status(200).json(reviewedTranslation);
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    },
+
+    approveTranslation: async (req, res) => {
+        try {
+            const translation = await Translation.findById(req.params.id);
+            if (!translation) {
+                return res.status(404).json({ message: 'Translation not found' });
+            }
+
+            translation.status = 'approved';
+            translation.reviewedBy = req.user._id;
+            translation.reviewDate = Date.now();
+
+            const reviewedTranslation = await translation.save();
+            res.status(200).json(reviewedTranslation);
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
     },
 
     rejectTranslation: async (req, res) => {
-        res.status(200).json({ message: 'Traducción rechazada exitosamente' });
+        try {
+            const translation = await Translation.findById(req.params.id);
+            if (!translation) {
+                return res.status(404).json({ message: 'Translation not found' });
+            }
+
+            translation.status = 'rejected';
+            translation.reviewComments = req.body.reviewComments;
+            translation.reviewedBy = req.user._id;
+            translation.reviewDate = Date.now();
+
+            const reviewedTranslation = await translation.save();
+            res.status(200).json(reviewedTranslation);
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
     }
 };

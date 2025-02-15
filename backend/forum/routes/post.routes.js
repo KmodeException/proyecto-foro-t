@@ -14,6 +14,12 @@ router.post('/',
     forumPostController.create
 );
 
+router.put('/:id',
+    authenticate,
+    postValidator.update,
+    forumPostController.update
+);
+
 router.get('/search', forumPostController.search);
 
 export default router;

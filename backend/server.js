@@ -13,7 +13,7 @@ import swaggerUi from 'swagger-ui-express';
 import morgan from 'morgan';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
-import csrfProtection from './common/middleware/csrfMiddleware.js';
+import lusca from 'lusca';
 
 // Rutas
 import authRoutes from './auth/routes/auth.routes.js';
@@ -151,9 +151,17 @@ app.use(session({
     }
 }));
 
-// Middleware CSRF
-app.use(csrfProtection);
+// Middleware de seguridad Lusca
+app.use(lusca({
+    csrf: true,
+    xframe: 'SAMEORIGIN',
+    hsts: { maxAge: 31536000, includeSubDomains: true, preload: true },
+    xssProtection: true,
+    nosniff: true,
+    referrerPolicy: 'same-origin'
+}));
 
+// Ruta para obtener el token CSRF (si es necesario)
 app.get('/api/csrf-token', (req, res) => {
     res.json({ csrfToken: req.csrfToken() });
 });

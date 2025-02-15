@@ -8,20 +8,26 @@
     "test": "cross-env NODE_ENV=test node --experimental-vm-modules node_modules/jest/bin/jest.js --detectOpenHandles --forceExit --runInBand"
   },
   "dependencies": {
+    "base64-url": "^2.3.3",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
+    "connect-mongo": "^5.1.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "express-session": "^1.18.1",
     "express-validator": "^7.2.1",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
+    "lusca": "^1.7.0",
     "mongoose": "^8.9.5",
     "morgan": "^1.10.0",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
+    "uid-safe": "^2.1.5",
+    "xss": "^1.0.15",
     "yamljs": "^0.3.0"
   },
   "devDependencies": {

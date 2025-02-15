@@ -1,5 +1,5 @@
 import { body, param } from 'express-validator';
-import { handleValidationErrors } from '../middleware/validationMiddleware.js';
+import { handleValidationErrors } from '../../common/middleware/validationMiddleware.js';
 
 export const translationValidators = {
     create: [

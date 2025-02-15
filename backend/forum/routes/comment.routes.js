@@ -66,7 +66,7 @@
 
 import express from 'express';
 import { commentController } from '../controllers/commentController.js';
-import { authenticate } from '../../auth/middleware/authMiddleware.js';
+import { authenticate, checkRole } from '../../auth/middleware/authMiddleware.js';
 import { commentValidator } from '../validators/comment.validator.js';
 import { karmaCheck } from '../../common/middleware/karmaCheck.js';
 import Comment from '../models/Comment.js';
@@ -84,7 +84,7 @@ const router = express.Router();
  */
 router.post('/', 
     authenticate, 
-    karmaCheck('comment'),
+    checkRole(['admin', 'moderator', 'user']),
     commentValidator.create,
     commentController.create
 );
@@ -109,6 +109,7 @@ router.get('/:id', commentController.getById);
  */
 router.put('/:id', 
     authenticate,
+    checkRole(['admin', 'moderator', 'user']),
     commentValidator.update,
     commentController.update
 );
@@ -124,7 +125,14 @@ router.put('/:id',
  */
 router.delete('/:id', 
     authenticate, 
+    checkRole(['admin', 'moderator', 'user']),
     commentController.delete
+);
+
+router.post('/:id/vote',
+    authenticate,
+    checkRole(['admin', 'moderator', 'user']),
+    commentController.vote
 );
 
 export default router;

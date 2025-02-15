@@ -69,49 +69,46 @@ import { REPUTATION_ACTIONS } from '../../users/constants/reputation.constants.j
 export const commentController = {
     create: async (req, res) => {
         try {
-            const { content, postId, parentCommentId } = req.body;
-            const comment = await Comment.create({
-                content,
-                post: postId,
-                author: req.user._id,
-                parentComment: parentCommentId || null
-            });
-            
-            await comment.populate('author', 'username');
-            
-            // Actualizar reputación
-            await ReputationService.updateReputation(
-                req.user._id,
-                REPUTATION_ACTIONS.CREATE_COMMENT
-            );
-
+            const comment = new Comment(req.body);
+            await comment.save();
             res.status(201).json(comment);
         } catch (error) {
-            res.status(400).json({ message: error.message });
+            res.status(500).json({ message: error.message });
         }
     },
 
-    getByPost: async (req, res) => {
+    getById: async (req, res) => {
         try {
-            const { postId } = req.params;
-            const comments = await Comment.find({ post: postId })
-                .populate('author', 'username')
-                .populate({
-                    path: 'replies',
-                    populate: { path: 'author', select: 'username' }
-                })
-                .sort('-createdAt');
-            res.json(comments);
+            const comment = await Comment.findById(req.params.id);
+            res.json(comment);
         } catch (error) {
-            res.status(400).json({ message: error.message });
+            res.status(500).json({ message: error.message });
+        }
+    },
+
+    update: async (req, res) => {
+        try {
+            const comment = await Comment.findByIdAndUpdate(req.params.id, req.body, { new: true });
+            res.json(comment);
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    },
+
+    delete: async (req, res) => {
+        try {
+            await Comment.findByIdAndDelete(req.params.id);
+            res.status(204).send();
+        } catch (error) {
+            res.status(500).json({ message: error.message });
         }
     },
 
     vote: async (req, res) => {
         try {
-            const { id } = req.params;
             const { type } = req.body;
-            const comment = await Comment.findById(id).populate('author');
+            const comment = await Comment.findById(req.params.id).populate('author');
+
             if (!comment) {
                 return res.status(404).json({ message: 'Comentario no encontrado' });
             }
@@ -122,26 +119,28 @@ export const commentController = {
                 if (existingVote.type === type) {
                     return res.status(400).json({ message: 'Ya votaste este comentario con este tipo de voto' });
                 } else {
-                    await Comment.findByIdAndUpdate(id, { $pull: { votes: existingVote } });
+                    await Comment.findByIdAndUpdate(req.params.id, { $pull: { votes: existingVote } });
                 }
             }
 
-            // Agregar nuevo voto
-            comment.votes.push({ userId: req.user._id, type });
-            await comment.save();
+            // Agregar el voto
+            await Comment.findByIdAndUpdate(
+                req.params.id,
+                { $push: { votes: { userId: req.user._id, type } } },
+                { new: true }
+            );
 
             // Actualizar reputación
             await ReputationService.updateReputation(
                 comment.author._id,
-                type === 'up' ? REPUTATION_ACTIONS.COMMENT_UPVOTE : REPUTATION_ACTIONS.COMMENT_DOWNVOTE
+                type === 'up' ? REPUTATION_ACTIONS.COMMUNITY.COMMENT_UPVOTE : REPUTATION_ACTIONS.COMMUNITY.COMMENT_DOWNVOTE,
+                comment._id
             );
 
             res.json(comment);
         } catch (error) {
-            res.status(500).json({ message: error.message });
+            console.error("Error al votar:", error);
+            res.status(500).json({ message: 'Error al votar' });
         }
-    },
-
-    // Eliminar upvote y downvote, ya que vote los reemplaza
-
+    }
 };

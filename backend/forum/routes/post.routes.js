@@ -28,4 +28,10 @@ router.delete('/:id',
     forumPostController.delete
 );
 
+router.post('/:id/vote',
+    authenticate,
+    checkRole(['admin', 'moderator', 'user']),
+    forumPostController.vote
+);
+
 export default router;

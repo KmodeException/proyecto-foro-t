@@ -26,13 +26,19 @@ const commentSchema = new mongoose.Schema({
     refPath: 'commentableType'
   },
   votes: [{
-    user: {
+    userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User'
+      ref: 'User',
+      required: true
     },
-    voteType: {
+    type: {
       type: String,
-      enum: ['up', 'down']
+      enum: ['up', 'down'],
+      required: true
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now
     }
   }],
   post: {

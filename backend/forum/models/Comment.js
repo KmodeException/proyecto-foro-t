@@ -34,6 +34,19 @@ const commentSchema = new mongoose.Schema({
       type: String,
       enum: ['up', 'down']
     }
+  }],
+  post: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'ForumPost',
+    required: true
+  },
+  likes: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }],
+  dislikes: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
   }]
 }, { timestamps: true });
 

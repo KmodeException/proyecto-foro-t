@@ -2,8 +2,8 @@
 import express from 'express';
 import { voteController } from '../controllers/voteController.js';
 import { authenticate } from '../../auth/middleware/authMiddleware.js';
-//import { voteValidator } from '../validators/vote.validator.js';
 import { karmaCheck } from '../../common/middleware/karmaCheck.js';
+import { voteValidator } from '../validators/vote.validator.js';
 
 const router = express.Router();
 
@@ -19,6 +19,7 @@ const router = express.Router();
 router.post('/', 
     authenticate, 
     karmaCheck('vote'),
+    voteValidator.create,
     voteController.create
 );
 

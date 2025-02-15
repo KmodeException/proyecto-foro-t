@@ -69,6 +69,21 @@ const translationSchema = new mongoose.Schema({
     version: {
         type: Number,
         default: 1
+    },
+    idioma: {
+        type: String,
+        required: true
+    },
+    archivoTraduccion: {
+        type: String
+    },
+    fechaCreacion: {
+        type: Date,
+        default: Date.now
+    },
+    fechaActualizacion: {
+        type: Date,
+        default: Date.now
     }
 }, { timestamps: true });
 

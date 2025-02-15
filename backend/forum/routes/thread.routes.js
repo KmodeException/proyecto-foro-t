@@ -64,24 +64,24 @@
 import express from 'express';
 import { threadController } from '../controllers/threadController.js';
 import { authenticate, checkRole } from '../../auth/middleware/authMiddleware.js';
-import { threadValidator } from '../validators/thread.validator.js';
+import { threadValidators } from '../validators/thread.validators.js';
 
 const router = express.Router();
-
-router.post('/', 
-    authenticate, 
-    checkRole(['admin', 'moderator']), 
-    threadValidator.create, 
-    threadController.create
-);
 
 router.get('/', threadController.getAll);
 router.get('/:id', threadController.getById);
 
+router.post('/',
+    authenticate,
+    checkRole(['admin', 'moderator']),
+    threadValidators.create,
+    threadController.create
+);
+
 router.put('/:id',
     authenticate,
     checkRole(['admin', 'moderator']),
-    threadValidator.update,
+    threadValidators.update,
     threadController.update
 );
 

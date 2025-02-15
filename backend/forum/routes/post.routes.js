@@ -1,7 +1,7 @@
 import express from 'express';
 import { forumPostController } from '../controllers/forumPostController.js';
 import { authenticate, checkRole } from '../../auth/middleware/authMiddleware.js';
-import { postValidators } from '../validators/post.validators.js';
+import { postValidator } from '../validators/post.validator.js';
 
 const router = express.Router();
 
@@ -11,14 +11,14 @@ router.get('/:id', forumPostController.getById);
 router.post('/',
     authenticate,
     checkRole(['admin', 'moderator', 'user']),
-    postValidators.create,
+    postValidator.create,
     forumPostController.create
 );
 
 router.put('/:id',
     authenticate,
     checkRole(['admin', 'moderator', 'user']),
-    postValidators.update,
+    postValidator.update,
     forumPostController.update
 );
 

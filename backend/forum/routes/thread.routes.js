@@ -64,7 +64,7 @@
 import express from 'express';
 import { threadController } from '../controllers/threadController.js';
 import { authenticate, checkRole } from '../../auth/middleware/authMiddleware.js';
-import { threadValidators } from '../validators/thread.validators.js';
+import { threadValidator } from '../validators/thread.validator.js';
 
 const router = express.Router();
 
@@ -74,14 +74,14 @@ router.get('/:id', threadController.getById);
 router.post('/',
     authenticate,
     checkRole(['admin', 'moderator']),
-    threadValidators.create,
+    threadValidator.create,
     threadController.create
 );
 
 router.put('/:id',
     authenticate,
     checkRole(['admin', 'moderator']),
-    threadValidators.update,
+    threadValidator.update,
     threadController.update
 );
 

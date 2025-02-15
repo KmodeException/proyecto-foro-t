@@ -3,6 +3,22 @@ import jwt from 'jsonwebtoken';
 import { ReputationService } from '../../users/services/reputation.service.js';
 import bcrypt from 'bcrypt';
 
+const generateAccessToken = (user) => {
+    return jwt.sign(
+        { id: user._id, role: user.role },
+        process.env.JWT_SECRET,
+        { expiresIn: '1h' }
+    );
+};
+
+const generateRefreshToken = (user) => {
+    return jwt.sign(
+        { id: user._id, role: user.role },
+        process.env.JWT_REFRESH_SECRET,
+        { expiresIn: process.env.JWT_REFRESH_EXPIRATION }
+    );
+};
+
 export const authController = {
     register: async (req, res) => {
         try {
@@ -29,15 +45,13 @@ export const authController = {
             await user.save();
             await ReputationService.initializeReputation(user._id);
 
-            const token = jwt.sign(
-                { id: user._id, role: user.role },
-                process.env.JWT_SECRET,
-                { expiresIn: '1h' }
-            );
+            const accessToken = generateAccessToken(user);
+            const refreshToken = generateRefreshToken(user);
 
             res.status(201).json({ 
                 message: 'Usuario registrado exitosamente',
-                token,
+                accessToken,
+                refreshToken,
                 user: {
                     id: user._id,
                     username: user.username,
@@ -70,19 +84,9 @@ export const authController = {
                 return res.status(401).json({ message: 'Credenciales inválidas' });
             }
 
-            // Generar token
-            const token = jwt.sign(
-                { id: user._id, role: user.role },
-                process.env.JWT_SECRET,
-                { expiresIn: '1h' }
-            );
-
-            // Generar refresh token
-            const refreshToken = jwt.sign(
-                { id: user._id, role: user.role },
-                process.env.JWT_REFRESH_SECRET,
-                { expiresIn: process.env.JWT_REFRESH_EXPIRATION }
-            );
+            // Generar tokens
+            const accessToken = generateAccessToken(user);
+            const refreshToken = generateRefreshToken(user);
 
             // Guardar el refresh token en la base de datos (opcional, pero recomendado para invalidar tokens)
             user.refreshToken = refreshToken;
@@ -90,7 +94,7 @@ export const authController = {
 
             res.status(200).json({ 
                 message: 'Inicio de sesión exitoso',
-                token,
+                accessToken,
                 refreshToken,
                 user: {
                     id: user._id,
@@ -145,15 +149,11 @@ export const authController = {
             }
 
             // Generar un nuevo token de acceso
-            const token = jwt.sign(
-                { id: user._id, role: user.role },
-                process.env.JWT_SECRET,
-                { expiresIn: '1h' }
-            );
+            const accessToken = generateAccessToken(user);
 
             res.status(200).json({ 
                 message: 'Token refrescado exitosamente',
-                token
+                accessToken
             });
         } catch (error) {
             console.error(error);
@@ -162,6 +162,12 @@ export const authController = {
     },
 
     logout: async (req, res) => {
-        // ... existing code ...
+        try {
+            req.user.refreshToken = null;
+            await req.user.save();
+            res.status(200).json({ message: 'Logout successful' });
+        } catch (error) {
+            res.status(500).json({ message: 'Error during logout', error: error.message });
+        }
     }
 };

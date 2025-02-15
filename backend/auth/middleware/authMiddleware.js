@@ -88,3 +88,41 @@ export const checkRole = (roles) => {
         next();
     };
 };
+
+const authMiddleware = (roles = []) => {
+  return async (req, res, next) => {
+    try {
+      // Obtener el token del encabezado
+      const token = req.header('Authorization').replace('Bearer ', '');
+
+      // Verificar si no hay token
+      if (!token) {
+        return res.status(401).json({ mensaje: 'No hay token, autorización denegada' });
+      }
+
+      // Verificar el token
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+      // Asignar el usuario de la petición
+      const usuario = await User.findById(decoded.id);
+
+      if (!usuario) {
+        return res.status(401).json({ mensaje: 'Usuario no encontrado' });
+      }
+
+      // Verificar si el rol del usuario está permitido
+      if (roles.length && !roles.includes(usuario.role)) {
+        return res.status(403).json({ mensaje: 'No tiene permisos para acceder a esta ruta' });
+      }
+
+      req.usuario = usuario;
+      next();
+
+    } catch (error) {
+      console.error(error);
+      res.status(401).json({ mensaje: 'Token inválido' });
+    }
+  };
+};
+
+module.exports = authMiddleware;

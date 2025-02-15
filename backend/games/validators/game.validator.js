@@ -1,5 +1,6 @@
 import { body, param } from 'express-validator';
 import { handleValidationErrors } from '../../common/middleware/validationMiddleware.js';
+const Joi = require('joi');
 
 export const gameValidator = {
     create: [
@@ -40,4 +41,41 @@ export const gameValidator = {
             .withMessage('ID de traductor inválido'),
         handleValidationErrors
     ]
-}; 
+};
+
+const create = (req, res, next) => {
+    const schema = Joi.object({
+        titulo: Joi.string().required(),
+        descripcion: Joi.string(),
+        plataformas: Joi.array().items(Joi.string()),
+        generos: Joi.array().items(Joi.string()),
+        fechaLanzamiento: Joi.date(),
+        imagenDestacada: Joi.string(),
+    });
+
+    const { error } = schema.validate(req.body);
+    if (error) {
+        return res.status(400).json({ mensaje: error.details[0].message });
+    }
+    next();
+};
+
+const update = (req, res, next) => {
+    const schema = Joi.object({
+        titulo: Joi.string(),
+        descripcion: Joi.string(),
+        plataformas: Joi.array().items(Joi.string()),
+        generos: Joi.array().items(Joi.string()),
+        fechaLanzamiento: Joi.date(),
+        imagenDestacada: Joi.string(),
+    });
+
+    const { error } = schema.validate(req.body);
+    if (error) {
+        return res.status(400).json({ mensaje: error.details[0].message });
+    }
+    next();
+};
+
+exports.create = create;
+exports.update = update; 

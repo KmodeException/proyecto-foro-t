@@ -16,6 +16,15 @@ router.post('/',
 
 router.get('/:id', gameController.getById);
 
+router.put('/:id', 
+    authenticate, 
+    checkRole(['admin', 'translator']),
+    gameValidator.update,
+    gameController.update
+);
+
+router.delete('/:id', authMiddleware(), gameController.delete);
+
 router.patch('/:id/status',
     authenticate,
     checkRole(['admin', 'translator']),

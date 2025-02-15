@@ -66,6 +66,7 @@ import { threadController } from '../controllers/threadController.js';
 import { authenticate, checkRole } from '../../auth/middleware/authMiddleware.js';
 import { threadValidator } from '../validators/thread.validator.js';
 import { karmaCheck } from '../../common/middleware/karmaCheck.js';
+import { sanitizeMiddleware } from '../../common/middleware/sanitizeMiddleware.js';
 
 const router = express.Router();
 
@@ -76,6 +77,8 @@ router.post('/',
     authenticate,
     checkRole(['admin', 'moderator']),
     karmaCheck('createThread'),
+    sanitizeMiddleware.sanitizeBody('name'),
+    sanitizeMiddleware.sanitizeBody('description'),
     threadValidator.create,
     threadController.create
 );
@@ -83,6 +86,8 @@ router.post('/',
 router.put('/:id',
     authenticate,
     checkRole(['admin', 'moderator']),
+    sanitizeMiddleware.sanitizeBody('name'),
+    sanitizeMiddleware.sanitizeBody('description'),
     threadValidator.update,
     threadController.update
 );

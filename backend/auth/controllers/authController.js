@@ -1,6 +1,7 @@
 import User from '../../users/models/User.js';
 import jwt from 'jsonwebtoken';
 import { ReputationService } from '../../users/services/reputation.service.js';
+import bcrypt from 'bcrypt';
 
 export const authController = {
     register: async (req, res) => {
@@ -76,9 +77,21 @@ export const authController = {
                 { expiresIn: '1h' }
             );
 
+            // Generar refresh token
+            const refreshToken = jwt.sign(
+                { id: user._id, role: user.role },
+                process.env.JWT_REFRESH_SECRET,
+                { expiresIn: process.env.JWT_REFRESH_EXPIRATION }
+            );
+
+            // Guardar el refresh token en la base de datos (opcional, pero recomendado para invalidar tokens)
+            user.refreshToken = refreshToken;
+            await user.save();
+
             res.status(200).json({ 
                 message: 'Inicio de sesión exitoso',
                 token,
+                refreshToken,
                 user: {
                     id: user._id,
                     username: user.username,
@@ -111,5 +124,44 @@ export const authController = {
                 error: error.message 
             });
         }
+    },
+
+    refreshToken: async (req, res) => {
+        const { refreshToken } = req.body;
+
+        if (!refreshToken) {
+            return res.status(400).json({ message: 'Refresh token requerido' });
+        }
+
+        try {
+            // Verificar el refresh token
+            const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+
+            // Buscar el usuario asociado al refresh token
+            const user = await User.findById(decoded.id);
+
+            if (!user || user.refreshToken !== refreshToken) {
+                return res.status(401).json({ message: 'Refresh token inválido' });
+            }
+
+            // Generar un nuevo token de acceso
+            const token = jwt.sign(
+                { id: user._id, role: user.role },
+                process.env.JWT_SECRET,
+                { expiresIn: '1h' }
+            );
+
+            res.status(200).json({ 
+                message: 'Token refrescado exitosamente',
+                token
+            });
+        } catch (error) {
+            console.error(error);
+            res.status(403).json({ message: 'Refresh token inválido o expirado' });
+        }
+    },
+
+    logout: async (req, res) => {
+        // ... existing code ...
     }
 };

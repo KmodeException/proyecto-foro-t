@@ -11,6 +11,9 @@ import connectDB from './config/db.js';
 import swaggerJsDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import morgan from 'morgan';
+import session from 'express-session';
+import MongoStore from 'connect-mongo';
+import csrfProtection from './common/middleware/csrfMiddleware.js';
 
 // Rutas
 import authRoutes from './auth/routes/auth.routes.js';
@@ -132,6 +135,27 @@ app.use((err, req, res, next) => {
         message: err.message || 'Error interno del servidor',
         ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
     });
+});
+
+// Configuración de la sesión
+app.use(session({
+    secret: process.env.SESSION_SECRET || 'tu_secreto',
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI || 'mongodb://localhost:27017/translation_db' }),
+    cookie: {
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 1 semana
+        sameSite: 'strict',
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production'
+    }
+}));
+
+// Middleware CSRF
+app.use(csrfProtection);
+
+app.get('/api/csrf-token', (req, res) => {
+    res.json({ csrfToken: req.csrfToken() });
 });
 
 // Exportar app para tests

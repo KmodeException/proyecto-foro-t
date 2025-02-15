@@ -3,38 +3,46 @@ import { handleValidationErrors } from '../../common/middleware/validationMiddle
 
 export const postValidator = {
     create: [
-        body('title')
+        body('titulo')
             .trim()
-            .isLength({ min: 5, max: 100 })
-            .withMessage('El título debe tener entre 5 y 100 caracteres'),
-        body('content')
+            .notEmpty()
+            .withMessage('El título es requerido')
+            .isLength({ max: 255 })
+            .withMessage('El título no debe exceder los 255 caracteres'),
+        body('contenido')
             .trim()
-            .isLength({ min: 10, max: 10000 })
-            .withMessage('El contenido debe tener entre 10 y 10000 caracteres'),
-        body('threadId')
-            .isMongoId()
-            .withMessage('ID de hilo inválido'),
+            .notEmpty()
+            .withMessage('El contenido es requerido'),
         handleValidationErrors
     ],
-    
     update: [
-        body('title')
+        param('id')
+            .isMongoId()
+            .withMessage('ID de post inválido'),
+        body('titulo')
             .optional()
             .trim()
-            .isLength({ min: 5, max: 100 })
-            .withMessage('El título debe tener entre 5 y 100 caracteres'),
-        body('content')
+            .notEmpty()
+            .withMessage('El título es requerido')
+            .isLength({ max: 255 })
+            .withMessage('El título no debe exceder los 255 caracteres'),
+        body('contenido')
             .optional()
             .trim()
-            .isLength({ min: 10, max: 10000 })
-            .withMessage('El contenido debe tener entre 10 y 10000 caracteres'),
+            .notEmpty()
+            .withMessage('El contenido es requerido'),
         handleValidationErrors
     ],
-
-    vote: [
-        body('type')
-            .isIn(['up', 'down'])
-            .withMessage('Tipo de voto inválido'),
+    getById: [
+        param('id')
+            .isMongoId()
+            .withMessage('ID de post inválido'),
+        handleValidationErrors
+    ],
+    delete: [
+        param('id')
+            .isMongoId()
+            .withMessage('ID de post inválido'),
         handleValidationErrors
     ]
 };

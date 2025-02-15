@@ -48,8 +48,7 @@
  */
 
 import User from '../models/User.js';
-import { REPUTATION_ACTIONS, REPUTATION_LEVELS } from '../constants/reputation.constants.js';
-import { ReputationTypes } from '../constants/reputation.types.js';
+import { REPUTATION_VALUES, LEVEL_THRESHOLDS } from '../constants/reputation.constants.js';
 
 export const ReputationService = {
     initializeReputation: async (userId) => {
@@ -66,31 +65,50 @@ export const ReputationService = {
         }
     },
 
-    updateReputation: async (userId, amount) => {
+    updateReputation: async (userId, action, sourceId) => {
         try {
             const user = await User.findById(userId);
             if (!user) {
                 throw new Error('Usuario no encontrado');
             }
-            user.reputation += amount;
+
+            let reputationChange = REPUTATION_VALUES[action];
+            if (reputationChange === undefined) {
+                throw new Error(`Acción de reputación no válida: ${action}`);
+            }
+
+            user.reputation += reputationChange;
+            user.reputation = Math.max(0, user.reputation); // Evitar reputación negativa
+
+            // Actualizar el nivel del usuario
+            user.level = ReputationService.calculateLevel(user.reputation);
+
             await user.save();
+            console.log(`Reputación de usuario ${userId} actualizada por acción ${action}. Nueva reputación: ${user.reputation}, Nivel: ${user.level}`);
         } catch (error) {
-            console.error('Error al actualizar la reputación:', error.message);
+            console.error("Error al actualizar la reputación:", error);
             throw error;
         }
     },
 
-    checkRestrictions: (reputation) => {
-        const canCreateThreads = reputation >= 5;
-        const canComment = reputation >= 0;
-        const readOnly = reputation < -10;
-        const canCreateTranslation = reputation >= 10;
+    calculateLevel: (reputation) => {
+        let level = 1;
+        for (const [lvl, threshold] of Object.entries(LEVEL_THRESHOLDS)) {
+            if (reputation >= threshold) {
+                level = parseInt(lvl);
+            } else {
+                break;
+            }
+        }
+        return level;
+    },
 
+    checkRestrictions: (reputation) => {
+        const level = ReputationService.calculateLevel(reputation);
         return {
-            canCreateThreads,
-            canComment,
-            readOnly,
-            canCreateTranslation
+            readOnly: level < 2,
+            noComments: level < 3,
+            noPosts: level < 4
         };
     }
 };

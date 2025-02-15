@@ -1,7 +1,7 @@
 // models/User.js
 
 import mongoose from 'mongoose';
-import bcrypt from 'bcryptjs';
+import bcrypt from 'bcrypt';
 
 /**
  * @swagger
@@ -42,32 +42,41 @@ import bcrypt from 'bcryptjs';
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
-    required: [true, 'El nombre de usuario es obligatorio'],
+    required: true,
     unique: true,
+    trim: true,
+    minlength: 3,
+    maxlength: 30
   },
-  email: { 
+  email: {
     type: String,
-    required: [true, 'El correo electrónico es obligatorio'],
+    required: true,
     unique: true,
-    match: [/.+\@.+\..+/, 'Por favor ingrese un correo válido']
+    trim: true,
+    lowercase: true,
+    match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Por favor, introduce un email válido']
   },
-  password: { 
+  password: {
     type: String,
-    required: [true, 'La contraseña es obligatoria'],
-    minlength: [6, 'La contraseña debe tener al menos 6 caracteres'],
+    required: true,
+    minlength: 6
   },
   age: { 
     type: Number,
     required: false,
   },
-  role: { 
+  role: {
     type: String,
-    enum: ['user', 'translator', 'moderator', 'admin'],
-    default: 'user',
+    enum: ['user', 'moderator', 'admin'],
+    default: 'user'
   },
   reputation: {
     type: Number,
     default: 0
+  },
+  level: {
+    type: Number,
+    default: 1
   },
   reputationHistory: [{
     points: Number,
@@ -85,27 +94,27 @@ const userSchema = new mongoose.Schema({
       default: Date.now
     }
   }],
-  level: {
-    type: String,
-    enum: ['Novato', 'Contribuidor', 'Experto'],
-    default: 'Novato'
-  },
   karma: {
     type: Number,
     default: 0
   }
 }, { timestamps: true });
 
-// Hash password before saving
+// Hash de la contraseña antes de guardar
 userSchema.pre('save', async function(next) {
-  if (!this.isModified('password')) return next();
-  this.password = await bcrypt.hash(this.password, 10);
+  if (!this.isModified('password')) {
+    return next();
+  }
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
   next();
 });
 
-// Method to compare password for login
+// Método para comparar contraseñas
 userSchema.methods.comparePassword = async function(password) {
-  return await bcrypt.compare(password, this.password);
+  return bcrypt.compare(password, this.password);
 };
 
-export default mongoose.model('User', userSchema);
+const User = mongoose.model('User', userSchema);
+
+export default User;

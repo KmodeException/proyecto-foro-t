@@ -82,3 +82,41 @@ export const REPUTATION_LEVELS = {
     CONTRIBUTOR: { min: 100, name: 'Contribuidor' },
     EXPERT: { min: 500, name: 'Experto' }
 };
+
+export const REPUTATION_VALUES = {
+    // Acciones de comunidad (posts, comentarios, votos)
+    COMMUNITY: {
+        POST_UPVOTE: 5,
+        POST_DOWNVOTE: -3,
+        COMMENT_UPVOTE: 3,
+        COMMENT_DOWNVOTE: -2,
+        POST_CREATE: 2,
+        COMMENT_CREATE: 1
+    },
+
+    // Acciones de traducción (envío, aprobación, etc.)
+    TRANSLATION: {
+        TRANSLATION_SUBMIT: 10,
+        TRANSLATION_APPROVE: 20,
+        TRANSLATION_REJECT: -15
+    },
+
+    // Acciones de moderación (reportes, etc.)
+    MODERATION: {
+        REPORT_VALID: 5,
+        REPORT_INVALID: -2,
+        CONTENT_DELETE: -10
+    }
+};
+
+export const LEVEL_THRESHOLDS = {
+    1: 0,    // Novato
+    2: 25,   // Aprendiz
+    3: 50,   // Intermedio
+    4: 100,  // Avanzado
+    5: 200,  // Experto
+    6: 400,  // Maestro
+    7: 800,  // গুরু (Guru)
+    8: 1600, // Легенда (Leyenda)
+    9: 3200, // 神 (Dios)
+};

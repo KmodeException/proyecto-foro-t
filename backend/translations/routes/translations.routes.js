@@ -71,7 +71,17 @@ router.get('/game/:gameId',
 );
 
 router.get('/:id', translationController.getById);
-router.patch('/:id/review', authenticate, checkRole(['admin']), translationController.approveTranslation);
-router.patch('/:id/reject', authenticate, checkRole(['admin']), translationController.rejectTranslation);
+router.patch('/:id/review', 
+    authenticate, 
+    checkRole(['admin']),
+    translationValidators.review,
+    translationController.approveTranslation
+);
+router.patch('/:id/reject', 
+    authenticate, 
+    checkRole(['admin']),
+    translationValidators.review,
+    translationController.rejectTranslation
+);
 
 export default router;

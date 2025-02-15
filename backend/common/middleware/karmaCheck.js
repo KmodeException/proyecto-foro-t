@@ -23,43 +23,24 @@ import { ReputationService } from '../../users/services/reputation.service.js';
  */
 
 export const karmaCheck = (action) => {
-    return async (req, res, next) => {
-        try {
-            const restrictions = ReputationService.checkRestrictions(req.user.reputation);
-            
-            switch(action) {
-                case 'createThread':
-                    if (!restrictions.canCreateThreads) {
-                        return res.status(403).json({ 
-                            message: 'Karma insuficiente para crear hilos' 
-                        });
-                    }
-                    break;
-                case 'comment':
-                    if (!restrictions.canComment) {
-                        return res.status(403).json({ 
-                            message: 'Karma insuficiente para comentar' 
-                        });
-                    }
-                    break;
-                case 'vote':
-                    if (restrictions.readOnly) {
-                        return res.status(403).json({ 
-                            message: 'No puedes votar con karma negativo' 
-                        });
-                    }
-                    break;
-                case 'createTranslation':
-                    if (!restrictions.canCreateTranslation) {
-                        return res.status(403).json({
-                            message: 'Karma insuficiente para crear traducciones'
-                        });
-                    }
-                    break;
-            }
-            next();
-        } catch (error) {
-            res.status(500).json({ message: error.message });
+    return (req, res, next) => {
+        const restrictions = ReputationService.checkRestrictions(req.user.reputation);
+
+        switch (action) {
+            case 'createPost':
+                if (restrictions.noPosts) {
+                    return res.status(403).json({ message: 'No tienes suficiente karma para crear posts' });
+                }
+                break;
+            case 'createComment':
+                if (restrictions.noComments) {
+                    return res.status(403).json({ message: 'No tienes suficiente karma para crear comentarios' });
+                }
+                break;
+            default:
+                return res.status(400).json({ message: 'Acción no válida' });
         }
+
+        next();
     };
 };

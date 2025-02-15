@@ -85,6 +85,7 @@ const router = express.Router();
 router.post('/', 
     authenticate, 
     checkRole(['admin', 'moderator', 'user']),
+    karmaCheck('createComment'),
     commentValidator.create,
     commentController.create
 );

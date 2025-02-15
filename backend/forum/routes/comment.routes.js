@@ -75,7 +75,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/comments:
+ * /api/forum/comments:
  *   post:
  *     summary: Crear un nuevo comentario
  *     tags: [Comments]
@@ -92,7 +92,7 @@ router.post('/',
 
 /**
  * @swagger
- * /api/comments/{id}:
+ * /api/forum/comments/{id}:
  *   get:
  *     summary: Obtener un comentario por ID
  *     tags: [Comments]
@@ -101,7 +101,7 @@ router.get('/:id', commentController.getById);
 
 /**
  * @swagger
- * /api/comments/{id}:
+ * /api/forum/comments/{id}:
  *   put:
  *     summary: Actualizar un comentario por ID
  *     tags: [Comments]
@@ -117,7 +117,7 @@ router.put('/:id',
 
 /**
  * @swagger
- * /api/comments/{id}:
+ * /api/forum/comments/{id}:
  *   delete:
  *     summary: Eliminar un comentario por ID
  *     tags: [Comments]

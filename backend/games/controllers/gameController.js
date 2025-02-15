@@ -1,6 +1,6 @@
 import Game from '../models/Game.js';
 
-export const gameController = {
+const gameController = {
     // Crear nuevo juego
     create: async (req, res) => {
         try {
@@ -121,3 +121,5 @@ export const gameController = {
         }
     }
 };
+
+export default gameController;

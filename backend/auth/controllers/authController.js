@@ -1,7 +1,11 @@
 import User from '../../users/models/User.js';
+import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { validationResult } from 'express-validator';
+import dotenv from 'dotenv';
 import { ReputationService } from '../../users/services/reputation.service.js';
-import bcrypt from 'bcrypt';
+
+dotenv.config();
 
 const generateAccessToken = (user) => {
     return jwt.sign(
@@ -13,34 +17,52 @@ const generateAccessToken = (user) => {
 
 const generateRefreshToken = (user) => {
     return jwt.sign(
-        { id: user._id, role: user.role },
-        process.env.JWT_REFRESH_SECRET,
-        { expiresIn: process.env.JWT_REFRESH_EXPIRATION }
+        { id: user._id },
+        process.env.JWT_SECRET,
+        { expiresIn: '7d' }
     );
 };
 
-export const authController = {
-    register: async (req, res) => {
+const authController = {
+    refreshToken: async (req, res) => {
         try {
-            const { username, email, password } = req.body;
-
-            const existingUser = await User.findOne({ 
-                $or: [{ email }, { username }] 
-            });
-            
-            if (existingUser) {
-                return res.status(400).json({ 
-                    message: existingUser.email === email ? 
-                        'Email ya registrado' : 
-                        'Nombre de usuario no disponible'
-                });
+            const { refreshToken } = req.body;
+            if (!refreshToken) {
+                return res.status(401).json({ message: 'No refresh token' });
             }
 
-            const user = new User({
-                username,
-                email,
-                password
-            });
+            const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
+            const user = await User.findById(decoded.id);
+            
+            if (!user) {
+                return res.status(404).json({ message: 'Usuario no encontrado' });
+            }
+
+            const accessToken = generateAccessToken(user);
+            res.json({ accessToken });
+        } catch (error) {
+            res.status(401).json({ message: 'Invalid refresh token' });
+        }
+    },
+
+    register: async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+
+        const { username, email, password } = req.body;
+
+        try {
+            let user = await User.findOne({ email });
+            if (user) {
+                return res.status(400).json({ message: 'User already exists' });
+            }
+
+            user = new User({ username, email, password });
+
+            const salt = await bcrypt.genSalt(10);
+            user.password = await bcrypt.hash(password, salt);
 
             await user.save();
             await ReputationService.initializeReputation(user._id);
@@ -69,22 +91,24 @@ export const authController = {
     },
 
     login: async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+
+        const { email, password } = req.body;
+
         try {
-            const { email, password } = req.body;
-
-            // Buscar usuario
-            const user = await User.findOne({ email });
+            let user = await User.findOne({ email });
             if (!user) {
-                return res.status(401).json({ message: 'Credenciales inválidas' });
+                return res.status(400).json({ message: 'Invalid credentials' });
             }
 
-            // Verificar contraseña
-            const isMatch = await user.comparePassword(password);
+            const isMatch = await bcrypt.compare(password, user.password);
             if (!isMatch) {
-                return res.status(401).json({ message: 'Credenciales inválidas' });
+                return res.status(400).json({ message: 'Invalid credentials' });
             }
 
-            // Generar tokens
             const accessToken = generateAccessToken(user);
             const refreshToken = generateRefreshToken(user);
 
@@ -104,9 +128,10 @@ export const authController = {
                 }
             });
         } catch (error) {
+            console.error('Error en inicio de sesión:', error);
             res.status(500).json({ 
                 message: 'Error en inicio de sesión',
-                error: error.message 
+                error: process.env.NODE_ENV === 'development' ? error.message : undefined
             });
         }
     },
@@ -116,13 +141,14 @@ export const authController = {
             const user = await User.findById(req.user.id)
                 .select('-password')
                 .select('-__v');
-                
+            
             if (!user) {
                 return res.status(404).json({ message: 'Usuario no encontrado' });
             }
 
             res.json(user);
         } catch (error) {
+            console.error('Error al obtener perfil:', error);
             res.status(500).json({ 
                 message: 'Error al obtener perfil',
                 error: error.message 
@@ -130,44 +156,17 @@ export const authController = {
         }
     },
 
-    refreshToken: async (req, res) => {
-        const { refreshToken } = req.body;
-
-        if (!refreshToken) {
-            return res.status(400).json({ message: 'Refresh token requerido' });
-        }
-
-        try {
-            // Verificar el refresh token
-            const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
-
-            // Buscar el usuario asociado al refresh token
-            const user = await User.findById(decoded.id);
-
-            if (!user || user.refreshToken !== refreshToken) {
-                return res.status(401).json({ message: 'Refresh token inválido' });
-            }
-
-            // Generar un nuevo token de acceso
-            const accessToken = generateAccessToken(user);
-
-            res.status(200).json({ 
-                message: 'Token refrescado exitosamente',
-                accessToken
-            });
-        } catch (error) {
-            console.error(error);
-            res.status(403).json({ message: 'Refresh token inválido o expirado' });
-        }
-    },
-
     logout: async (req, res) => {
         try {
-            req.user.refreshToken = null;
-            await req.user.save();
+            if (req.user) {
+                req.user.refreshToken = null;
+                await req.user.save();
+            }
             res.status(200).json({ message: 'Logout successful' });
         } catch (error) {
             res.status(500).json({ message: 'Error during logout', error: error.message });
         }
     }
 };
+
+export default authController;

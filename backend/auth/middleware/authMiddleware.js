@@ -125,4 +125,4 @@ const authMiddleware = (roles = []) => {
   };
 };
 
-module.exports = authMiddleware;
+export default authMiddleware;

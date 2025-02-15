@@ -1,12 +1,8 @@
 import express from 'express';
-import { authController } from '../controllers/authController.js';
-import { authValidators } from '../validators/auth.validators.js';
-import { authenticate } from '../middleware/authMiddleware.js';
-import { register, login, logout, refreshToken } from '../controllers/auth.controller.js';
-import { validateRegister, validateLogin } from '../validators/auth.validator.js';
-import { authMiddleware } from '../middleware/auth.middleware.js';
-
 const router = express.Router();
+import authController from '../controllers/authController.js';
+import { authValidators } from '../validators/auth.validators.js';
+import authMiddleware from '../middleware/authMiddleware.js';
 
 /**
  * @swagger
@@ -42,7 +38,7 @@ const router = express.Router();
  *       400:
  *         description: Datos inválidos o usuario ya existe
  */
-router.post('/register', validateRegister, register);
+router.post('/register', authValidators.register, authController.register);
 
 /**
  * @swagger
@@ -72,7 +68,7 @@ router.post('/register', validateRegister, register);
  *       401:
  *         description: Credenciales inválidas
  */
-router.post('/login', validateLogin, login);
+router.post('/login', authValidators.login, authController.login);
 
 /**
  * @swagger
@@ -83,9 +79,9 @@ router.post('/login', validateLogin, login);
  *     security:
  *       - BearerAuth: []
  */
-router.get('/profile', authenticate, authController.getProfile);
+router.get('/profile', authMiddleware, authController.getProfile);
 
-router.post('/logout', authMiddleware, logout);
-router.post('/refreshToken', refreshToken);
+router.post('/logout', authMiddleware, authController.logout);
+router.post('/refreshToken', authController.refreshToken);
 
 export default router; 

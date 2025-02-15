@@ -1,5 +1,5 @@
 import express from 'express';
-import { gameController } from '../controllers/gameController.js';
+import gameController from '../controllers/gameController.js';
 import { authenticate, checkRole } from '../../auth/middleware/authMiddleware.js';
 import { gameValidator } from '../validators/game.validator.js';
 
@@ -10,7 +10,7 @@ router.get('/', gameController.getAll);
 router.post('/', 
     authenticate, 
     checkRole(['admin', 'translator']),
-    gameValidator.create, 
+    ...gameValidator.create, 
     gameController.create
 );
 
@@ -23,19 +23,19 @@ router.put('/:id',
     gameController.update
 );
 
-router.delete('/:id', authMiddleware(), gameController.delete);
+router.delete('/:id', authenticate, checkRole(['admin', 'translator']), gameController.delete);
 
 router.patch('/:id/status',
     authenticate,
     checkRole(['admin', 'translator']),
-    gameValidator.updateStatus,
+    ...gameValidator.updateStatus,
     gameController.updateStatus
 );
 
 router.post('/:id/translators',
     authenticate,
     checkRole(['admin', 'translator']),
-    gameValidator.assignTranslator,
+    ...gameValidator.assignTranslator,
     gameController.assignTranslator
 );
 

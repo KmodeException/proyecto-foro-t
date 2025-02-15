@@ -31,8 +31,6 @@ const sanitizeParams = (field) => {
     });
 };
 
-export const sanitizeMiddleware = {
-    sanitizeBody,
-    sanitizeQuery,
-    sanitizeParams
-}; 
+export const sanitizeMiddleware = (req, res, next) => {
+    sanitizeBody('name')(req, res, next);
+};

@@ -14,6 +14,7 @@ import morgan from 'morgan';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import lusca from 'lusca';
+// import swaggerSpec from './swaggerConfig.js';
 
 // Rutas
 import authRoutes from './auth/routes/auth.routes.js';

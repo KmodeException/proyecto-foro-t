@@ -1,6 +1,6 @@
 import { body, param } from 'express-validator';
 import { handleValidationErrors } from '../../common/middleware/validationMiddleware.js';
-const Joi = require('joi');
+import Joi from 'joi';
 
 export const gameValidator = {
     create: [
@@ -40,42 +40,67 @@ export const gameValidator = {
             .isMongoId()
             .withMessage('ID de traductor inválido'),
         handleValidationErrors
+    ],
+
+    update: [
+        param('id')
+            .isMongoId()
+            .withMessage('ID de juego inválido'),
+        body('title')
+            .optional()
+            .trim()
+            .notEmpty()
+            .withMessage('El título es requerido'),
+        body('description')
+            .optional()
+            .trim()
+            .notEmpty()
+            .withMessage('La descripción es requerida'),
+        body('genre')
+            .optional()
+            .trim()
+            .notEmpty()
+            .withMessage('El género es requerido'),
+        body('platform')
+            .optional()
+            .isArray()
+            .withMessage('Las plataformas deben ser un array')
+            .custom(platforms => {
+                const validPlatforms = ['PC', 'PS4', 'PS5', 'Xbox One', 'Xbox Series', 'Switch', 'Mobile'];
+                return platforms.every(p => validPlatforms.includes(p));
+            })
+            .withMessage('Plataforma(s) inválida(s)'),
+        body('developer')
+            .optional()
+            .trim()
+            .notEmpty()
+            .withMessage('El desarrollador es requerido'),
+        body('publisher')
+            .optional()
+            .trim()
+            .notEmpty()
+            .withMessage('El publicador es requerido'),
+        body('releaseDate')
+            .optional()
+            .isISO8601()
+            .withMessage('La fecha de lanzamiento debe ser una fecha válida'),
+        body('imageUrl')
+            .optional()
+            .isURL()
+            .withMessage('La URL de la imagen debe ser una URL válida'),
+        handleValidationErrors
     ]
 };
 
-const create = (req, res, next) => {
-    const schema = Joi.object({
-        titulo: Joi.string().required(),
-        descripcion: Joi.string(),
-        plataformas: Joi.array().items(Joi.string()),
-        generos: Joi.array().items(Joi.string()),
-        fechaLanzamiento: Joi.date(),
-        imagenDestacada: Joi.string(),
-    });
+const gameSchema = Joi.object({
+    title: Joi.string().required(),
+    description: Joi.string().required(),
+    genre: Joi.string().required(),
+    platform: Joi.string().required(),
+    developer: Joi.string().required(),
+    publisher: Joi.string().required(),
+    releaseDate: Joi.date().required(),
+    imageUrl: Joi.string().uri().required()
+});
 
-    const { error } = schema.validate(req.body);
-    if (error) {
-        return res.status(400).json({ mensaje: error.details[0].message });
-    }
-    next();
-};
-
-const update = (req, res, next) => {
-    const schema = Joi.object({
-        titulo: Joi.string(),
-        descripcion: Joi.string(),
-        plataformas: Joi.array().items(Joi.string()),
-        generos: Joi.array().items(Joi.string()),
-        fechaLanzamiento: Joi.date(),
-        imagenDestacada: Joi.string(),
-    });
-
-    const { error } = schema.validate(req.body);
-    if (error) {
-        return res.status(400).json({ mensaje: error.details[0].message });
-    }
-    next();
-};
-
-exports.create = create;
-exports.update = update; 
+export default gameSchema; 

@@ -13,7 +13,7 @@ router.post('/',
     authenticate,
     checkRole(['admin', 'moderator', 'user']),
     karmaCheck('createPost'),
-    postValidator.create,
+    ...postValidator.create,
     forumPostController.create
 );
 
@@ -21,13 +21,13 @@ router.put('/:id',
     authenticate,
     checkRole(['admin', 'moderator', 'user']),
     postValidator.update,
-    forumPostController.update
+    (req, res) => forumPostController.update(req, res)
 );
 
 router.delete('/:id',
     authenticate,
     checkRole(['admin', 'moderator', 'user']),
-    forumPostController.delete
+    (req, res) => forumPostController.delete(req, res)
 );
 
 router.post('/:id/vote',

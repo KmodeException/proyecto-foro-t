@@ -71,30 +71,29 @@ import { sanitizeMiddleware } from '../../common/middleware/sanitizeMiddleware.j
 const router = express.Router();
 
 router.get('/', threadController.getAll);
-router.get('/:id', threadController.getById);
 
-router.post('/',
+router.post(
+    '/',
     authenticate,
-    checkRole(['admin', 'moderator']),
+    checkRole(['admin', 'moderator', 'user']),
     karmaCheck('createThread'),
-    sanitizeMiddleware.sanitizeBody('name'),
-    sanitizeMiddleware.sanitizeBody('description'),
-    threadValidator.create,
-    threadController.create
+    sanitizeMiddleware,
+    ...threadValidator.create,
+    (req, res) => threadController.create(req, res)
 );
+
+router.get('/:id', threadController.getById);
 
 router.put('/:id',
     authenticate,
-    checkRole(['admin', 'moderator']),
-    sanitizeMiddleware.sanitizeBody('name'),
-    sanitizeMiddleware.sanitizeBody('description'),
+    checkRole(['admin', 'moderator', 'user']),
     threadValidator.update,
     threadController.update
 );
 
-router.delete('/:id',
-    authenticate,
-    checkRole(['admin']),
+router.delete('/:id', 
+    authenticate, 
+    checkRole(['admin', 'moderator', 'user']),
     threadController.delete
 );
 

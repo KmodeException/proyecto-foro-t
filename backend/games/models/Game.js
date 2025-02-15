@@ -95,7 +95,19 @@ const gameSchema = new mongoose.Schema({
     genres: [{
         type: String,
         required: false
-    }]
+    }],
+    fechaPublicacion: {
+        type: Date,
+        default: Date.now
+    },
+    traducciones: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Traduccion'
+    }],
+    votos: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Voto'
+    }],
 }, { timestamps: true });
 
 export default mongoose.model('Game', gameSchema);

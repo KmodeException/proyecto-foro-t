@@ -4,52 +4,38 @@ export const gameController = {
     // Crear nuevo juego
     create: async (req, res) => {
         try {
-            const { title, platform } = req.body;
-            const game = new Game({
-                title,
-                platform,
-                translationLead: req.user._id
-            });
-            await game.save();
-            res.status(201).json(game);
+            const game = new Game(req.body);
+            game.autor = req.usuario.id; // Asignar el autor al juego
+            const nuevoGame = await game.save();
+            res.status(201).json(nuevoGame);
         } catch (error) {
-            res.status(500).json({
-                message: 'Error al crear el juego',
-                error: error.message
-            });
+            console.error(error);
+            res.status(500).json({ mensaje: 'Error al crear el videojuego' });
         }
     },
 
     // Obtener todos los juegos
     getAll: async (req, res) => {
         try {
-            const games = await Game.find()
-                .populate('translationLead', 'username')
-                .populate('translators.user', 'username');
-            res.json(games);
+            const games = await Game.find().populate('autor', 'nombreUsuario'); // Popular el autor
+            res.status(200).json(games);
         } catch (error) {
-            res.status(500).json({
-                message: 'Error al obtener juegos',
-                error: error.message
-            });
+            console.error(error);
+            res.status(500).json({ mensaje: 'Error al obtener los videojuegos' });
         }
     },
 
     // Obtener juego por ID
     getById: async (req, res) => {
         try {
-            const game = await Game.findById(req.params.id)
-                .populate('translationLead', 'username')
-                .populate('translators.user', 'username');
+            const game = await Game.findById(req.params.id).populate('autor', 'nombreUsuario'); // Popular el autor
             if (!game) {
-                return res.status(404).json({ message: 'Juego no encontrado' });
+                return res.status(404).json({ mensaje: 'Videojuego no encontrado' });
             }
-            res.json(game);
+            res.status(200).json(game);
         } catch (error) {
-            res.status(500).json({
-                message: 'Error al obtener el juego',
-                error: error.message
-            });
+            console.error(error);
+            res.status(500).json({ mensaje: 'Error al obtener el videojuego' });
         }
     },
 
@@ -104,6 +90,34 @@ export const gameController = {
                 message: 'Error al asignar traductor',
                 error: error.message
             });
+        }
+    },
+
+    // Actualizar videojuego
+    update: async (req, res) => {
+        try {
+            const game = await Game.findByIdAndUpdate(req.params.id, req.body, { new: true });
+            if (!game) {
+                return res.status(404).json({ mensaje: 'Videojuego no encontrado' });
+            }
+            res.status(200).json(game);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ mensaje: 'Error al actualizar el videojuego' });
+        }
+    },
+
+    // Eliminar videojuego
+    delete: async (req, res) => {
+        try {
+            const game = await Game.findByIdAndDelete(req.params.id);
+            if (!game) {
+                return res.status(404).json({ mensaje: 'Videojuego no encontrado' });
+            }
+            res.status(200).json({ mensaje: 'Videojuego eliminado correctamente' });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ mensaje: 'Error al eliminar el videojuego' });
         }
     }
 };

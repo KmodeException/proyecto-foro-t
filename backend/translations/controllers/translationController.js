@@ -24,37 +24,39 @@ export const translationController = {
 
     getById: async (req, res) => {
         try {
-            const translation = await Translation.findById(req.params.id);
+            const translation = await Translation.findById(req.params.id)
+                .populate('videojuego', 'titulo')
+                .populate('traductor', 'nombreUsuario');
             if (!translation) {
-                return res.status(404).json({ message: 'Traducción no encontrada' });
+                return res.status(404).json({ message: "Traducción no encontrada" });
             }
             res.status(200).json(translation);
         } catch (error) {
-            res.status(500).json({ message: error.message });
+            res.status(500).json({ message: "Error al obtener la traducción" });
         }
     },
 
     update: async (req, res) => {
         try {
-            const updatedTranslation = await Translation.findByIdAndUpdate(req.params.id, req.body, { new: true });
-            if (!updatedTranslation) {
-                return res.status(404).json({ message: 'Traducción no encontrada' });
+            const translation = await Translation.findByIdAndUpdate(req.params.id, req.body, { new: true });
+            if (!translation) {
+                return res.status(404).json({ message: "Traducción no encontrada" });
             }
-            res.status(200).json(updatedTranslation);
+            res.status(200).json(translation);
         } catch (error) {
-            res.status(500).json({ message: error.message });
+            res.status(500).json({ message: "Error al actualizar la traducción" });
         }
     },
 
     delete: async (req, res) => {
         try {
-            const deletedTranslation = await Translation.findByIdAndDelete(req.params.id);
-            if (!deletedTranslation) {
-                return res.status(404).json({ message: 'Traducción no encontrada' });
+            const translation = await Translation.findByIdAndDelete(req.params.id);
+            if (!translation) {
+                return res.status(404).json({ message: "Traducción no encontrada" });
             }
-            res.status(200).json({ message: 'Traducción eliminada' });
+            res.status(200).json({ message: "Traducción eliminada correctamente" });
         } catch (error) {
-            res.status(500).json({ message: error.message });
+            res.status(500).json({ message: "Error al eliminar la traducción" });
         }
     },
 
@@ -111,6 +113,17 @@ export const translationController = {
             res.status(200).json(reviewedTranslation);
         } catch (error) {
             res.status(500).json({ message: error.message });
+        }
+    },
+
+    getAll: async (req, res) => {
+        try {
+            const translations = await Translation.find()
+                .populate('videojuego', 'titulo')
+                .populate('traductor', 'nombreUsuario');
+            res.status(200).json(translations);
+        } catch (error) {
+            res.status(500).json({ message: "Error al obtener las traducciones" });
         }
     }
 };

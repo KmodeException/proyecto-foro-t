@@ -72,7 +72,7 @@ router.post('/login', authValidators.login, authController.login);
 
 /**
  * @swagger
- * /auth/profile:
+ * /api/auth/profile:
  *   get:
  *     tags: [Auth]
  *     summary: Obtiene el perfil del usuario autenticado

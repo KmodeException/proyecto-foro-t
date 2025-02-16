@@ -281,7 +281,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ForumPost'
+              $ref: '#/components/schemas/ForumComment'
       responses:
         201:
           description: Post creado exitosamente

@@ -7,7 +7,7 @@ import { ReputationService } from '../../users/services/reputation.service.js';
 
 dotenv.config();
 
-const generateAccessToken = (user) => {
+export const generateAccessToken = (user) => {
     return jwt.sign(
         { id: user._id, role: user.role },
         process.env.JWT_SECRET,
@@ -15,7 +15,7 @@ const generateAccessToken = (user) => {
     );
 };
 
-const generateRefreshToken = (user) => {
+export const generateRefreshToken = (user) => {
     return jwt.sign(
         { id: user._id },
         process.env.JWT_SECRET,

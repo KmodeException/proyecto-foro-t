@@ -6,7 +6,6 @@ import { karmaCheck } from '../../common/middleware/karmaCheck.js';
 
 const router = express.Router();
 
-router.get('/', forumPostController.getAll);
 router.get('/:id', forumPostController.getById);
 
 router.post('/',

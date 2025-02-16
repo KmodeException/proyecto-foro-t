@@ -185,15 +185,6 @@ export const forumPostController = {
         }
     },
 
-    getAll: async (req, res) => {
-        try {
-            // Lógica para obtener todos los posts
-            res.status(200).json({ message: 'Posts obtenidos correctamente' });
-        } catch (error) {
-            res.status(500).json({ message: 'Error al obtener los posts' });
-        }
-    },
-
     update: async (req, res) => {
         try {
             const { id } = req.params;
@@ -208,6 +199,15 @@ export const forumPostController = {
             res.json(post);
         } catch (error) {
             res.status(500).json({ message: error.message });
+        }
+    },
+
+    getAll: async (req, res) => {
+        try {
+            // Lógica para obtener todos los posts
+            res.status(200).json({ message: 'Posts obtenidos correctamente' });
+        } catch (error) {
+            res.status(500).json({ message: 'Error al obtener los posts' });
         }
     }
 };

@@ -3,8 +3,7 @@ import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import User from '../users/models/User.js';
 import dotenv from 'dotenv';
 
-// Cargar variables de entorno
-dotenv.config();
+
 
 /**
  * Configuración de opciones para la estrategia JWT

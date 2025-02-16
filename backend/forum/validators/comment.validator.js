@@ -6,7 +6,7 @@ export const commentValidator = {
         body('content')
             .trim()
             .notEmpty()
-            .withMessage('El contenido es requerido'),
+            .withMessage('El contenido del comentario es obligatorio'),
         body('author')
             .trim()
             .notEmpty()
@@ -20,7 +20,9 @@ export const commentValidator = {
     update: [
         body('content')
             .optional()
-            .trim(),
+            .trim()
+            .notEmpty()
+            .withMessage('El contenido del comentario no puede estar vacío'),
         handleValidationErrors
     ]
 }; 

@@ -77,15 +77,6 @@ export const commentController = {
         }
     },
 
-    getById: async (req, res) => {
-        try {
-            const comment = await Comment.findById(req.params.id);
-            res.json(comment);
-        } catch (error) {
-            res.status(500).json({ message: error.message });
-        }
-    },
-
     update: async (req, res) => {
         try {
             const comment = await Comment.findByIdAndUpdate(req.params.id, req.body, { new: true });

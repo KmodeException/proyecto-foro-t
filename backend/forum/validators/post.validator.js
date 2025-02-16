@@ -26,8 +26,8 @@ export const postValidator = {
         body('title')
             .optional()
             .trim()
-            .isLength({ max: 255 })
-            .withMessage('El título no debe exceder los 255 caracteres'),
+            .isLength({ min: 3, max: 100 })
+            .withMessage('El título debe tener entre 3 y 100 caracteres'),
         body('content')
             .optional()
             .trim()

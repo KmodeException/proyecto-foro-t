@@ -97,7 +97,6 @@ router.post('/',
  *     summary: Obtener un comentario por ID
  *     tags: [Comments]
  */
-router.get('/:id', commentController.getById);
 
 /**
  * @swagger

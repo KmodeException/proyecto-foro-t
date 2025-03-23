@@ -77,7 +77,7 @@ export const forumPostController = {
             const post = new ForumPost({
                 title,
                 content,
-                thread: threadId,
+                thread: thread,
                 author: req.user._id
              });
             await post.save();

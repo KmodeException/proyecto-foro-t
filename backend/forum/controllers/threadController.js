@@ -64,7 +64,7 @@ export const threadController = {
                 totalThreads
             });
         } catch (error) {
-            res.status(500).json({ message: "Error al obtener los hilos" });
+            res.status(500).json({ message: error.message });
         }
     },
 

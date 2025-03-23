@@ -33,7 +33,7 @@ export const threadController = {
             const newThread = await thread.save();
             res.status(201).json(newThread);
         } catch (error) {
-            res.status(500).json({ message: "Error al crear el hilo" });
+            res.status(500).json({ message: error.message });
         }
     },
 

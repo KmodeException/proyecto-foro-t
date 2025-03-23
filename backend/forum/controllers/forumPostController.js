@@ -160,7 +160,7 @@ export const forumPostController = {
             res.json(post);
         } catch (error) {
             console.error("Error al votar:", error);
-            res.status(500).json({ message: 'Error al votar' });
+            res.status(500).json({ message: error.message });
         }
     },
 

@@ -48,7 +48,7 @@ Thumbs.db
 *.gz
 *.swp
 *.txt
-*.md
 
 # Ignorar carpeta de cobertura
 /backend/coverage/
+.aider*

@@ -66,10 +66,10 @@ export const forumPostController = {
                 return res.status(403).json({ message: 'Karma insuficiente para crear posts' });
             }
 
-            const { title, content, threadId } = req.body;
+            const { title, content, thread } = req.body;
 
             // Validación de threadId
-            const threadExists = await Thread.findById(threadId);
+            const threadExists = await Thread.findById(thread);
             if (!threadExists) {
                 return res.status(400).json({ message: 'Hilo no encontrado' });
             }
@@ -79,7 +79,7 @@ export const forumPostController = {
                 content,
                 thread: threadId,
                 author: req.user._id
-            });
+             });
             await post.save();
             await post.populate('author', 'username reputation level');
             res.status(201).json(post);

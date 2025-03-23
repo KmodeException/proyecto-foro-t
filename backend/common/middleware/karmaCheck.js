@@ -24,22 +24,16 @@ import { ReputationService } from '../../users/services/reputation.service.js';
 
 export const karmaCheck = (action) => {
     return (req, res, next) => {
+        if (!req.user || !req.user.reputation) {
+            return res.status(401).json({ message: 'Usuario no autenticado o sin reputación.' });
+        }
+
         const restrictions = ReputationService.checkRestrictions(req.user.reputation);
 
-        switch (action) {
-            case 'createPost':
-                if (restrictions.noPosts) {
-                    return res.status(403).json({ message: 'No tienes suficiente karma para crear posts' });
-                }
-                break;
-            case 'createComment':
-                if (restrictions.noComments) {
-                    return res.status(403).json({ message: 'No tienes suficiente karma para crear comentarios' });
-                }
-                break;
-            default:
-                return res.status(400).json({ message: 'Acción no válida' });
+         if (action === 'createThread' && restrictions.noPosts) {
+            return res.status(403).json({ message: 'No tienes suficiente karma para crear hilos.' });
         }
+
 
         next();
     };
